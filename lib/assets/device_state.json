@@ -1,0 +1,108 @@
+POST http://localhost:8848/dashboard/_multi
+
+[
+    {
+        "dashboard": "device",
+        "object": "1947920655531909120",
+        "measurement": "properties",
+        "dimension": "history",
+        "params": {
+            "deviceId": "11110001",
+            "history": 1,
+            "properties": [
+                "CHARGE_STATE",
+                "LOCK_STATE",
+                "USED_STATE"
+            ]
+        }
+    }
+]
+
+{
+    "message": "success",
+    "result": [
+        {
+            "data": {
+                "value": {
+                    "id": "38b2b821221229def9471a5d0af90c97",
+                    "deviceId": "11110001",
+                    "property": "USED_STATE",
+                    "propertyName": "使用状态",
+                    "type": "object",
+                    "value": {
+                        "num": 16,
+                        "state": "1010000000000001"
+                    },
+                    "originValue": {
+                        "num": 16,
+                        "state": "1010000000000001"
+                    },
+                    "formatValue": {
+                        "num": "16",
+                        "state": "1010000000000001"
+                    },
+                    "createTime": 1757404424953,
+                    "timestamp": 1757404424941
+                },
+                "timeString": "2025-09-09 15:53:44",
+                "timestamp": 1757404424941
+            }
+        },
+        {
+            "data": {
+                "value": {
+                    "id": "c2a04af1ef17e4ec9fe099a3c2990307",
+                    "deviceId": "11110001",
+                    "property": "LOCK_STATE",
+                    "propertyName": "锁状态",
+                    "type": "object",
+                    "value": {
+                        "num": 16,
+                        "state": "0000000011111111"
+                    },
+                    "originValue": {
+                        "num": 16,
+                        "state": "0000000011111111"
+                    },
+                    "formatValue": {
+                        "num": "16",
+                        "state": "0000000011111111"
+                    },
+                    "createTime": 1757404548494,
+                    "timestamp": 1757404548491
+                },
+                "timeString": "2025-09-09 15:55:48",
+                "timestamp": 1757404548491
+            }
+        },
+        {
+            "data": {
+                "value": {
+                    "id": "07f54a79dd17aa66678005083d61415a",
+                    "deviceId": "11110001",
+                    "property": "CHARGE_STATE",
+                    "propertyName": "充电状态",
+                    "type": "object",
+                    "value": {
+                        "num": 16,
+                        "state": "2110000000000000"
+                    },
+                    "originValue": {
+                        "num": 16,
+                        "state": "2110000000000000"
+                    },
+                    "formatValue": {
+                        "num": "16",
+                        "state": "2110000000000000"
+                    },
+                    "createTime": 1757404733346,
+                    "timestamp": 1757404733344
+                },
+                "timeString": "2025-09-09 15:58:53",
+                "timestamp": 1757404733344
+            }
+        }
+    ],
+    "status": 200,
+    "timestamp": 1757404757360
+}

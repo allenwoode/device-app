@@ -14,6 +14,7 @@ class ApiConfig {
   static Map<String, String> get defaultHeaders => {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    'x-access-token': '42e00d7262df32de85c4487a4e2fbde4',
   };
   
   // Environment-specific configurations

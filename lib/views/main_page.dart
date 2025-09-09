@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import '../api/device_api.dart';
+import 'device_detail_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -62,8 +63,8 @@ class _MainPageState extends State<MainPage> {
           '浙江杰马电子科技',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: false,
@@ -223,20 +224,29 @@ class DeviceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 0,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DeviceDetailPage(deviceId: device.id),
           ),
-        ],
-      ),
-      child: Padding(
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 0,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,23 +268,19 @@ class DeviceCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: device.state == 1 ? Colors.green : Colors.grey,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
                   child: Text(
                     device.state == 1 ? '在线' : '离线',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: device.state == 1 ? Colors.green : Colors.grey,
                       fontSize: 10,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
               ],
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             
             // WiFi Icon
             Center(
@@ -293,46 +299,50 @@ class DeviceCard extends StatelessWidget {
               ),
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             
             // Device Info
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  device.name,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    device.name,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  device.deviceType,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
+                  const SizedBox(height: 4),
+                  Text(
+                    device.productName,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey[600],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  device.description,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey[500],
+                  const SizedBox(height: 4),
+                  Text(
+                    device.description,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey[600],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
       ),
+    ),
     );
   }
 }
@@ -341,7 +351,7 @@ class DeviceData {
   final String id;
   final int state;
   final String name;
-  final String deviceType;
+  final String productName;
   final String description;
   final String lastUpdated;
 
@@ -349,7 +359,7 @@ class DeviceData {
     required this.id,
     required this.state,
     required this.name,
-    required this.deviceType,
+    required this.productName,
     required this.description,
     required this.lastUpdated,
   });
@@ -359,7 +369,7 @@ class DeviceData {
       id: json['id'] ?? json['deviceId'] ?? '',
       state: json['state']?['value'] == 'online' ? 1 : 0,
       name: json['name'] ?? json['deviceName'] ?? '',
-      deviceType: json['productName'] ?? json['deviceType'] ?? '',
+      productName: json['productName'] ?? json['productName'] ?? '',
       description: json['description'] ?? json['description'] ?? '',
       lastUpdated: json['createTime']?.toString() ?? json['lastUpdated'] ?? '',
     );

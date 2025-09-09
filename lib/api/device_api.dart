@@ -14,10 +14,10 @@ class DeviceApi {
         'pageIndex': 0,
         'pageSize': 5,
         // Add any other required parameters here
-        'sort': [
+        'sorts': [
           {
             "name": "createTime",
-            "order": "desc"
+            "order": "asc"
         },
         {
             "name": "name",
@@ -90,6 +90,109 @@ class DeviceApi {
       return json.decode(response);
     } catch (e) {
       throw Exception('Failed to load device data: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> getDeviceDetail(String deviceId) async {
+    try {
+      // Try API first
+      final uri = Uri.parse('${ApiConfig.baseUrl}/device-instance/$deviceId/detail');
+      final response = await http.get(
+        uri,
+        headers: ApiConfig.defaultHeaders,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Detail API Response Status: ${response.statusCode}');
+        print('Device Detail API Response Body: ${response.body}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        return responseData;
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.body}');
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Device detail API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceDetail();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<Map<String, dynamic>> getDeviceState(String deviceId) async {
+    try {
+      // Try API first - this is a POST request
+      final uri = Uri.parse('${ApiConfig.baseUrl}/dashboard/_multi');
+      final requestBody = json.encode([
+        {
+          "dashboard": "device",
+          "object": "1947920655531909120", // This should be dynamic based on productId
+          "measurement": "properties",
+          "dimension": "history",
+          "params": {
+            "deviceId": deviceId,
+            "history": 1,
+            "properties": [
+              "CHARGE_STATE",
+              "LOCK_STATE", 
+              "USED_STATE"
+            ]
+          }
+        }
+      ]);
+
+      final response = await http.post(
+        uri,
+        headers: ApiConfig.defaultHeaders,
+        body: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device State API Response Status: ${response.statusCode}');
+        print('Device State API Response Body: ${response.body}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        return responseData;
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.body}');
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Device state API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceState();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<Map<String, dynamic>> _loadLocalDeviceDetail() async {
+    try {
+      final String response = await rootBundle.loadString('lib/assets/device_detail.json');
+      return json.decode(response);
+    } catch (e) {
+      throw Exception('Failed to load device detail data: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> _loadLocalDeviceState() async {
+    try {
+      final String response = await rootBundle.loadString('lib/assets/device_state.json');
+      return json.decode(response);
+    } catch (e) {
+      throw Exception('Failed to load device state data: $e');
     }
   }
 }
