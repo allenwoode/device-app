@@ -1,0 +1,11 @@
+{
+    "message": "success",
+    "result": {
+        "pageIndex": 0,
+        "pageSize": 1,
+        "total": 4,
+        "data": []
+    },
+    "status": 200,
+    "timestamp": 1757388149095
+}
