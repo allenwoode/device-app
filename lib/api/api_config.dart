@@ -1,20 +1,33 @@
+import '../services/storage_service.dart';
+
 class ApiConfig {
   static const String baseUrl = 'http://192.168.2.137:8848';
   static const Duration timeout = Duration(seconds: 10);
   
-  // Device endpoints
-  static const String devicesEndpoint = '/device/instance/query';
-  static const String deviceDetailEndpoint = '/api/devices/{id}';
+
   
-  // Authentication endpoints (for future use)
-  static const String loginEndpoint = '/api/auth/login';
-  static const String refreshTokenEndpoint = '/api/auth/refresh';
+  // Common headers with dynamic token
+  static Future<Map<String, String>> get defaultHeaders async {
+    final token = await StorageService.getValidToken();
+    print('header token ===> $token');
+    return {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-Access-Token': token ?? '',
+    };
+  }
   
-  // Common headers
-  static Map<String, String> get defaultHeaders => {
+  // Synchronous headers for when token is already known
+  static Map<String, String> headersWithToken(String token) => {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'x-access-token': '42e00d7262df32de85c4487a4e2fbde4',
+    'X-Access-Token': token,
+  };
+  
+  // Basic headers without token (for login)
+  static Map<String, String> get basicHeaders => {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
   };
   
   // Environment-specific configurations

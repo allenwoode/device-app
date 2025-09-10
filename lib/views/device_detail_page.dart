@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../api/device_api.dart';
+import 'package:device/services/device_service.dart';
 
 enum LockState {
   locked,
@@ -25,10 +25,12 @@ class LockSlot {
 
 class DeviceDetailPage extends StatefulWidget {
   final String deviceId;
+  final String productId;
   
   const DeviceDetailPage({
     super.key,
     required this.deviceId,
+    required this.productId,
   });
 
   @override
@@ -49,8 +51,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   
   Future<void> _loadDeviceData() async {
     try {
-      final deviceStateData = await DeviceApi.getDeviceState(widget.deviceId);
-      final deviceDetailData = await DeviceApi.getDeviceDetail(widget.deviceId);
+      final deviceStateData = await DeviceService.getDeviceState(widget.deviceId, widget.productId);
+      final deviceDetailData = await DeviceService.getDeviceDetail(widget.deviceId);
       
       _parseDeviceData(deviceStateData, deviceDetailData);
       

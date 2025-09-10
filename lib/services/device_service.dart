@@ -1,18 +1,22 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
-import 'api_config.dart';
+import 'package:device/api/api_config.dart';
 
-class DeviceApi {
+class DeviceService {
+
+  // Device endpoints
+  static const String devicesEndpoint = '/device/instance/detail/_query';
+  static const String deviceDetailEndpoint = '/api/devices/{id}';
   
-  static Future<Map<String, dynamic>> getDevices() async {
+  static Future<Map<String, dynamic>> getDevices({int index = 0, int size = 5}) async {
     try {
       // First try to fetch from API
-      final uri = Uri.parse('${ApiConfig.baseUrl}${ApiConfig.devicesEndpoint}');
+      final uri = Uri.parse('${ApiConfig.baseUrl}$devicesEndpoint');
       // Prepare request body for POST request
       final requestBody = json.encode({
-        'pageIndex': 0,
-        'pageSize': 5,
+        'pageIndex': index,
+        'pageSize': size,
         // Add any other required parameters here
         'sorts': [
           {
@@ -27,9 +31,10 @@ class DeviceApi {
         "terms": []
       });
       
+      final headers = await ApiConfig.defaultHeaders;
       final response = await http.post(
         uri,
-        headers: ApiConfig.defaultHeaders,
+        headers: headers,
         body: requestBody,
       ).timeout(ApiConfig.timeout);
 
@@ -97,9 +102,10 @@ class DeviceApi {
     try {
       // Try API first
       final uri = Uri.parse('${ApiConfig.baseUrl}/device-instance/$deviceId/detail');
+      final headers = await ApiConfig.defaultHeaders;
       final response = await http.get(
         uri,
-        headers: ApiConfig.defaultHeaders,
+        headers: headers,
       ).timeout(ApiConfig.timeout);
 
       if (ApiConfig.enableLogging) {
@@ -126,14 +132,14 @@ class DeviceApi {
     }
   }
 
-  static Future<Map<String, dynamic>> getDeviceState(String deviceId) async {
+  static Future<Map<String, dynamic>> getDeviceState(String deviceId, String productId) async {
     try {
       // Try API first - this is a POST request
       final uri = Uri.parse('${ApiConfig.baseUrl}/dashboard/_multi');
       final requestBody = json.encode([
         {
           "dashboard": "device",
-          "object": "1947920655531909120", // This should be dynamic based on productId
+          "object": productId,
           "measurement": "properties",
           "dimension": "history",
           "params": {
@@ -148,9 +154,10 @@ class DeviceApi {
         }
       ]);
 
+      final headers = await ApiConfig.defaultHeaders;
       final response = await http.post(
         uri,
-        headers: ApiConfig.defaultHeaders,
+        headers: headers,
         body: requestBody,
       ).timeout(ApiConfig.timeout);
 
@@ -204,3 +211,4 @@ class HttpException implements Exception {
   @override
   String toString() => 'HttpException: $message';
 }
+
