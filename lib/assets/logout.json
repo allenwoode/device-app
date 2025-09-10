@@ -1,0 +1,8 @@
+GET /aut/logout
+
+{
+    "message": "success",
+    "result": true,
+    "status": 200,
+    "timestamp": 1757482544331
+}

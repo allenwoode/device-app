@@ -1,0 +1,50 @@
+POST /auth/login
+
+{
+    "message": "success",
+    "result": {
+        "expires": 1800000,
+        "user": {
+            "id": "098f6bcd4621d373cade4e832627b4f6",
+            "username": "test",
+            "type": {
+                "name": "普通用户",
+                "id": "user"
+            },
+            "status": 1,
+            "name": "运维测试",
+            "telephone": "17777777777",
+            "createTime": 1754041883715,
+            "roleList": [
+                {
+                    "id": "1946040528426745856",
+                    "name": "运维管理岗"
+                }
+            ],
+            "orgList": [
+                {
+                    "id": "6481efa9-de3f-46a1-8ca2-39cb6c863360",
+                    "name": "浙江杰马电子科技",
+                    "sortIndex": 0,
+                    "fullName": "浙江杰马电子科技"
+                }
+            ],
+            "creatorId": "21232f297a57a5a743894a0e4a801fc3",
+            "creatorName": "Administrator",
+            "modifierId": "21232f297a57a5a743894a0e4a801fc3",
+            "modifierName": "Administrator",
+            "modifyTime": 1754041883715,
+            "gender": {
+                "text": "未知",
+                "value": "unknown"
+            },
+            "register": {
+                "text": "后台注册",
+                "value": "backstage"
+            }
+        },
+        "token": "39b95faed024a54c74a6501834868c2d"
+    },
+    "status": 200,
+    "timestamp": 1757472792381
+}
