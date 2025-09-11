@@ -50,12 +50,24 @@ class DeviceService {
         final responseData = json.decode(response.body);
         // Handle the actual API response structure
         if (responseData is Map<String, dynamic>) {
-          // API returns: { "result": { "data": [...] } }
+          // API returns: { "result": { "data": [...], "total": 10 } }
           if (responseData.containsKey('result') && 
-              responseData['result'] is Map<String, dynamic> &&
-              responseData['result'].containsKey('data')) {
-            return {'devices': responseData['result']['data']};
+              responseData['result'] is Map<String, dynamic>) {
+            final result = responseData['result'];
+            final Map<String, dynamic> returnData = {};
+            
+            if (result.containsKey('data')) {
+              returnData['devices'] = result['data'];
+            }
+            if (result.containsKey('total')) {
+              returnData['total'] = result['total'];
+            }
+            
+            if (returnData.isNotEmpty) {
+              return returnData;
+            }
           }
+          
           // Fallback: if response has 'data' field directly
           else if (responseData.containsKey('data')) {
             return {'devices': responseData['data']};
@@ -71,7 +83,7 @@ class DeviceService {
         }
         
         // Default fallback
-        return {'devices': []};;
+        return {'devices': []};
       } else {
         throw HttpException('HTTP ${response.statusCode}: ${response.body}');
       }

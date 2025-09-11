@@ -16,8 +16,14 @@ class DevicePage extends StatefulWidget {
 class _DevicePageState extends State<DevicePage> {
   User? _currentUser;
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   List<DeviceData> _devices = [];
   bool _isLoading = true;
+  bool _isLoadingMore = false;
+  bool _hasMoreData = true;
+  int _currentPage = 0;
+  final int _pageSize = 5;
+  int? _totalDevices;
   String? _errorMessage;
 
   @override
@@ -25,6 +31,25 @@ class _DevicePageState extends State<DevicePage> {
     super.initState();
     _loadDevices();
     _loadUserInfo();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+
+    // 当滚动到距离底部100像素时开始预加载
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100) {
+      if (!_isLoadingMore && _hasMoreData) {
+        _loadMoreDevices();
+      }
+    }
   }
 
   Future<void> _loadUserInfo() async {
@@ -43,14 +68,22 @@ class _DevicePageState extends State<DevicePage> {
     }
   }
 
-  Future<void> _loadDevices() async {
+  Future<void> _loadDevices({bool isRefresh = false}) async {
     try {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
+      if (isRefresh) {
+        setState(() {
+          _currentPage = 0;
+          _hasMoreData = true;
+          _errorMessage = null;
+        });
+      } else {
+        setState(() {
+          _isLoading = true;
+          _errorMessage = null;
+        });
+      }
 
-      final data = await DeviceService.getDevices();
+      final data = await DeviceService.getDevices(index: _currentPage, size: _pageSize);
 
       if (data['devices'] != null) {
         final List<DeviceData> devices = (data['devices'] as List)
@@ -59,9 +92,23 @@ class _DevicePageState extends State<DevicePage> {
 
         if (mounted) {
           setState(() {
-            _devices = devices;
+            if (isRefresh) {
+              _devices = devices;
+              _currentPage = 0;
+            } else {
+              _devices = devices;
+            }
+            
+            // 更新总数信息
+            if (data['total'] != null) {
+              _totalDevices = data['total'];
+            }
+            
             _isLoading = false;
             _errorMessage = null;
+            
+            // 使用总数判断是否还有更多数据
+            //_hasMoreData = true;
           });
         }
       } else {
@@ -70,6 +117,7 @@ class _DevicePageState extends State<DevicePage> {
             _devices = [];
             _isLoading = false;
             _errorMessage = null;
+            _hasMoreData = false;
           });
         }
       }
@@ -84,8 +132,62 @@ class _DevicePageState extends State<DevicePage> {
     }
   }
 
+  Future<void> _loadMoreDevices() async {
+    if (_isLoadingMore || !_hasMoreData) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final nextPage = _currentPage + 1;
+      final data = await DeviceService.getDevices(index: nextPage, size: _pageSize);
+
+      if (data['devices'] != null) {
+        final List<DeviceData> newDevices = (data['devices'] as List)
+            .map((device) => DeviceData.fromJson(device))
+            .toList();
+
+        if (mounted) {
+          setState(() {
+            _devices.addAll(newDevices);
+            _currentPage = nextPage;
+            _isLoadingMore = false;
+            
+            // 更新总数信息
+            if (data['total'] != null) {
+              _totalDevices = data['total'];
+            }
+            
+            // 使用总数判断是否还有更多数据
+            if (_totalDevices != null) {
+              _hasMoreData = _devices.length < _totalDevices!;
+              //print('====> 当前已加载: ${_devices.length}, 总数: $_totalDevices, 还有更多: $_hasMoreData');
+            } else {
+              // 如果没有总数信息，回退到原来的逻辑
+              _hasMoreData = newDevices.length == _pageSize;
+            }
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+            _hasMoreData = false;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoadingMore = false;
+        });
+      }
+    }
+  }
+
   Future<void> _onRefresh() async {
-    await _loadDevices();
+    await _loadDevices(isRefresh: true);
   }
 
   @override
@@ -201,18 +303,70 @@ class _DevicePageState extends State<DevicePage> {
                           )
                         : Padding(
                             padding: const EdgeInsets.all(16),
-                            child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 12,
-                                    mainAxisSpacing: 12,
-                                    childAspectRatio: 0.85,
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: GridView.builder(
+                                    controller: _scrollController,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 12,
+                                          mainAxisSpacing: 12,
+                                          childAspectRatio: 0.85,
+                                        ),
+                                    itemCount: _devices.length,
+                                    itemBuilder: (context, index) {
+                                      return DeviceCard(device: _devices[index]);
+                                    },
                                   ),
-                              itemCount: _devices.length,
-                              itemBuilder: (context, index) {
-                                return DeviceCard(device: _devices[index]);
-                              },
+                                ),
+                                if (_isLoadingMore)
+                                  Container(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          '正在加载更多设备...',
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if (!_hasMoreData && _devices.isNotEmpty && !_isLoading)
+                                  Container(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.check_circle_outline,
+                                          size: 16,
+                                          color: Colors.grey[500],
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          '已加载全部设备 (共${_totalDevices ?? _devices.length}个)',
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                   ),
