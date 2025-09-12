@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:device/services/device_service.dart';
+import 'package:device/models/device_models.dart';
 
 enum LockState {
   locked,
@@ -24,13 +27,11 @@ class LockSlot {
 }
 
 class DeviceDetailPage extends StatefulWidget {
-  final String deviceId;
-  final String productId;
+  final DeviceData device;
   
   const DeviceDetailPage({
     super.key,
-    required this.deviceId,
-    required this.productId,
+    required this.device,
   });
 
   @override
@@ -41,7 +42,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   List<LockSlot> lockSlots = [];
   bool _isLoading = true;
   String? _errorMessage;
+  ExtraData? _extraData;
   String _deviceName = '';
+  String _deviceId = '';
+  int? _num;
   
   @override
   void initState() {
@@ -51,10 +55,17 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   
   Future<void> _loadDeviceData() async {
     try {
-      final deviceStateData = await DeviceService.getDeviceState(widget.deviceId, widget.productId);
-      final deviceDetailData = await DeviceService.getDeviceDetail(widget.deviceId);
-      
-      _parseDeviceData(deviceStateData, deviceDetailData);
+      final deviceStateData = await DeviceService.getDeviceState(widget.device);
+      //final deviceDetailData = await DeviceService.getDeviceDetail(widget.deviceId);
+
+      _deviceId = widget.device.id;
+      _deviceName = widget.device.name;
+
+      // device.extra: "extraData": "{\"charge_num\":11,\"gate_num\":11,\"organization\":\"浙江杰马电子科技\",\"power\":\"45W\"}"
+      _extraData = ExtraData.decode(widget.device.extraData);
+      _num = _extraData?.gateNum;
+
+      _parseDeviceStateData(deviceStateData);
       
       setState(() {
         _isLoading = false;
@@ -68,11 +79,19 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
   
-  void _parseDeviceData(Map<String, dynamic> stateData, Map<String, dynamic> detailData) {
+  void _parseDeviceStateData(Map<String, dynamic> stateData) {
     // Extract device name from detail data
-    if (detailData['result'] != null && detailData['result']['name'] != null) {
-      _deviceName = detailData['result']['id'];
-    }
+    // if (detailData['result'] != null && detailData['result']['id'] != null) {
+    //   _deviceId = detailData['result']['id'];
+    // }
+    // if (detailData['result'] != null && detailData['result']['name'] != null) {
+    //   _deviceName = detailData['result']['name'];
+    // }
+    // // extraData
+    // if (detailData['result'] != null && detailData['result']['extraData'] != null) {
+    //   _extraData = detailData['result']['extraData'];
+    // }
+
     
     // Initialize with default empty states
     String lockStateString = '0000000000000000';
@@ -138,7 +157,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -147,7 +166,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          _deviceName.isNotEmpty ? _deviceName : widget.deviceId,
+          widget.device.id,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
@@ -200,7 +219,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                         _buildTopMenu(),
                         const SizedBox(height: 8),
                         _buildLockGrid(),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
                         _buildLegend(),
                       ],
                     ),
@@ -260,7 +279,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   Widget _buildLockGrid() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -276,13 +295,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: (_num ?? 16) < 12 ? 3 : 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 1,
+          childAspectRatio: (_num ?? 16) < 12 ? 1 : 0.7,
         ),
-        itemCount: lockSlots.length,
+        itemCount: _num ?? lockSlots.length,
         itemBuilder: (context, index) {
           return _buildLockSlot(lockSlots[index]);
         },
@@ -291,45 +310,66 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   }
   
   Widget _buildLockSlot(LockSlot slot) {
-    print(slot);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        // Lock icon
-        Expanded(
-          flex: 2,
-          child: Icon(
-            slot.lockState == LockState.unlocked ? Icons.lock_open : Icons.lock,
-            size: 24,
-            color: slot.isUsed ? Colors.red : Colors.grey,
+        // Circular background with lock icon
+        Container(
+          width: 64,
+          height: 64,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey[200],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                slot.lockState == LockState.unlocked ? Icons.lock_open : Icons.lock,
+                size: 24,
+                color: Colors.grey[600],
+              ),
+
+              const SizedBox(height: 4),
+
+              // Slot ID
+              Text(
+                slot.id,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          )
         ),
-        // Slot ID
-        Text(
-          slot.id,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 4),
-        // Charging indicator
-        Expanded(
-          flex: 1,
-          child: _buildChargingIndicator(slot.chargingState),
-        ),
+        const SizedBox(height: 8),
+        // Charging status indicator
+        _buildChargingStatusIndicator(slot.chargingState),
       ],
     );
   }
-  
-  Widget _buildChargingIndicator(LockState chargingState) {
-    switch (chargingState) {
+
+  Widget _buildChargingStatusIndicator(LockState state) {
+    switch (state) {
       case LockState.charging:
         return Container(
           width: 12,
           height: 12,
           decoration: const BoxDecoration(
-            color: Colors.cyan,
             shape: BoxShape.circle,
+            color: Colors.cyan,
           ),
         );
       case LockState.charged:
@@ -337,18 +377,27 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           width: 12,
           height: 12,
           decoration: const BoxDecoration(
-            color: Colors.green,
             shape: BoxShape.circle,
+            color: Colors.green,
+          ),
+        );
+      case LockState.empty:
+        return Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey[300],
           ),
         );
       default:
-        return Text(
-          "--",
-          style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-          )
+        return Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey[300],
+          ),
         );
     }
   }
@@ -356,25 +405,25 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   Widget _buildLegend() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 0,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
+      // decoration: BoxDecoration(
+      //   color: Colors.white,
+      //   borderRadius: BorderRadius.circular(12),
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.grey.withOpacity(0.1),
+      //       spreadRadius: 0,
+      //       blurRadius: 4,
+      //       offset: const Offset(0, 2),
+      //     ),
+      //   ],
+      // ),
       child: Column(
         children: [
           // Lock status legend
           Row(
             children: [
-              const Icon(Icons.lock_open, color: Colors.red, size: 16),
+              Icon(Icons.lock_open, color: Colors.grey[600], size: 16),
               const SizedBox(width: 8),
               const Text('设备开锁', style: TextStyle(fontSize: 12)),
               const SizedBox(width: 24),
@@ -387,13 +436,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           // Charging status legend
           Row(
             children: [
-              Text(
-                "--",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                )
+              Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  shape: BoxShape.circle,
+                ),
               ),
               const SizedBox(width: 8),
               const Text('未充电', style: TextStyle(fontSize: 12)),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:device/models/device_models.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:device/api/api_config.dart';
@@ -6,7 +7,7 @@ import 'package:device/api/api_config.dart';
 class DeviceService {
 
   // Device endpoints
-  static const String devicesEndpoint = '/device/instance/detail/_query';
+  static const String devicesEndpoint = '/device/instance/query';
   static const String deviceDetailEndpoint = '/api/devices/{id}';
   
   static Future<Map<String, dynamic>> getDevices({int index = 0, int size = 5}) async {
@@ -21,7 +22,7 @@ class DeviceService {
         'sorts': [
           {
             "name": "createTime",
-            "order": "asc"
+            "order": "desc"
         },
         {
             "name": "name",
@@ -47,6 +48,7 @@ class DeviceService {
         if (ApiConfig.enableLogging) {
           print('Successfully fetched devices from API');
         }
+        
         final responseData = json.decode(response.body);
         // Handle the actual API response structure
         if (responseData is Map<String, dynamic>) {
@@ -62,20 +64,11 @@ class DeviceService {
             if (result.containsKey('total')) {
               returnData['total'] = result['total'];
             }
-            
             if (returnData.isNotEmpty) {
               return returnData;
             }
           }
-          
-          // Fallback: if response has 'data' field directly
-          else if (responseData.containsKey('data')) {
-            return {'devices': responseData['data']};
-          }
-          // If response is already in expected format
-          else if (responseData.containsKey('devices')) {
-            return responseData;
-          }
+
         }
         // If response is a list, wrap it
         else if (responseData is List) {
@@ -144,18 +137,18 @@ class DeviceService {
     }
   }
 
-  static Future<Map<String, dynamic>> getDeviceState(String deviceId, String productId) async {
+  static Future<Map<String, dynamic>> getDeviceState(DeviceData device) async {
     try {
       // Try API first - this is a POST request
       final uri = Uri.parse('${ApiConfig.baseUrl}/dashboard/_multi');
       final requestBody = json.encode([
         {
           "dashboard": "device",
-          "object": productId,
+          "object": device.productId,
           "measurement": "properties",
           "dimension": "history",
           "params": {
-            "deviceId": deviceId,
+            "deviceId": device.id,
             "history": 1,
             "properties": [
               "CHARGE_STATE",

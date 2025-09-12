@@ -1,11 +1,129 @@
+POST /device/instance/query
+
 {
     "message": "success",
     "result": {
         "pageIndex": 0,
-        "pageSize": 1,
-        "total": 4,
-        "data": []
+        "pageSize": 5,
+        "total": 5,
+        "data": [
+            {
+                "id": "1965695383019180032",
+                "name": "ELLTE-MAX-11",
+                "photoUrl": "http://localhost:8848/ui/device-manager/assets/device-product.png",
+                "productId": "1947920655531909120",
+                "productName": "充电柜-16位",
+                "deviceType": {
+                    "text": "直连设备",
+                    "value": "device"
+                },
+                "state": {
+                    "text": "离线",
+                    "value": "offline"
+                },
+                "onlineTime": 0,
+                "offlineTime": 0,
+                "createTime": 1757493274530,
+                "registerTime": 1757495014830,
+                "description": "1005 Classroom",
+                "classifiedId": "f1feda9db6b7b00205878904c1db98b7",
+                "classifiedName": "智能充电柜",
+                "extraData": "{\"charge_num\":16,\"gate_num\":16,\"organization\":\"浙江杰马电子科技\",\"power\":\"65W\"}"
+            },
+            {
+                "id": "11110004",
+                "name": "ELLTE-MAX-16",
+                "photoUrl": "http://localhost:8848/ui/device-manager/assets/device-product.png",
+                "productId": "1947920655531909120",
+                "productName": "充电柜-16位",
+                "deviceType": {
+                    "text": "直连设备",
+                    "value": "device"
+                },
+                "state": {
+                    "text": "离线",
+                    "value": "offline"
+                },
+                "onlineTime": 0,
+                "offlineTime": 0,
+                "createTime": 1757413920205,
+                "registerTime": 1757495005138,
+                "description": "1004 Classroom",
+                "classifiedId": "f1feda9db6b7b00205878904c1db98b7",
+                "classifiedName": "智能充电柜",
+                "extraData": "{\"charge_num\":16,\"gate_num\":16,\"organization\":\"浙江杰马电子科技\",\"power\":\"65W\"}"
+            },
+            {
+                "id": "11110003",
+                "name": "ELLTE-MAX-16",
+                "photoUrl": "http://localhost:8848/ui/device-manager/assets/device-product.png",
+                "productId": "1947920655531909120",
+                "productName": "充电柜-16位",
+                "deviceType": {
+                    "text": "直连设备",
+                    "value": "device"
+                },
+                "state": {
+                    "text": "离线",
+                    "value": "offline"
+                },
+                "onlineTime": 0,
+                "offlineTime": 0,
+                "createTime": 1754465405521,
+                "registerTime": 1754465422084,
+                "description": "1003 Classroom",
+                "classifiedId": "f1feda9db6b7b00205878904c1db98b7",
+                "classifiedName": "智能充电柜",
+                "extraData": "{\"charge_num\":16,\"gate_num\":16,\"organization\":\"浙江杰马电子科技\",\"power\":\"65W\"}"
+            },
+            {
+                "id": "11110002",
+                "name": "ELLTE-MAX-16",
+                "photoUrl": "http://localhost:8848/ui/device-manager/assets/device-product.png",
+                "productId": "1947920655531909120",
+                "productName": "充电柜-16位",
+                "deviceType": {
+                    "text": "直连设备",
+                    "value": "device"
+                },
+                "state": {
+                    "text": "离线",
+                    "value": "offline"
+                },
+                "onlineTime": 0,
+                "offlineTime": 0,
+                "createTime": 1754465374812,
+                "registerTime": 1754465380877,
+                "description": "1002 Classroom",
+                "classifiedId": "f1feda9db6b7b00205878904c1db98b7",
+                "classifiedName": "智能充电柜",
+                "extraData": "{\"charge_num\":16,\"gate_num\":16,\"organization\":\"浙江杰马电子科技\",\"power\":\"65W\"}"
+            },
+            {
+                "id": "11110001",
+                "name": "ELLTE-MAX-16",
+                "photoUrl": "http://localhost:8848/ui/device-manager/assets/device-product.png",
+                "productId": "1947920655531909120",
+                "productName": "充电柜-16位",
+                "deviceType": {
+                    "text": "直连设备",
+                    "value": "device"
+                },
+                "state": {
+                    "text": "离线",
+                    "value": "offline"
+                },
+                "onlineTime": 0,
+                "offlineTime": 0,
+                "createTime": 1753256474384,
+                "registerTime": 1753256479843,
+                "description": "1001 Classroom",
+                "classifiedId": "f1feda9db6b7b00205878904c1db98b7",
+                "classifiedName": "智能充电柜",
+                "extraData": "{\"charge_num\":16,\"gate_num\":16,\"organization\":\"浙江杰马电子科技\",\"power\":\"65W\"}"
+            }
+        ]
     },
     "status": 200,
-    "timestamp": 1757388149095
+    "timestamp": 1757643492541
 }

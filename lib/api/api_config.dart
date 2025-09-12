@@ -18,11 +18,11 @@ class ApiConfig {
   }
   
   // Synchronous headers for when token is already known
-  static Map<String, String> headersWithToken(String token) => {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'X-Access-Token': token,
-  };
+  // static Map<String, String> headersWithToken(String token) => {
+  //   'Content-Type': 'application/json',
+  //   'Accept': 'application/json',
+  //   'X-Access-Token': '347f459b92e79cbdc150f22511f49d9f',
+  // };
   
   // Basic headers without token (for login)
   static Map<String, String> get basicHeaders => {

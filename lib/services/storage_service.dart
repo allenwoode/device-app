@@ -14,7 +14,7 @@ class StorageService {
   static Future<void> saveTokenWithExpiry(String token, int expiresInSeconds) async {
     final prefs = await SharedPreferences.getInstance();
     final loginTime = DateTime.now().millisecondsSinceEpoch;
-    final expiryTime = loginTime + (expiresInSeconds * 1000);
+    final expiryTime = loginTime + expiresInSeconds;
     
     await prefs.setString(_tokenKey, token);
     await prefs.setInt(_loginTimeKey, loginTime);

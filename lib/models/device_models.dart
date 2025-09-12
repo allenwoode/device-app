@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class DeviceData {
   final String id;
   final int state;
@@ -5,6 +7,7 @@ class DeviceData {
   final String productId;
   final String productName;
   final String description;
+  final String extraData;
   final String lastUpdated;
 
   DeviceData({
@@ -14,6 +17,7 @@ class DeviceData {
     required this.productId,
     required this.productName,
     required this.description,
+    required this.extraData,
     required this.lastUpdated,
   });
 
@@ -25,7 +29,27 @@ class DeviceData {
       productId: json['productId'],
       productName: json['productName'] ?? json['productName'] ?? '',
       description: json['description'] ?? json['description'] ?? '',
+      extraData: json['extraData'],
       lastUpdated: json['createTime']?.toString() ?? json['lastUpdated'] ?? '',
     );
+  }
+}
+
+class ExtraData {
+  final int chargeNum;
+  final int gateNum;
+  final String organization;
+  final String power;
+
+  ExtraData({
+    required this.chargeNum,
+    required this.gateNum,
+    required this.organization,
+    required this.power,
+  });
+
+  factory ExtraData.decode(String str) {
+    Map<String, dynamic> obj = jsonDecode(str);
+    return ExtraData(chargeNum: obj['charge_num'], gateNum: obj['gate_num'], organization: obj['organization'], power: obj['power']);
   }
 }
