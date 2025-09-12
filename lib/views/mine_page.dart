@@ -3,7 +3,6 @@ import 'dart:convert';
 import '../services/storage_service.dart';
 import '../services/auth_service.dart';
 import '../models/login_models.dart';
-import 'login_page.dart';
 
 class MinePage extends StatefulWidget {
   const MinePage({super.key});
@@ -87,9 +86,9 @@ class _MinePageState extends State<MinePage> {
                     ),
                   );
                   
-                  Navigator.pushAndRemoveUntil(
+                  Navigator.pushNamedAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    '/',
                     (route) => false,
                   );
                 } else {

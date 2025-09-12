@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'device_page.dart';
 import 'mine_page.dart';
 import 'dashboard_page.dart';
+import '../config/app_colors.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -52,7 +53,7 @@ class _MainPageState extends State<MainPage> {
             _selectedIndex = index;
           });
         },
-        selectedItemColor: Colors.blue,
+        selectedItemColor: AppColors.primaryColor,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: const [
