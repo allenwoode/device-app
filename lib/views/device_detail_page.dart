@@ -45,6 +45,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   ExtraData? _extraData;
   String _deviceName = '';
   String _deviceId = '';
+  int _state = 0;
   int? _num;
   
   @override
@@ -60,6 +61,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
       _deviceId = widget.device.id;
       _deviceName = widget.device.name;
+      _state = widget.device.state;
 
       // device.extra: "extraData": "{\"charge_num\":11,\"gate_num\":11,\"organization\":\"浙江杰马电子科技\",\"power\":\"45W\"}"
       _extraData = ExtraData.decode(widget.device.extraData);
@@ -80,19 +82,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   }
   
   void _parseDeviceStateData(Map<String, dynamic> stateData) {
-    // Extract device name from detail data
-    // if (detailData['result'] != null && detailData['result']['id'] != null) {
-    //   _deviceId = detailData['result']['id'];
-    // }
-    // if (detailData['result'] != null && detailData['result']['name'] != null) {
-    //   _deviceName = detailData['result']['name'];
-    // }
-    // // extraData
-    // if (detailData['result'] != null && detailData['result']['extraData'] != null) {
-    //   _extraData = detailData['result']['extraData'];
-    // }
 
-    
     // Initialize with default empty states
     String lockStateString = '0000000000000000';
     String chargeStateString = '0000000000000000';
@@ -157,7 +147,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -166,7 +156,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          widget.device.id,
+          '$_deviceId (${_state == 1 ? '在线' : '离线'})',
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
@@ -174,6 +164,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           ),
         ),
         centerTitle: true,
+        
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -280,18 +271,18 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 0,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      // decoration: BoxDecoration(
+      //   color: Colors.white,
+      //   borderRadius: BorderRadius.circular(12),
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.grey.withOpacity(0.1),
+      //       spreadRadius: 0,
+      //       blurRadius: 4,
+      //       offset: const Offset(0, 2),
+      //     ),
+      //   ],
+      // ),
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -299,17 +290,17 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           crossAxisCount: (_num ?? 16) < 12 ? 3 : 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: (_num ?? 16) < 12 ? 1 : 0.7,
+          childAspectRatio: (_num ?? 16) < 12 ? 1 : 0.6,
         ),
         itemCount: _num ?? lockSlots.length,
         itemBuilder: (context, index) {
-          return _buildLockSlot(lockSlots[index]);
+          return _state == 1 ? _buildOnlineLockSlot(lockSlots[index]) : _buildOfflineLockSlot(lockSlots[index]);
         },
       ),
     );
   }
   
-  Widget _buildLockSlot(LockSlot slot) {
+  Widget _buildOnlineLockSlot(LockSlot slot) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -320,7 +311,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           height: 64,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.grey[200],
+            color: slot.isUsed ? Colors.white : Colors.grey[300],
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.1),
@@ -339,9 +330,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 size: 24,
                 color: Colors.grey[600],
               ),
-
               const SizedBox(height: 4),
-
               // Slot ID
               Text(
                 slot.id,
@@ -361,24 +350,96 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     );
   }
 
+  Widget _buildOfflineLockSlot(LockSlot slot) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Circular background with lock icon
+        Container(
+          width: 64,
+          height: 64,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey[300],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.lock,
+                size: 24,
+                color: Colors.grey[600],
+              ),
+              const SizedBox(height: 4),
+              // Slot ID
+              Text(
+                slot.id,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          )
+        ),
+        const SizedBox(height: 8),
+        // Charging status indicator
+        Text(
+          '--', 
+          style: TextStyle(
+            color: Colors.grey, 
+            fontSize: 14,
+            ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildChargingStatusIndicator(LockState state) {
     switch (state) {
       case LockState.charging:
         return Container(
           width: 12,
           height: 12,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.cyan,
+            color: Color(0xFF00a0e9),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ]
           ),
         );
       case LockState.charged:
         return Container(
           width: 12,
           height: 12,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.green,
+            color: Color(0xFF55bf4f),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ]
           ),
         );
       case LockState.empty:
@@ -387,18 +448,19 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           height: 12,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.grey[300],
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ]
           ),
         );
       default:
-        return Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey[300],
-          ),
-        );
+        return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14),);
     }
   }
   
@@ -440,19 +502,35 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 width: 12,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: Colors.white,
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 0,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
                 ),
               ),
               const SizedBox(width: 8),
-              const Text('未充电', style: TextStyle(fontSize: 12)),
+              const Text('未通电', style: TextStyle(fontSize: 12)),
               const SizedBox(width: 16),
               Container(
                 width: 12,
                 height: 12,
-                decoration: const BoxDecoration(
-                  color: Colors.cyan,
+                decoration: BoxDecoration(
+                  color: Color(0xFF00a0e9),
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 0,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
                 ),
               ),
               const SizedBox(width: 8),
@@ -461,9 +539,17 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
               Container(
                 width: 12,
                 height: 12,
-                decoration: const BoxDecoration(
-                  color: Colors.green,
+                decoration: BoxDecoration(
+                  color: Color(0xFF55bf4f),
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 0,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
                 ),
               ),
               const SizedBox(width: 8),
