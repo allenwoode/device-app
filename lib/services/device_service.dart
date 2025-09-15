@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'package:device/models/device_models.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/services.dart';
 import 'package:device/api/api_config.dart';
+import 'api_interceptor.dart';
 
 class DeviceService {
 
   // Device endpoints
   static const String devicesEndpoint = '/device/instance/query';
-  static const String deviceDetailEndpoint = '/api/devices/{id}';
   
   static Future<Map<String, dynamic>> getDevices({int index = 0, int size = 5}) async {
     try {
@@ -33,7 +32,7 @@ class DeviceService {
       });
       
       final headers = await ApiConfig.defaultHeaders;
-      final response = await http.post(
+      final response = await ApiInterceptor.post(
         uri,
         headers: headers,
         body: requestBody,
@@ -106,9 +105,9 @@ class DeviceService {
   static Future<Map<String, dynamic>> getDeviceDetail(String deviceId) async {
     try {
       // Try API first
-      final uri = Uri.parse('${ApiConfig.baseUrl}/device-instance/$deviceId/detail');
+      final uri = Uri.parse('${ApiConfig.baseUrl}/device-instance/$deviceId/info');
       final headers = await ApiConfig.defaultHeaders;
-      final response = await http.get(
+      final response = await ApiInterceptor.get(
         uri,
         headers: headers,
       ).timeout(ApiConfig.timeout);
@@ -137,18 +136,18 @@ class DeviceService {
     }
   }
 
-  static Future<Map<String, dynamic>> getDeviceState(DeviceData device) async {
+  static Future<Map<String, dynamic>> getDeviceState(String deviceId, String productId) async {
     try {
       // Try API first - this is a POST request
       final uri = Uri.parse('${ApiConfig.baseUrl}/dashboard/_multi');
       final requestBody = json.encode([
         {
           "dashboard": "device",
-          "object": device.productId,
+          "object": productId,
           "measurement": "properties",
           "dimension": "history",
           "params": {
-            "deviceId": device.id,
+            "deviceId": deviceId,
             "history": 1,
             "properties": [
               "CHARGE_STATE",
@@ -160,7 +159,7 @@ class DeviceService {
       ]);
 
       final headers = await ApiConfig.defaultHeaders;
-      final response = await http.post(
+      final response = await ApiInterceptor.post(
         uri,
         headers: headers,
         body: requestBody,

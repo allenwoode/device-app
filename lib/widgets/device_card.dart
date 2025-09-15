@@ -14,7 +14,7 @@ class DeviceCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DeviceDetailPage(device: device),
+            builder: (context) => DeviceDetailPage(deviceId: device.id, productId: device.productId),
           ),
         );
       },

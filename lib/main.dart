@@ -1,7 +1,11 @@
 import 'package:device/views/login_page.dart';
 import 'package:device/views/main_page.dart';
 import 'package:device/services/auth_service.dart';
+import 'package:device/services/event_bus_service.dart';
+import 'package:device/events/auth_events.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +21,22 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        textTheme: GoogleFonts.robotoTextTheme(),
+        appBarTheme: AppBarTheme(
+          titleTextStyle: GoogleFonts.roboto(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            textStyle: GoogleFonts.roboto(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
       ),
       initialRoute: '/',
       routes: {
@@ -33,82 +53,61 @@ class AuthWrapper extends StatefulWidget {
   State<AuthWrapper> createState() => _AuthWrapperState();
 }
 
-class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
-  bool _isCheckingAuth = true;
+class _AuthWrapperState extends State<AuthWrapper> {
   bool _isLoggedIn = false;
+  StreamSubscription<UnauthorizedEvent>? _unauthorizedSubscription;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _checkAuthState();
+    _checkLoginState();
+    _setupEventListeners();
+  }
+  
+  void _setupEventListeners() {
+    _unauthorizedSubscription = EventBusService.on<UnauthorizedEvent>().listen((event) {
+      if (mounted) {
+        setState(() {
+          _isLoggedIn = false;
+        });
+        // Show a snackbar or dialog to inform user
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('登录已过期，请重新登录'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    });
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    _unauthorizedSubscription?.cancel();
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _checkAuthState();
-    }
-  }
-
-  Future<void> _checkAuthState() async {
+  Future<void> _checkLoginState() async {
     if (!mounted) return;
-    
-    setState(() {
-      _isCheckingAuth = true;
-    });
     
     try {
       final isLoggedIn = await AuthService.isLoggedIn();
       if (mounted) {
         setState(() {
           _isLoggedIn = isLoggedIn;
-          _isCheckingAuth = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _isLoggedIn = false;
-          _isCheckingAuth = false;
         });
       }
     }
   }
 
-  void refreshAuthState() {
-    _checkAuthState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_isCheckingAuth) {
-      return const Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text(
-                '正在启动应用...',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
 
     return _isLoggedIn ? const MainPage() : const LoginPage();
   }

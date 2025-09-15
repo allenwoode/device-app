@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+
 import '../models/login_models.dart';
 import '../api/api_config.dart';
 import 'storage_service.dart';
+import 'api_interceptor.dart';
 
 class AuthService {
   static const String _loginEndpoint = '/auth/login';
@@ -15,7 +16,7 @@ class AuthService {
         password: password,
       );
 
-      final response = await http.post(
+      final response = await ApiInterceptor.post(
         Uri.parse('${ApiConfig.baseUrl}$_loginEndpoint'),
         headers: ApiConfig.basicHeaders,
         body: jsonEncode(loginRequest.toJson()),
@@ -48,7 +49,7 @@ class AuthService {
     try {
       // Call logout API
       final headers = await ApiConfig.defaultHeaders;
-      final response = await http.get(
+      final response = await ApiInterceptor.get(
         Uri.parse('${ApiConfig.baseUrl}$_logoutEndpoint'),
         headers: headers,
       );

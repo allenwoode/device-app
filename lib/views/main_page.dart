@@ -14,6 +14,11 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
 
   Widget _getCurrentPage() {
     switch (_selectedIndex) {

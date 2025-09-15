@@ -13,7 +13,7 @@ class DevicePage extends StatefulWidget {
   State<DevicePage> createState() => _DevicePageState();
 }
 
-class _DevicePageState extends State<DevicePage> {
+class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   User? _currentUser;
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -108,7 +108,11 @@ class _DevicePageState extends State<DevicePage> {
             _errorMessage = null;
             
             // 使用总数判断是否还有更多数据
-            //_hasMoreData = true;
+            if (_totalDevices != null) {
+              _hasMoreData = _devices.length < _totalDevices!;
+            } else {
+              _hasMoreData = devices.length == _pageSize;
+            }
           });
         }
       } else {
@@ -122,11 +126,12 @@ class _DevicePageState extends State<DevicePage> {
         }
       }
     } catch (e) {
+      print('device page error: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
           _errorMessage =
-              '加载设备数据失败: ${e.toString().contains('Network error') ? '网络连接失败' : '服务器错误'}';
+              '加载设备数据失败!';
         });
       }
     }
@@ -162,7 +167,7 @@ class _DevicePageState extends State<DevicePage> {
             // 使用总数判断是否还有更多数据
             if (_totalDevices != null) {
               _hasMoreData = _devices.length < _totalDevices!;
-              //print('====> 当前已加载: ${_devices.length}, 总数: $_totalDevices, 还有更多: $_hasMoreData');
+              print('====> 当前已加载: ${_devices.length}, 总数: $_totalDevices, 还有更多: $_hasMoreData');
             } else {
               // 如果没有总数信息，回退到原来的逻辑
               _hasMoreData = newDevices.length == _pageSize;
@@ -192,6 +197,7 @@ class _DevicePageState extends State<DevicePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(

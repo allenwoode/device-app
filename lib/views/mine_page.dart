@@ -153,6 +153,7 @@ class _MinePageState extends State<MinePage> {
     }
 
     return Scaffold(
+      
       backgroundColor: Colors.grey[50],
       body: SafeArea(
         child: Column(

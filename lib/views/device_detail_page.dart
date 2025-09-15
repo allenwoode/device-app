@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:device/views/function_page.dart';
 import 'package:flutter/material.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/models/device_models.dart';
@@ -27,11 +26,13 @@ class LockSlot {
 }
 
 class DeviceDetailPage extends StatefulWidget {
-  final DeviceData device;
+  final String deviceId;
+  final String productId;
   
   const DeviceDetailPage({
     super.key,
-    required this.device,
+    required this.deviceId,
+    required this.productId,
   });
 
   @override
@@ -43,8 +44,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   bool _isLoading = true;
   String? _errorMessage;
   ExtraData? _extraData;
-  String _deviceName = '';
-  String _deviceId = '';
+  //String _deviceName = '';
   int _state = 0;
   int? _num;
   
@@ -56,18 +56,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   
   Future<void> _loadDeviceData() async {
     try {
-      final deviceStateData = await DeviceService.getDeviceState(widget.device);
-      //final deviceDetailData = await DeviceService.getDeviceDetail(widget.deviceId);
+      
+      final deviceStateData = await DeviceService.getDeviceState(widget.deviceId, widget.productId);
+      final deviceDetailData = await DeviceService.getDeviceDetail(widget.deviceId);
 
-      _deviceId = widget.device.id;
-      _deviceName = widget.device.name;
-      _state = widget.device.state;
-
-      // device.extra: "extraData": "{\"charge_num\":11,\"gate_num\":11,\"organization\":\"浙江杰马电子科技\",\"power\":\"45W\"}"
-      _extraData = ExtraData.decode(widget.device.extraData);
-      _num = _extraData?.gateNum;
-
-      _parseDeviceStateData(deviceStateData);
+      _parseDeviceData(deviceDetailData, deviceStateData);
       
       setState(() {
         _isLoading = false;
@@ -81,7 +74,15 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
   
-  void _parseDeviceStateData(Map<String, dynamic> stateData) {
+  void _parseDeviceData(Map<String, dynamic> detailData, Map<String, dynamic> stateData) {
+
+    //_deviceName = deviceDetailData['result']['name'];
+      _state = detailData['result']['state']['value'] == 'online' ? 1 : 0;
+
+      // device.extra: "extraData": "{\"charge_num\":11,\"gate_num\":11,\"organization\":\"浙江杰马电子科技\",\"power\":\"45W\"}"
+      final extraData = detailData['result']['extraData'];
+      _extraData = ExtraData.decode(extraData);
+      _num = _extraData?.gateNum;
 
     // Initialize with default empty states
     String lockStateString = '0000000000000000';
@@ -156,7 +157,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          '$_deviceId (${_state == 1 ? '在线' : '离线'})',
+          '${widget.deviceId} (${_state == 1 ? '在线' : '离线'})',
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
@@ -238,32 +239,61 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildMenuIcon(Icons.pie_chart_outline, '使用率'),
-          _buildMenuIcon(Icons.notifications_none, '告警'),
-          _buildMenuIcon(Icons.list_alt, '操作日志'),
-          _buildMenuIcon(Icons.settings_outlined, '远程设置'),
+          _buildMenuIcon(Icons.pie_chart_outline, '使用率', onPressed: () {
+            // TODO: Navigate to usage statistics page
+          }),
+          _buildMenuIcon(Icons.notifications_none, '告警', onPressed: () {
+            // TODO: Navigate to alerts page
+          }),
+          _buildMenuIcon(Icons.list_alt, '操作日志', onPressed: () {
+            // TODO: Navigate to operation logs page
+          }),
+          _buildMenuIcon(Icons.settings_outlined, '远程设置', onPressed: () {
+            if (_state == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FunctionPage(
+                    deviceId: widget.deviceId,
+                    productId: widget.productId,
+                    num: _num,
+                  ),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('设备离线，无法进行远程设置'),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+            }
+          }),
         ],
       ),
     );
   }
   
-  Widget _buildMenuIcon(IconData icon, String label) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          size: 24,
-          color: Colors.grey[600],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
+  Widget _buildMenuIcon(IconData icon, String label, {VoidCallback? onPressed}) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 24,
             color: Colors.grey[600],
           ),
-        ),
-      ],
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
     );
   }
   
@@ -290,7 +320,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           crossAxisCount: (_num ?? 16) < 12 ? 3 : 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: (_num ?? 16) < 12 ? 1 : 0.6,
+          childAspectRatio: (_num ?? 16) < 12 ? 0.8 : 0.6,
         ),
         itemCount: _num ?? lockSlots.length,
         itemBuilder: (context, index) {
