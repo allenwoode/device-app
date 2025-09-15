@@ -1,0 +1,79 @@
+{
+  "@@locale": "en",
+  "appTitle": "Device Manager",
+  "login": "Login",
+  "logout": "Logout",
+  "username": "Username",
+  "password": "Password",
+  "loginButton": "Login",
+  "loginProblem": "Having trouble logging in?",
+  "resetPassword": "Reset Password",
+  "accountAppeal": "Account Appeal",
+  "cancel": "Cancel",
+  "welcome": "Welcome, {name}!",
+  "@welcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "loginFailed": "Login failed, please check username and password",
+  "networkError": "Network error, please try again later",
+  "checkingLoginState": "Checking login status...",
+  "startingApp": "Starting app...",
+  "loginExpired": "Login expired, please login again",
+  "pleaseEnterUsername": "Please enter username",
+  "pleaseEnterPassword": "Please enter password",
+  "passwordLogin": "Password Login",
+  "devices": "Devices",
+  "dashboard": "Dashboard",
+  "mine": "Mine",
+  "iot": "IoT",
+  "searchDeviceIdName": "Search device ID/name",
+  "loadingDevicesFailed": "Failed to load device data",
+  "networkConnectionFailed": "Network connection failed",
+  "serverError": "Server error",
+  "retry": "Retry",
+  "noDeviceData": "No device data",
+  "loadingMoreDevices": "Loading more devices...",
+  "allDevicesLoaded": "All devices loaded ({count} total)",
+  "@allDevicesLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "online": "Online",
+  "offline": "Offline",
+  "usageRate": "Usage Rate",
+  "alerts": "Alerts",
+  "operationLog": "Operation Log",
+  "remoteSettings": "Remote Settings",
+  "deviceOfflineCannotRemoteSet": "Device offline, cannot perform remote settings",
+  "deviceLock": "Device Lock",
+  "deviceUnlock": "Device Unlock",
+  "notPowered": "Not Powered",
+  "charging": "Charging",
+  "fullyCharged": "Fully Charged",
+  "organizationUnitEmpty": "Organization unit is empty",
+  "confirmExit": "Confirm Exit",
+  "confirmLogoutMessage": "Are you sure you want to log out?",
+  "logoutSuccess": "Logout successful",
+  "logoutFailed": "Logout failed, please try again",
+  "versionUpdate": "Version Update",
+  "aboutUs": "About Us",
+  "versionUpdateTodo": "Version update feature to be implemented",
+  "aboutUsTodo": "About us feature to be implemented",
+  "userRoleEmpty": "User role is empty",
+  "user": "User",
+  "confirm": "Confirm",
+  "usageDistribution": "Usage Distribution",
+  "todayAlerts": "Today's Alerts",
+  "operationLogs": "Operation Logs",
+  "alarm": "Alarm",
+  "severe": "Severe",
+  "deviceReport": "Device Report",
+  "platformDispatch": "Platform Dispatch"
+}

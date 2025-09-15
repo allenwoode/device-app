@@ -2,6 +2,7 @@ import 'package:device/views/function_page.dart';
 import 'package:flutter/material.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/models/device_models.dart';
+import '../l10n/app_localizations.dart';
 
 enum LockState {
   locked,
@@ -47,6 +48,16 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   //String _deviceName = '';
   int _state = 0;
   int? _num;
+
+  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+
+  String _getErrorMessage(String error) {
+    if (error.contains('Network error')) {
+      return 'Network connection failed';
+    } else {
+      return 'Server error';
+    }
+  }
   
   @override
   void initState() {
@@ -69,7 +80,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _errorMessage = '加载设备数据失败: ${e.toString().contains('Network error') ? '网络连接失败' : '服务器错误'}';
+        _errorMessage = _getErrorMessage(e.toString());
       });
     }
   }
@@ -157,7 +168,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          '${widget.deviceId} (${_state == 1 ? '在线' : '离线'})',
+          '${widget.deviceId} (${_state == 1 ? _l10n.online : _l10n.offline})',
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
@@ -197,7 +208,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                           });
                           _loadDeviceData();
                         },
-                        child: const Text('重试'),
+                        child: Text(_l10n.retry),
                       ),
                     ],
                   ),
@@ -239,16 +250,16 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildMenuIcon(Icons.pie_chart_outline, '使用率', onPressed: () {
+          _buildMenuIcon(Icons.pie_chart_outline, _l10n.usageRate, onPressed: () {
             // TODO: Navigate to usage statistics page
           }),
-          _buildMenuIcon(Icons.notifications_none, '告警', onPressed: () {
+          _buildMenuIcon(Icons.notifications_none, _l10n.alerts, onPressed: () {
             // TODO: Navigate to alerts page
           }),
-          _buildMenuIcon(Icons.list_alt, '操作日志', onPressed: () {
+          _buildMenuIcon(Icons.list_alt, _l10n.operationLog, onPressed: () {
             // TODO: Navigate to operation logs page
           }),
-          _buildMenuIcon(Icons.settings_outlined, '远程设置', onPressed: () {
+          _buildMenuIcon(Icons.settings_outlined, _l10n.remoteSettings, onPressed: () {
             if (_state == 1) {
               Navigator.push(
                 context,
@@ -262,8 +273,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
               );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('设备离线，无法进行远程设置'),
+                SnackBar(
+                  content: Text(_l10n.deviceOfflineCannotRemoteSet),
                   backgroundColor: Colors.orange,
                 ),
               );
@@ -517,11 +528,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             children: [
               Icon(Icons.lock_open, color: Colors.grey[600], size: 16),
               const SizedBox(width: 8),
-              const Text('设备开锁', style: TextStyle(fontSize: 12)),
+              Text(_l10n.deviceUnlock, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 24),
               Icon(Icons.lock, color: Colors.grey[600], size: 16),
               const SizedBox(width: 8),
-              const Text('设备关锁', style: TextStyle(fontSize: 12)),
+              Text(_l10n.deviceLock, style: const TextStyle(fontSize: 12)),
             ],
           ),
           const SizedBox(height: 12),
@@ -545,7 +556,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              const Text('未通电', style: TextStyle(fontSize: 12)),
+              Text(_l10n.notPowered, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 16),
               Container(
                 width: 12,
@@ -564,7 +575,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              const Text('充电中', style: TextStyle(fontSize: 12)),
+              Text(_l10n.charging, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 16),
               Container(
                 width: 12,
@@ -583,7 +594,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              const Text('已充满', style: TextStyle(fontSize: 12)),
+              Text(_l10n.fullyCharged, style: const TextStyle(fontSize: 12)),
             ],
           ),
         ],

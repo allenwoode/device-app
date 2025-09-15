@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../config/app_colors.dart';
 import 'main_page.dart';
+import '../main.dart';
+import '../l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _checkingLoginState = true;
   bool _obscurePassword = true;
+  Locale _selectedLocale = const Locale('zh');
 
   @override
   void initState() {
@@ -68,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildModalOption(
-              text: '重置密码',
+              text: _l10n.resetPassword,
               onTap: () {
                 Navigator.pop(context);
                 // Handle reset password
@@ -76,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 32),
             _buildModalOption(
-              text: '账号申诉',
+              text: _l10n.accountAppeal,
               onTap: () {
                 Navigator.pop(context);
                 // Handle account appeal
@@ -84,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 32),
             _buildModalOption(
-              text: '取消',
+              text: _l10n.cancel,
               onTap: () => Navigator.pop(context),
             ),
           ],
@@ -128,12 +131,12 @@ class _LoginPageState extends State<LoginPage> {
 
         if (loginResponse != null && loginResponse.status == 200) {
           // Login successful
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('欢迎，${loginResponse.result.user.name}！'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     content: Text(_l10n.welcome.replaceAll('{name}', loginResponse.result.user.name)),
+          //     backgroundColor: Colors.green,
+          //   ),
+          // );
 
           // Navigate to main page
           Navigator.pushReplacement(
@@ -145,8 +148,8 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           // Login failed
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('登录失败，请检查用户名和密码'),
+            SnackBar(
+              content: Text(_l10n.loginFailed),
               backgroundColor: Colors.red,
             ),
           );
@@ -154,8 +157,8 @@ class _LoginPageState extends State<LoginPage> {
       } catch (e) {
         // Network or other error
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('网络错误，请稍后重试'),
+          SnackBar(
+            content: Text(_l10n.networkError),
             backgroundColor: Colors.red,
           ),
         );
@@ -170,17 +173,17 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     if (_checkingLoginState) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: Colors.white,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
               Text(
-                '检查登录状态...',
-                style: TextStyle(
+                _l10n.checkingLoginState,
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
@@ -202,9 +205,9 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 80),
-                const Text(
-                  '账号密码登录',
-                  style: TextStyle(
+                Text(
+                  _l10n.passwordLogin,
+                  style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
@@ -213,8 +216,8 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 60),
                 TextFormField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(
-                    hintText: '请输入用户名',
+                  decoration: InputDecoration(
+                    hintText: _l10n.pleaseEnterUsername,
                     hintStyle: TextStyle(
                       color: Colors.grey,
                       fontSize: 16,
@@ -233,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: const TextStyle(fontSize: 16),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return '请输入用户名';
+                      return _l10n.pleaseEnterUsername;
                     }
                     return null;
                   },
@@ -243,7 +246,7 @@ class _LoginPageState extends State<LoginPage> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    hintText: '请输入密码',
+                    hintText: _l10n.pleaseEnterPassword,
                     hintStyle: const TextStyle(
                       color: Colors.grey,
                       fontSize: 16,
@@ -273,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: const TextStyle(fontSize: 16),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return '请输入密码';
+                      return _l10n.pleaseEnterPassword;
                     }
                     return null;
                   },
@@ -283,8 +286,8 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: _showResetPasswordModal,
-                    child: const Text(
-                      '登录遇到问题?',
+                    child: Text(
+                      _l10n.loginProblem,
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 14,
@@ -292,7 +295,50 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 24),
+                // Language Selector
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]!),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<Locale>(
+                          value: _selectedLocale,
+                          icon: const Icon(Icons.language, size: 16),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                          onChanged: (Locale? newLocale) {
+                            if (newLocale != null) {
+                              setState(() {
+                                _selectedLocale = newLocale;
+                              });
+                              // Update app locale
+                              _updateLocale(newLocale);
+                            }
+                          },
+                          items: const [
+                            DropdownMenuItem(
+                              value: Locale('zh'),
+                              child: Text('中文'),
+                            ),
+                            DropdownMenuItem(
+                              value: Locale('en'),
+                              child: Text('English'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -314,9 +360,9 @@ class _LoginPageState extends State<LoginPage> {
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text(
-                            '登录',
-                            style: TextStyle(
+                        : Text(
+                            _l10n.loginButton,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
@@ -330,5 +376,25 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _updateLocale(Locale locale) {
+    setState(() {
+      _selectedLocale = locale;
+    });
+    // Update the app's locale
+    final myApp = MyApp.of(context);
+    myApp?.setLocale(locale);
+  }
+
+  AppLocalizations get _l10n {
+    try {
+      return AppLocalizations.of(context)!;
+    } catch (e) {
+      // Fallback when context is not ready
+      return _selectedLocale.languageCode == 'en' 
+          ? lookupAppLocalizations(const Locale('en'))
+          : lookupAppLocalizations(const Locale('zh'));
+    }
   }
 }

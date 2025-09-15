@@ -33,6 +33,7 @@ class ApiInterceptor {
       
       // Check for 401 status code
       if (response.statusCode == 401) {
+
         // Clear local storage
         await StorageService.clearAll();
         

@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../services/storage_service.dart';
 import '../services/auth_service.dart';
 import '../models/login_models.dart';
+import '../l10n/app_localizations.dart';
 
 class MinePage extends StatefulWidget {
   const MinePage({super.key});
@@ -15,6 +16,8 @@ class _MinePageState extends State<MinePage> {
   User? _currentUser;
   bool _isLoading = true;
   bool _isLoggingOut = false;
+
+  AppLocalizations get _l10n => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -48,12 +51,12 @@ class _MinePageState extends State<MinePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('确认退出'),
-        content: const Text('确定要退出登录吗？'),
+        title: Text(_l10n.confirmExit),
+        content: Text(_l10n.confirmLogoutMessage),
         actions: [
           TextButton(
             onPressed: _isLoggingOut ? null : () => Navigator.pop(context),
-            child: const Text('取消'),
+            child: Text(_l10n.cancel),
           ),
           TextButton(
             onPressed: _isLoggingOut ? null : () async {
@@ -80,8 +83,8 @@ class _MinePageState extends State<MinePage> {
 
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('退出成功'),
+                    SnackBar(
+                      content: Text(_l10n.logoutSuccess),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -93,8 +96,8 @@ class _MinePageState extends State<MinePage> {
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('退出失败，请重试'),
+                    SnackBar(
+                      content: Text(_l10n.logoutFailed),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -104,8 +107,8 @@ class _MinePageState extends State<MinePage> {
                 Navigator.pop(context);
                 
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('网络错误，请重试'),
+                  SnackBar(
+                    content: Text(_l10n.networkError),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -123,7 +126,7 @@ class _MinePageState extends State<MinePage> {
                     height: 16,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Text('确定', style: TextStyle(color: Colors.red)),
+                : Text(_l10n.confirm, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -132,13 +135,13 @@ class _MinePageState extends State<MinePage> {
 
   void _handleVersionUpdate() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('版本更新功能待实现')),
+      SnackBar(content: Text(_l10n.versionUpdateTodo)),
     );
   }
 
   void _handleAboutUs() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('关于我们功能待实现')),
+      SnackBar(content: Text(_l10n.aboutUsTodo)),
     );
   }
 
@@ -202,7 +205,7 @@ class _MinePageState extends State<MinePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hi，${_currentUser?.name ?? '用户'}',
+                  'Hi，${_currentUser?.name ?? _l10n.user}',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -246,7 +249,7 @@ class _MinePageState extends State<MinePage> {
             icon: Icons.business,
             title: _currentUser?.orgList.isNotEmpty == true
                 ? _currentUser!.orgList.first.name
-                : '所属组织单位暂无',
+                : _l10n.organizationUnitEmpty,
             showArrow: false,
             onTap: () {},
           ),
@@ -255,21 +258,21 @@ class _MinePageState extends State<MinePage> {
             icon: Icons.person_outline,
             title: _currentUser?.roleList.isNotEmpty == true
                 ? _currentUser!.roleList.first.name
-                : '用户所属角色暂无',
+                : _l10n.userRoleEmpty,
             showArrow: false,
             onTap: () {},
           ),
           _buildDivider(),
           _buildMenuItem(
             icon: Icons.system_update,
-            title: '版本更新',
+            title: _l10n.versionUpdate,
             showArrow: true,
             onTap: _handleVersionUpdate,
           ),
           _buildDivider(),
           _buildMenuItem(
             icon: Icons.info_outline,
-            title: '关于我们',
+            title: _l10n.aboutUs,
             showArrow: true,
             onTap: _handleAboutUs,
           ),
@@ -346,9 +349,9 @@ class _MinePageState extends State<MinePage> {
             borderRadius: BorderRadius.circular(8),
           ),
         ),
-        child: const Text(
-          '退出登录',
-          style: TextStyle(
+        child: Text(
+          _l10n.logout,
+          style: const TextStyle(
             color: Colors.red,
             fontSize: 16,
             fontWeight: FontWeight.w500,

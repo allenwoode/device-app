@@ -5,6 +5,7 @@ import 'package:device/services/device_service.dart';
 import 'package:device/widgets/device_card.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/models/login_models.dart';
+import '../l10n/app_localizations.dart';
 
 class DevicePage extends StatefulWidget {
   const DevicePage({super.key});
@@ -25,6 +26,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   final int _pageSize = 5;
   int? _totalDevices;
   String? _errorMessage;
+
+  AppLocalizations get _l10n => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -130,8 +133,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _errorMessage =
-              '加载设备数据失败!';
+          _errorMessage = _l10n.loadingDevicesFailed;
         });
       }
     }
@@ -167,7 +169,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             // 使用总数判断是否还有更多数据
             if (_totalDevices != null) {
               _hasMoreData = _devices.length < _totalDevices!;
-              print('====> 当前已加载: ${_devices.length}, 总数: $_totalDevices, 还有更多: $_hasMoreData');
+              //print('====> 当前已加载: ${_devices.length}, 总数: $_totalDevices, 还有更多: $_hasMoreData');
             } else {
               // 如果没有总数信息，回退到原来的逻辑
               _hasMoreData = newDevices.length == _pageSize;
@@ -206,7 +208,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         title: Text(
           _currentUser?.orgList.isNotEmpty == true
                 ? _currentUser!.orgList.first.name
-                : '所属组织单位暂无',
+                : _l10n.organizationUnitEmpty,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
@@ -228,12 +230,12 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
               ),
               child: TextField(
                 controller: _searchController,
-                decoration: const InputDecoration(
-                  hintText: '搜索设备ID/名称',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                decoration: InputDecoration(
+                  hintText: _l10n.searchDeviceIdName,
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 12,
                   ),
@@ -273,7 +275,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                     const SizedBox(height: 16),
                                     ElevatedButton(
                                       onPressed: _loadDevices,
-                                      child: const Text('重试'),
+                                      child: Text(_l10n.retry),
                                     ),
                                   ],
                                 ),
@@ -296,7 +298,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                     ),
                                     const SizedBox(height: 16),
                                     Text(
-                                      '暂无设备数据',
+                                      _l10n.noDeviceData,
                                       style: TextStyle(
                                         color: Colors.grey[600],
                                         fontSize: 16,
@@ -341,7 +343,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                         ),
                                         const SizedBox(height: 8),
                                         Text(
-                                          '正在加载更多设备...',
+                                          _l10n.loadingMoreDevices,
                                           style: TextStyle(
                                             color: Colors.grey[600],
                                             fontSize: 12,
@@ -363,7 +365,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          '已加载全部设备 (共${_totalDevices ?? _devices.length}个)',
+                                          _l10n.allDevicesLoaded(_totalDevices ?? _devices.length),
                                           style: TextStyle(
                                             color: Colors.grey[600],
                                             fontSize: 14,
