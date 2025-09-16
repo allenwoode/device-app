@@ -1,0 +1,18 @@
+POST /device/instance/dashboard/count
+
+# request body
+{
+    "terms": []
+}
+
+# response
+{
+    "message": "success",
+    "result": {
+        "total": 6,
+        "onlineCount": 0,
+        "offlineCount": 6
+    },
+    "status": 200,
+    "timestamp": 1757993072336
+}

@@ -8,6 +8,7 @@ class DeviceService {
 
   // Device endpoints
   static const String devicesEndpoint = '/device/instance/query';
+  static const String dashboardDevicesEndpoint = '/device/instance/dashboard/count';
   
   static Future<Map<String, dynamic>> getDevices({int index = 0, int size = 5}) async {
     try {
@@ -89,7 +90,54 @@ class DeviceService {
       }
     }
   }
-  
+
+  static Future<Map<String, dynamic>> getDashboardDevices() async {
+    try {
+      // Prepare request body for POST request
+      final requestBody = {
+        'terms': []
+      };
+
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}$dashboardDevicesEndpoint',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Dashboard Devices API Response Status: ${response.statusCode}');
+        print('Dashboard Devices API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        if (ApiConfig.enableLogging) {
+          print('Successfully fetched dashboard devices from API');
+        }
+
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          if (responseData.containsKey('result') &&
+              responseData['result'] is Map<String, dynamic>) {
+            return responseData['result'];
+          }
+        }
+
+        return responseData;
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Dashboard devices API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDashboardDevices();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
   static Future<Map<String, dynamic>> _loadLocalDevices() async {
     try {
       final String response = await rootBundle.loadString('lib/assets/devices.json');
@@ -194,6 +242,14 @@ class DeviceService {
     } catch (e) {
       throw Exception('Failed to load device state data: $e');
     }
+  }
+
+  static Future<Map<String, dynamic>> _loadLocalDashboardDevices() async {
+    return {
+      'total': 6,
+      'onlineCount': 0,
+      'offlineCount': 6
+    };
   }
 }
 

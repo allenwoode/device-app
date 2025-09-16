@@ -53,3 +53,23 @@ class ExtraData {
     return ExtraData(chargeNum: obj['charge_num'], gateNum: obj['gate_num'], organization: obj['organization'], power: obj['power']);
   }
 }
+
+class DashboardDevices {
+  final int total;
+  final int onlineCount;
+  final int offlineCount;
+
+  DashboardDevices({
+    required this.total,
+    required this.onlineCount,
+    required this.offlineCount,
+  });
+
+  factory DashboardDevices.fromJson(Map<String, dynamic> json) {
+    return DashboardDevices(
+      total: json['total'] ?? 0,
+      onlineCount: json['onlineCount'] ?? 0,
+      offlineCount: json['offlineCount'] ?? 0,
+    );
+  }
+}

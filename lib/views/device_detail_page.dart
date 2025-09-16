@@ -50,7 +50,14 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   int _state = 0;
   int? _num;
 
-  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+  AppLocalizations get _l10n {
+    try {
+      return AppLocalizations.of(context)!;
+    } catch (e) {
+      // Fallback when context is not ready
+      return lookupAppLocalizations(const Locale('zh'));
+    }
+  }
 
   String _getErrorMessage(String error) {
     if (error.contains('Network error')) {

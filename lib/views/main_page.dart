@@ -1,3 +1,5 @@
+import 'package:device/events/event_bus.dart';
+import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'device_page.dart';
@@ -16,11 +18,32 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+  AppLocalizations get _l10n {
+    try {
+      return AppLocalizations.of(context)!;
+    } catch (e) {
+      // Fallback when context is not ready
+      return lookupAppLocalizations(const Locale('zh'));
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _setupEventListeners();
+  }
+
+  void _setupEventListeners() {
+    EventBus.instance.addListener(EventKeys.logout, () {
+      EventBus.instance.removeListener(EventKeys.logout);
+      AppRoutes.goToLogin(context);
+    });
+  }
+
+  @override
+  void dispose() {
+    EventBus.instance.removeListener(EventKeys.logout);
+    super.dispose();
   }
 
   Widget _getCurrentPage() {

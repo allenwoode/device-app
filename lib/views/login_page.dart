@@ -1,8 +1,8 @@
+import 'package:device/views/route_component.dart';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../config/app_colors.dart';
 import '../routes/app_routes.dart';
-//import '../main_bak.dart';
 import '../l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
           // );
 
           // Navigate to main page
-          AppRoutes.goToMain(context, clearStack: true);
+          AppRoutes.goToMain(context);
         } else {
           // Login failed
           ScaffoldMessenger.of(context).showSnackBar(
@@ -373,9 +373,24 @@ class _LoginPageState extends State<LoginPage> {
       _selectedLocale = locale;
     });
     // Update the app's locale
-    //final myApp = MyApp.of(context);
-    //myApp?.setLocale(locale);
+    final route = RouteComponent.of(context);
+    route?.setLocale(locale);
   }
 
-  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+  AppLocalizations get _l10n {
+    try {
+      final localizations = AppLocalizations.of(context);
+      if (localizations != null) {
+        return localizations;
+      }
+    } catch (e) {
+      // Context not ready or MaterialLocalizations not available
+      print('============================> $e');
+    }
+
+    // Fallback when context is not ready or MaterialLocalizations not found
+    return _selectedLocale.languageCode == 'en'
+        ? lookupAppLocalizations(const Locale('en'))
+        : lookupAppLocalizations(const Locale('zh'));
+  }
 }

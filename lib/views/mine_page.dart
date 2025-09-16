@@ -1,5 +1,3 @@
-import 'package:device/events/auth_events.dart';
-import 'package:device/services/event_bus_service.dart';
 import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';

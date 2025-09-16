@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:device/config/app_colors.dart';
 
 class DashboardCard extends StatefulWidget {
   final String title;

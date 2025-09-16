@@ -1,7 +1,5 @@
-import 'dart:convert';
+import 'package:device/events/event_bus.dart';
 import 'package:dio/dio.dart';
-import 'event_bus_service.dart';
-import '../events/auth_events.dart';
 import 'storage_service.dart';
 
 class ApiInterceptor extends Interceptor {
@@ -50,7 +48,7 @@ class ApiInterceptor extends Interceptor {
       await StorageService.clearAll();
       
       // Fire unauthorized event
-      EventBusService.fire(UnauthorizedEvent('Authentication expired'));
+      EventBus.instance.commit(EventKeys.logout);
     }
     
     super.onError(err, handler);

@@ -27,7 +27,14 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   int? _totalDevices;
   String? _errorMessage;
 
-  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+  AppLocalizations get _l10n {
+    try {
+      return AppLocalizations.of(context)!;
+    } catch (e) {
+      // Fallback when context is not ready
+      return lookupAppLocalizations(const Locale('zh'));
+    }
+  }
 
   @override
   void initState() {
@@ -207,7 +214,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         elevation: 0,
         title: Text(
           _currentUser?.orgList.isNotEmpty == true
-                ? _currentUser!.orgList.first.name
+                ? _currentUser?.orgList.first.name ?? _l10n.organizationUnitEmpty
                 : _l10n.organizationUnitEmpty,
           style: const TextStyle(
             color: Colors.black,

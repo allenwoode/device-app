@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:device/models/login_models.dart';
+import 'package:device/models/device_models.dart';
 import 'package:device/services/storage_service.dart';
+import 'package:device/services/device_service.dart';
 import 'package:flutter/material.dart';
 import '../widgets/dashboard_card.dart';
 import '../l10n/app_localizations.dart';
@@ -15,27 +17,28 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   User? _currentUser;
-  bool _isRefreshing = false;
+  DashboardDevices? _dashboardDevices;
+  bool _isLoading = true;
   bool _shouldAnimateCards = true;
 
-  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+  AppLocalizations get _l10n {
+    try {
+      return AppLocalizations.of(context)!;
+    } catch (e) {
+      // Fallback when context is not ready
+      return lookupAppLocalizations(const Locale('zh'));
+    }
+  }
 
   Future<void> _onRefresh() async {
     setState(() {
-      _isRefreshing = true;
       _shouldAnimateCards = false;
     });
 
-    await Future.delayed(const Duration(milliseconds: 500));
-    
+    await _loadDashboardData();
+
     setState(() {
       _shouldAnimateCards = true;
-    });
-
-    await Future.delayed(const Duration(milliseconds: 1500));
-
-    setState(() {
-      _isRefreshing = false;
     });
   }
 
@@ -55,10 +58,34 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+  Future<void> _loadDashboardData() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final dashboardData = await DeviceService.getDashboardDevices();
+      setState(() {
+        _dashboardDevices = DashboardDevices.fromJson(dashboardData);
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load dashboard data: $e')),
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadUserInfo();
+    _loadDashboardData();
   }
 
   @override
@@ -82,19 +109,21 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
       body: RefreshIndicator(
         onRefresh: _onRefresh,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
               DashboardCard(
                 title: _l10n.devices,
-                total: 50,
+                total: _dashboardDevices?.total,
                 primaryLabel: _l10n.online,
-                primaryValue: 40,
+                primaryValue: _dashboardDevices?.onlineCount ?? 0,
                 primaryColor: Colors.green,
                 secondaryLabel: _l10n.offline,
-                secondaryValue: 10,
+                secondaryValue: _dashboardDevices?.offlineCount ?? 0,
                 secondaryColor: Colors.grey,
                 shouldAnimate: _shouldAnimateCards,
               ),
@@ -134,9 +163,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 secondaryColor: Colors.red,
                 shouldAnimate: _shouldAnimateCards,
               ),
-            ],
-          ),
-        ),
+                  ],
+                ),
+              ),
       ),
     );
   }

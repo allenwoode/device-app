@@ -35,16 +35,13 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 
   // ignore: library_private_types_in_public_api
-  static _MyAppState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_MyAppState>();
+  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
 }
 
 class _MyAppState extends State<MyApp> {
   Locale _locale = const Locale('zh');
   bool _isLoggedIn = false;
   bool _isCheckingLogin = true;
-
-  StreamSubscription<UnauthorizedEvent>? _unauthorizedSubscription;
 
   void setLocale(Locale locale) {
     setState(() {
@@ -56,7 +53,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _checkLoginState();
-    _setupEventListeners();
   }
 
   Future<void> _checkLoginState() async {
@@ -78,32 +74,8 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void _setupEventListeners() {
-    _unauthorizedSubscription = EventBusService.on<UnauthorizedEvent>().listen((
-      event,
-    ) {
-      if (mounted) {
-        print(
-          '===========> event listener: Authentication expired, logging out',
-        );
-        
-        setState(() {
-          _isLoggedIn = false;
-        });
-        
-        // Navigate to login page using Fluro router
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            AppRoutes.goToLogin(context, clearStack: true);
-          }
-        });
-      }
-    });
-  }
-
   @override
   void dispose() {
-    _unauthorizedSubscription?.cancel();
     super.dispose();
   }
 
