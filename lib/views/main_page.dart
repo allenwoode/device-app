@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'device_page.dart';
 import 'mine_page.dart';
 import 'dashboard_page.dart';
@@ -21,7 +22,6 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
   }
-
 
   Widget _getCurrentPage() {
     switch (_selectedIndex) {
@@ -66,18 +66,18 @@ class _MainPageState extends State<MainPage> {
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home_outlined),
-            activeIcon: const Icon(Icons.home),
+            icon: const FaIcon(FontAwesomeIcons.house, size: 20),
+            activeIcon: const FaIcon(FontAwesomeIcons.solidHouse, size: 20),
             label: _l10n.iot,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.dashboard_outlined),
-            activeIcon: const Icon(Icons.dashboard),
+            icon: const FaIcon(FontAwesomeIcons.chartPie, size: 20),
+            activeIcon: const FaIcon(FontAwesomeIcons.chartPie, size: 20),
             label: _l10n.dashboard,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person_outline),
-            activeIcon: const Icon(Icons.person),
+            icon: const FaIcon(FontAwesomeIcons.user, size: 20),
+            activeIcon: const FaIcon(FontAwesomeIcons.solidUser, size: 20),
             label: _l10n.mine,
           ),
         ],

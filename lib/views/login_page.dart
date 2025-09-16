@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../config/app_colors.dart';
-import 'main_page.dart';
-import '../main.dart';
+import '../routes/app_routes.dart';
+//import '../main_bak.dart';
 import '../l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
@@ -39,12 +39,7 @@ class _LoginPageState extends State<LoginPage> {
       final isLoggedIn = await AuthService.isLoggedIn();
       if (isLoggedIn && mounted) {
         // User is already logged in with valid token
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MainPage(),
-          ),
-        );
+        AppRoutes.goToMain(context, clearStack: true);
         return;
       }
     } catch (e) {
@@ -139,12 +134,7 @@ class _LoginPageState extends State<LoginPage> {
           // );
 
           // Navigate to main page
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const MainPage(),
-            ),
-          );
+          AppRoutes.goToMain(context, clearStack: true);
         } else {
           // Login failed
           ScaffoldMessenger.of(context).showSnackBar(
@@ -383,18 +373,9 @@ class _LoginPageState extends State<LoginPage> {
       _selectedLocale = locale;
     });
     // Update the app's locale
-    final myApp = MyApp.of(context);
-    myApp?.setLocale(locale);
+    //final myApp = MyApp.of(context);
+    //myApp?.setLocale(locale);
   }
 
-  AppLocalizations get _l10n {
-    try {
-      return AppLocalizations.of(context)!;
-    } catch (e) {
-      // Fallback when context is not ready
-      return _selectedLocale.languageCode == 'en' 
-          ? lookupAppLocalizations(const Locale('en'))
-          : lookupAppLocalizations(const Locale('zh'));
-    }
-  }
+  AppLocalizations get _l10n => AppLocalizations.of(context)!;
 }

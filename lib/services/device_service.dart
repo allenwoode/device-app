@@ -12,9 +12,8 @@ class DeviceService {
   static Future<Map<String, dynamic>> getDevices({int index = 0, int size = 5}) async {
     try {
       // First try to fetch from API
-      final uri = Uri.parse('${ApiConfig.baseUrl}$devicesEndpoint');
       // Prepare request body for POST request
-      final requestBody = json.encode({
+      final requestBody = {
         'pageIndex': index,
         'pageSize': size,
         // Add any other required parameters here
@@ -29,18 +28,16 @@ class DeviceService {
         }
         ],
         "terms": []
-      });
+      };
       
-      final headers = await ApiConfig.defaultHeaders;
       final response = await ApiInterceptor.post(
-        uri,
-        headers: headers,
-        body: requestBody,
+        '${ApiConfig.baseUrl}$devicesEndpoint',
+        data: requestBody,
       ).timeout(ApiConfig.timeout);
 
       if (ApiConfig.enableLogging) {
         print('API Response Status: ${response.statusCode}');
-        print('API Response Body: ${response.body}');
+        print('API Response Body: ${response.data}');
       }
 
       if (response.statusCode == 200) {
@@ -48,7 +45,7 @@ class DeviceService {
           print('Successfully fetched devices from API');
         }
         
-        final responseData = json.decode(response.body);
+        final responseData = response.data;
         // Handle the actual API response structure
         if (responseData is Map<String, dynamic>) {
           // API returns: { "result": { "data": [...], "total": 10 } }
@@ -77,7 +74,7 @@ class DeviceService {
         // Default fallback
         return {'devices': []};
       } else {
-        throw HttpException('HTTP ${response.statusCode}: ${response.body}');
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
       }
     } catch (e) {
       // Fallback to local JSON file if API fails
@@ -105,23 +102,19 @@ class DeviceService {
   static Future<Map<String, dynamic>> getDeviceDetail(String deviceId) async {
     try {
       // Try API first
-      final uri = Uri.parse('${ApiConfig.baseUrl}/device-instance/$deviceId/info');
-      final headers = await ApiConfig.defaultHeaders;
       final response = await ApiInterceptor.get(
-        uri,
-        headers: headers,
+        '${ApiConfig.baseUrl}/device-instance/$deviceId/info',
       ).timeout(ApiConfig.timeout);
 
       if (ApiConfig.enableLogging) {
         print('Device Detail API Response Status: ${response.statusCode}');
-        print('Device Detail API Response Body: ${response.body}');
+        print('Device Detail API Response Body: ${response.data}');
       }
 
       if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        return responseData;
+        return response.data;
       } else {
-        throw HttpException('HTTP ${response.statusCode}: ${response.body}');
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
       }
     } catch (e) {
       if (ApiConfig.enableLogging) {
@@ -139,8 +132,7 @@ class DeviceService {
   static Future<Map<String, dynamic>> getDeviceState(String deviceId, String productId) async {
     try {
       // Try API first - this is a POST request
-      final uri = Uri.parse('${ApiConfig.baseUrl}/dashboard/_multi');
-      final requestBody = json.encode([
+      final requestBody = [
         {
           "dashboard": "device",
           "object": productId,
@@ -156,25 +148,22 @@ class DeviceService {
             ]
           }
         }
-      ]);
+      ];
 
-      final headers = await ApiConfig.defaultHeaders;
       final response = await ApiInterceptor.post(
-        uri,
-        headers: headers,
-        body: requestBody,
+        '${ApiConfig.baseUrl}/dashboard/_multi',
+        data: requestBody,
       ).timeout(ApiConfig.timeout);
 
       if (ApiConfig.enableLogging) {
         print('Device State API Response Status: ${response.statusCode}');
-        print('Device State API Response Body: ${response.body}');
+        print('Device State API Response Body: ${response.data}');
       }
 
       if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        return responseData;
+        return response.data;
       } else {
-        throw HttpException('HTTP ${response.statusCode}: ${response.body}');
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
       }
     } catch (e) {
       if (ApiConfig.enableLogging) {

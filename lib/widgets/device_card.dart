@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:device/models/device_models.dart';
-import 'package:device/views/device_detail_page.dart';
+import 'package:device/routes/app_routes.dart';
 
 class DeviceCard extends StatelessWidget {
   final DeviceData device;
@@ -11,12 +12,7 @@ class DeviceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DeviceDetailPage(deviceId: device.id, productId: device.productId),
-          ),
-        );
+        AppRoutes.goToDeviceDetail(context, device.id, device.productId);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -44,7 +40,7 @@ class DeviceCard extends StatelessWidget {
                   // Device Icon
                   _buildServerIcon(),
                   // WiFi status indicator
-                  _buildWifiStatusIcon(),
+                  _buildStatusIcon(),
                 ],
               ),
               
@@ -116,7 +112,7 @@ class DeviceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildWifiStatusIcon() {
+  Widget _buildStatusIcon() {
     final bool isConnected = device.state == 1;
     return Container(
       width: 32,

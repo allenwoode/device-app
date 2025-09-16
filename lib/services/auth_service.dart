@@ -17,13 +17,12 @@ class AuthService {
       );
 
       final response = await ApiInterceptor.post(
-        Uri.parse('${ApiConfig.baseUrl}$_loginEndpoint'),
-        headers: ApiConfig.basicHeaders,
-        body: jsonEncode(loginRequest.toJson()),
+        '${ApiConfig.baseUrl}$_loginEndpoint',
+        data: loginRequest.toJson(),
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        final Map<String, dynamic> jsonData = response.data;
         final loginResponse = LoginResponse.fromJson(jsonData);
         
         // Save token with expiration and user info to local storage
@@ -36,7 +35,7 @@ class AuthService {
         return loginResponse;
       } else {
         print('Login failed with status: ${response.statusCode}');
-        print('Response body: ${response.body}');
+        print('Response body: ${response.data}');
         return null;
       }
     } catch (e) {
@@ -48,14 +47,12 @@ class AuthService {
   static Future<bool> logout() async {
     try {
       // Call logout API
-      final headers = await ApiConfig.defaultHeaders;
       final response = await ApiInterceptor.get(
-        Uri.parse('${ApiConfig.baseUrl}$_logoutEndpoint'),
-        headers: headers,
+        '${ApiConfig.baseUrl}$_logoutEndpoint',
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        final Map<String, dynamic> jsonData = response.data;
         final logoutResponse = LogoutResponse.fromJson(jsonData);
         
         if (logoutResponse.status == 200 && logoutResponse.result) {
@@ -70,7 +67,7 @@ class AuthService {
         }
       } else {
         print('Logout failed with status: ${response.statusCode}');
-        print('Response body: ${response.body}');
+        print('Response body: ${response.data}');
         // Clear local data even if API fails
         await StorageService.clearAll();
         return true;

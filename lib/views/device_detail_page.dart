@@ -1,7 +1,8 @@
-import 'package:device/views/function_page.dart';
 import 'package:flutter/material.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/models/device_models.dart';
+import 'package:device/routes/app_routes.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
 
 enum LockState {
@@ -164,7 +165,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: const FaIcon(FontAwesomeIcons.chevronLeft, color: Colors.black, size: 18),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -185,9 +186,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 48,
+                      FaIcon(
+                        FontAwesomeIcons.triangleExclamation,
+                        size: 40,
                         color: Colors.grey[400],
                       ),
                       const SizedBox(height: 16),
@@ -233,11 +234,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   
   Widget _buildTopMenu() {
     return Container(
-      margin: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
+      margin: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
@@ -250,26 +251,22 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildMenuIcon(Icons.pie_chart_outline, _l10n.usageRate, onPressed: () {
+          _buildMenuIcon(FontAwesomeIcons.chartPie, _l10n.usageRate, onPressed: () {
             // TODO: Navigate to usage statistics page
           }),
-          _buildMenuIcon(Icons.notifications_none, _l10n.alerts, onPressed: () {
+          _buildMenuIcon(FontAwesomeIcons.solidBell, _l10n.alerts, onPressed: () {
             // TODO: Navigate to alerts page
           }),
-          _buildMenuIcon(Icons.list_alt, _l10n.operationLog, onPressed: () {
+          _buildMenuIcon(FontAwesomeIcons.clipboardList, _l10n.operationLog, onPressed: () {
             // TODO: Navigate to operation logs page
           }),
-          _buildMenuIcon(Icons.settings_outlined, _l10n.remoteSettings, onPressed: () {
+          _buildMenuIcon(FontAwesomeIcons.gear, _l10n.remoteSettings, onPressed: () {
             if (_state == 1) {
-              Navigator.push(
+              AppRoutes.goToFunction(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => FunctionPage(
-                    deviceId: widget.deviceId,
-                    productId: widget.productId,
-                    num: _num,
-                  ),
-                ),
+                widget.deviceId,
+                widget.productId,
+                _num,
               );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -290,7 +287,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       onTap: onPressed,
       child: Column(
         children: [
-          Icon(
+          FaIcon(
             icon,
             size: 24,
             color: Colors.grey[600],
@@ -366,9 +363,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                slot.lockState == LockState.unlocked ? Icons.lock_open : Icons.lock,
-                size: 24,
+              FaIcon(
+                slot.lockState == LockState.unlocked ? FontAwesomeIcons.lockOpen : FontAwesomeIcons.lock,
+                size: 20,
                 color: Colors.grey[600],
               ),
               const SizedBox(height: 4),
@@ -416,9 +413,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.lock,
-                size: 24,
+              FaIcon(
+                FontAwesomeIcons.lock,
+                size: 20,
                 color: Colors.grey[600],
               ),
               const SizedBox(height: 4),
@@ -526,11 +523,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           // Lock status legend
           Row(
             children: [
-              Icon(Icons.lock_open, color: Colors.grey[600], size: 16),
+              FaIcon(FontAwesomeIcons.lockOpen, color: Colors.grey[600], size: 14),
               const SizedBox(width: 8),
               Text(_l10n.deviceUnlock, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 24),
-              Icon(Icons.lock, color: Colors.grey[600], size: 16),
+              FaIcon(FontAwesomeIcons.lock, color: Colors.grey[600], size: 14),
               const SizedBox(width: 8),
               Text(_l10n.deviceLock, style: const TextStyle(fontSize: 12)),
             ],

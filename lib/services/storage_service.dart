@@ -11,10 +11,10 @@ class StorageService {
     await prefs.setString(_tokenKey, token);
   }
 
-  static Future<void> saveTokenWithExpiry(String token, int expiresInSeconds) async {
+  static Future<void> saveTokenWithExpiry(String token, int expiresInMillSeconds) async {
     final prefs = await SharedPreferences.getInstance();
     final loginTime = DateTime.now().millisecondsSinceEpoch;
-    final expiryTime = loginTime + expiresInSeconds;
+    final expiryTime = loginTime + expiresInMillSeconds;
     
     await prefs.setString(_tokenKey, token);
     await prefs.setInt(_loginTimeKey, loginTime);
@@ -26,27 +26,27 @@ class StorageService {
     return prefs.getString(_tokenKey);
   }
 
-  static Future<String?> getValidToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString(_tokenKey);
-    final expiryTime = prefs.getInt(_tokenExpiryKey);
+  // static Future<String?> getValidToken() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final token = prefs.getString(_tokenKey);
+  //   final expiryTime = prefs.getInt(_tokenExpiryKey);
     
-    if (token == null || expiryTime == null) {
-      return null;
-    }
+  //   if (token == null || expiryTime == null) {
+  //     return null;
+  //   }
     
-    final currentTime = DateTime.now().millisecondsSinceEpoch;
-    if (currentTime >= expiryTime) {
-      // Token expired, clear it
-      await clearAll();
-      return null;
-    }
+  //   final currentTime = DateTime.now().millisecondsSinceEpoch;
+  //   if (currentTime >= expiryTime) {
+  //     // Token expired, clear it
+  //     await clearAll();
+  //     return null;
+  //   }
     
-    return token;
-  }
+  //   return token;
+  // }
 
   static Future<bool> isTokenValid() async {
-    final token = await getValidToken();
+    final token = await getToken();
     return token != null;
   }
 

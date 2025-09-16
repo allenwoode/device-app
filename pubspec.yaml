@@ -38,9 +38,12 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_fonts: ^6.3.1
   http: ^1.1.0
+  dio: ^5.4.0
   shared_preferences: ^2.2.2
   fl_chart: ^1.0.0
   event_bus: ^2.0.0
+  font_awesome_flutter: ^10.7.0
+  fluro: ^2.0.5
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,6 @@
+import 'package:device/events/auth_events.dart';
+import 'package:device/services/event_bus_service.dart';
+import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../services/storage_service.dart';
@@ -17,7 +20,14 @@ class _MinePageState extends State<MinePage> {
   bool _isLoading = true;
   bool _isLoggingOut = false;
 
-  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+  AppLocalizations get _l10n {
+    try {
+      return AppLocalizations.of(context)!;
+    } catch (e) {
+      // Fallback when context is not ready
+      return lookupAppLocalizations(const Locale('zh'));
+    }
+  }
 
   @override
   void initState() {
@@ -45,6 +55,13 @@ class _MinePageState extends State<MinePage> {
         _isLoading = false;
       });
     }
+  }
+
+  void _do() {
+    print('==========================> auth expiered');
+    // Fire unauthorized event
+    //EventBusService.fire(UnauthorizedEvent('Authentication expired'));
+    AppRoutes.goToLogin(context, clearStack: true);
   }
 
   Future<void> _handleLogout() async {
@@ -89,11 +106,7 @@ class _MinePageState extends State<MinePage> {
                     ),
                   );
                   
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    '/',
-                    (route) => false,
-                  );
+                  AppRoutes.goToLogin(context, clearStack: true);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -205,7 +218,7 @@ class _MinePageState extends State<MinePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hi，${_currentUser?.name ?? _l10n.user}',
+                  'Hi, ${_currentUser?.name ?? _l10n.user}',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -224,7 +237,7 @@ class _MinePageState extends State<MinePage> {
                   ),
                   child: Text(
                     _currentUser?.roleList.isNotEmpty == true
-                        ? _currentUser!.roleList.first.name
+                        ? _currentUser?.roleList.first.name ?? ''
                         : '',
                     style: TextStyle(
                       fontSize: 12,
@@ -248,7 +261,7 @@ class _MinePageState extends State<MinePage> {
           _buildMenuItem(
             icon: Icons.business,
             title: _currentUser?.orgList.isNotEmpty == true
-                ? _currentUser!.orgList.first.name
+                ? _currentUser?.orgList.first.name ?? _l10n.organizationUnitEmpty
                 : _l10n.organizationUnitEmpty,
             showArrow: false,
             onTap: () {},
@@ -257,7 +270,7 @@ class _MinePageState extends State<MinePage> {
           _buildMenuItem(
             icon: Icons.person_outline,
             title: _currentUser?.roleList.isNotEmpty == true
-                ? _currentUser!.roleList.first.name
+                ? _currentUser?.roleList.first.name ?? _l10n.userRoleEmpty
                 : _l10n.userRoleEmpty,
             showArrow: false,
             onTap: () {},

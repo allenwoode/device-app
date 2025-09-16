@@ -15,14 +15,14 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   User? _currentUser;
-  //bool _isRefreshing = false;
+  bool _isRefreshing = false;
   bool _shouldAnimateCards = true;
 
   AppLocalizations get _l10n => AppLocalizations.of(context)!;
 
   Future<void> _onRefresh() async {
     setState(() {
-      //_isRefreshing = true;
+      _isRefreshing = true;
       _shouldAnimateCards = false;
     });
 
@@ -34,9 +34,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
     await Future.delayed(const Duration(milliseconds: 1500));
 
-    // setState(() {
-    //   _isRefreshing = false;
-    // });
+    setState(() {
+      _isRefreshing = false;
+    });
   }
 
   Future<void> _loadUserInfo() async {
