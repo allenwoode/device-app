@@ -47,7 +47,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get loginFailed => '登录失败，请检查用户名和密码';
 
   @override
-  String get networkError => '网络错误，请稍后重试';
+  String get networkError => '网络错误，请检查连接后重试';
 
   @override
   String get checkingLoginState => '检查登录状态...';
@@ -200,4 +200,39 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get top5Usage => 'TOP5使用量';
+
+  @override
+  String get loadDeviceDataFailed => '加载设备数据失败!';
+
+  @override
+  String remoteOpenCabinetDoor(String slotId) {
+    return '是否远程打开$slotId柜门?';
+  }
+
+  @override
+  String get pleaseEnterAdminPassword => '请输入管理员密码';
+
+  @override
+  String cabinetDoorOpening(String slotId) {
+    return '正在打开$slotId柜门...';
+  }
+
+  @override
+  String cabinetDoorOpenedSuccessfully(String slotId) {
+    return '$slotId柜门已成功打开';
+  }
+
+  @override
+  String cabinetDoorOpenFailed(String slotId) {
+    return '$slotId柜门打开失败，请重试';
+  }
+
+  @override
+  String get deviceCannotRemoteClose => '设备无法远程关闭';
+
+  @override
+  String get error => '错误';
+
+  @override
+  String get loginError => '登录错误';
 }

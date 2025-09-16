@@ -10,6 +10,7 @@ class DeviceService {
   // Device endpoints
   static const String devicesEndpoint = '/device/instance/query';
   static const String dashboardDevicesEndpoint = '/device/instance/dashboard/count';
+  static const String deviceInvokeEndpoint = '/device/invoked';
   
   static Future<Map<String, dynamic>> getDevices({int index = 0, int size = 5}) async {
     try {
@@ -313,6 +314,49 @@ class DeviceService {
       }
       // Return fallback data
       return DashboardMessage(total: 30, reportCount: 25, functionCount: 5);
+    }
+  }
+
+  static Future<bool> invokeDeviceLockOpen({
+    required String deviceId,
+    required int port,
+    String type = "1",
+  }) async {
+    try {
+      // Prepare request body for POST request
+      final requestBody = {
+        'port': port,
+        'type': type,
+      };
+
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}$deviceInvokeEndpoint/$deviceId/function/0_LOCK_OPEN_CMD',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Invoke API Response Status: ${response.statusCode}');
+        print('Device Invoke API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          if (responseData['result'] is List) {
+            final List<dynamic> results = responseData['result'];
+            if (results.isNotEmpty && results.first['success'] == true) {
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Device invoke API request failed: $e');
+      }
+      return false;
     }
   }
 }

@@ -76,5 +76,44 @@
   "severe": "Severe",
   "deviceReport": "Device Report",
   "platformDispatch": "Platform Dispatch",
-  "top5Usage": "Top 5 Usage Amount"
+  "top5Usage": "Top 5 Usage Amount",
+  "loadDeviceDataFailed": "Failed to load device data!",
+  "retry": "Retry",
+  "remoteOpenCabinetDoor": "Do you want to remotely open cabinet door {slotId}?",
+  "@remoteOpenCabinetDoor": {
+    "placeholders": {
+      "slotId": {
+        "type": "String"
+      }
+    }
+  },
+  "pleaseEnterAdminPassword": "Please enter administrator password",
+  "cabinetDoorOpening": "Opening cabinet door {slotId}...",
+  "@cabinetDoorOpening": {
+    "placeholders": {
+      "slotId": {
+        "type": "String"
+      }
+    }
+  },
+  "cabinetDoorOpenedSuccessfully": "Cabinet door {slotId} opened successfully",
+  "@cabinetDoorOpenedSuccessfully": {
+    "placeholders": {
+      "slotId": {
+        "type": "String"
+      }
+    }
+  },
+  "cabinetDoorOpenFailed": "Failed to open cabinet door {slotId}, please try again",
+  "@cabinetDoorOpenFailed": {
+    "placeholders": {
+      "slotId": {
+        "type": "String"
+      }
+    }
+  },
+  "networkError": "Network error, please check connection and try again",
+  "deviceCannotRemoteClose": "Device cannot be remotely closed",
+  "error": "Error",
+  "loginError": "Login Error"
 }

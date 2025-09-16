@@ -47,7 +47,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginFailed => 'Login failed, please check username and password';
 
   @override
-  String get networkError => 'Network error, please try again later';
+  String get networkError =>
+      'Network error, please check connection and try again';
 
   @override
   String get checkingLoginState => 'Checking login status...';
@@ -201,4 +202,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get top5Usage => 'Top 5 Usage Amount';
+
+  @override
+  String get loadDeviceDataFailed => 'Failed to load device data!';
+
+  @override
+  String remoteOpenCabinetDoor(String slotId) {
+    return 'Do you want to remotely open cabinet door $slotId?';
+  }
+
+  @override
+  String get pleaseEnterAdminPassword => 'Please enter administrator password';
+
+  @override
+  String cabinetDoorOpening(String slotId) {
+    return 'Opening cabinet door $slotId...';
+  }
+
+  @override
+  String cabinetDoorOpenedSuccessfully(String slotId) {
+    return 'Cabinet door $slotId opened successfully';
+  }
+
+  @override
+  String cabinetDoorOpenFailed(String slotId) {
+    return 'Failed to open cabinet door $slotId, please try again';
+  }
+
+  @override
+  String get deviceCannotRemoteClose => 'Device cannot be remotely closed';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get loginError => 'Login Error';
 }

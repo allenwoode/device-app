@@ -173,7 +173,7 @@ abstract class AppLocalizations {
   /// No description provided for @networkError.
   ///
   /// In en, this message translates to:
-  /// **'Network error, please try again later'**
+  /// **'Network error, please check connection and try again'**
   String get networkError;
 
   /// No description provided for @checkingLoginState.
@@ -475,6 +475,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Top 5 Usage Amount'**
   String get top5Usage;
+
+  /// No description provided for @loadDeviceDataFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load device data!'**
+  String get loadDeviceDataFailed;
+
+  /// No description provided for @remoteOpenCabinetDoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to remotely open cabinet door {slotId}?'**
+  String remoteOpenCabinetDoor(String slotId);
+
+  /// No description provided for @pleaseEnterAdminPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter administrator password'**
+  String get pleaseEnterAdminPassword;
+
+  /// No description provided for @cabinetDoorOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening cabinet door {slotId}...'**
+  String cabinetDoorOpening(String slotId);
+
+  /// No description provided for @cabinetDoorOpenedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Cabinet door {slotId} opened successfully'**
+  String cabinetDoorOpenedSuccessfully(String slotId);
+
+  /// No description provided for @cabinetDoorOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to open cabinet door {slotId}, please try again'**
+  String cabinetDoorOpenFailed(String slotId);
+
+  /// No description provided for @deviceCannotRemoteClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Device cannot be remotely closed'**
+  String get deviceCannotRemoteClose;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @loginError.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Error'**
+  String get loginError;
 }
 
 class _AppLocalizationsDelegate

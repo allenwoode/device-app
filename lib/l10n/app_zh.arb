@@ -62,5 +62,16 @@
   "severe": "严重",
   "deviceReport": "设备上报",
   "platformDispatch": "平台下发",
-  "top5Usage": "TOP5使用量"
+  "top5Usage": "TOP5使用量",
+  "loadDeviceDataFailed": "加载设备数据失败!",
+  "retry": "重试",
+  "remoteOpenCabinetDoor": "是否远程打开{slotId}柜门?",
+  "pleaseEnterAdminPassword": "请输入管理员密码",
+  "cabinetDoorOpening": "正在打开{slotId}柜门...",
+  "cabinetDoorOpenedSuccessfully": "{slotId}柜门已成功打开",
+  "cabinetDoorOpenFailed": "{slotId}柜门打开失败，请重试",
+  "networkError": "网络错误，请检查连接后重试",
+  "deviceCannotRemoteClose": "设备无法远程关闭",
+  "error": "错误",
+  "loginError": "登录错误"
 }

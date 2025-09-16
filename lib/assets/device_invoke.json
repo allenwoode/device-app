@@ -1,0 +1,19 @@
+POST /device/invoked/{deviceId}/function/0_LOCK_OPEN_CMD
+
+# body
+{
+    "port": 6,
+    "type": "1"
+}
+
+# response
+{
+    "message": "success",
+    "result": [
+        {
+            "success": true
+        }
+    ],
+    "status": 200,
+    "timestamp": 1758012493410
+}

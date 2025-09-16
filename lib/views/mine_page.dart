@@ -63,96 +63,228 @@ class _MinePageState extends State<MinePage> {
   }
 
   Future<void> _handleLogout() async {
+    _showLogoutConfirmDialog();
+  }
+
+  void _showLogoutConfirmDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(_l10n.confirmExit),
-        content: Text(_l10n.confirmLogoutMessage),
-        actions: [
-          TextButton(
-            onPressed: _isLoggingOut ? null : () => Navigator.pop(context),
-            child: Text(_l10n.cancel),
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          TextButton(
-            onPressed: _isLoggingOut ? null : () async {
-              setState(() {
-                _isLoggingOut = true;
-              });
+          contentPadding: const EdgeInsets.all(24),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Title
+              Text(
+                _l10n.confirmExit,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
 
-              try {
-                Navigator.pop(context);
-                
-                // Show loading indicator
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
+              // Message
+              Text(
+                _l10n.confirmLogoutMessage,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
 
-                final success = await AuthService.logout();
-                
-                // Close loading dialog
-                Navigator.pop(context);
-
-                if (success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(_l10n.logoutSuccess),
-                      backgroundColor: Colors.green,
+              // Buttons
+              Row(
+                children: [
+                  // Cancel button
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        _l10n.cancel,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  );
-                  
-                  AppRoutes.goToLogin(context, clearStack: true);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(_l10n.logoutFailed),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              } catch (e) {
-                // Close loading dialog if still open
-                Navigator.pop(context);
-                
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(_l10n.networkError),
-                    backgroundColor: Colors.red,
                   ),
-                );
-              } finally {
-                if (mounted) {
-                  setState(() {
-                    _isLoggingOut = false;
-                  });
-                }
-              }
-            },
-            child: _isLoggingOut 
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text(_l10n.confirm, style: const TextStyle(color: Colors.red)),
+                  const SizedBox(width: 12),
+
+                  // Confirm button
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        await _performLogout();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        _l10n.confirm,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
+  }
+
+  Future<void> _performLogout() async {
+    setState(() {
+      _isLoggingOut = true;
+    });
+
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+
+      final success = await AuthService.logout();
+
+      // Close loading dialog
+      Navigator.pop(context);
+
+      if (success) {
+        _showStyledAlertDialog(_l10n.logoutSuccess, _l10n.logoutSuccess);
+        // Navigate after showing success message
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (mounted) {
+            AppRoutes.goToLogin(context, clearStack: true);
+          }
+        });
+      } else {
+        _showStyledAlertDialog(_l10n.error, _l10n.logoutFailed);
+      }
+    } catch (e) {
+      // Close loading dialog if still open
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+
+      _showStyledAlertDialog(_l10n.error, _l10n.networkError);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoggingOut = false;
+        });
+      }
+    }
   }
 
   void _handleVersionUpdate() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(_l10n.versionUpdateTodo)),
-    );
+    _showStyledAlertDialog(_l10n.versionUpdate, _l10n.versionUpdateTodo);
   }
 
   void _handleAboutUs() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(_l10n.aboutUsTodo)),
+    _showStyledAlertDialog(_l10n.aboutUs, _l10n.aboutUsTodo);
+  }
+
+  void _showStyledAlertDialog(String title, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          contentPadding: const EdgeInsets.all(24),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Title
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+
+              // Message
+              Text(
+                message,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+
+              // Confirm button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    _l10n.confirm,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
