@@ -73,3 +73,63 @@ class DashboardDevices {
     );
   }
 }
+
+class DashboardUsage {
+  final String label;
+  final int value;
+  final String text;
+
+  DashboardUsage({
+    required this.label,
+    required this.value,
+    required this.text,
+  });
+
+  factory DashboardUsage.fromJson(Map<String, dynamic> json) {
+    return DashboardUsage(
+      label: json['label'] ?? '',
+      value: json['value'] ?? 0,
+      text: json['text'] ?? '',
+    );
+  }
+}
+
+class DashboardAlerts {
+  final int total;
+  final int alarmCount;
+  final int severeCount;
+
+  DashboardAlerts({
+    required this.total,
+    required this.alarmCount,
+    required this.severeCount,
+  });
+
+  factory DashboardAlerts.fromJson(Map<String, dynamic> json) {
+    return DashboardAlerts(
+      total: json['total'] ?? 0,
+      alarmCount: json['alarmCount'] ?? 0,
+      severeCount: json['severeCount'] ?? 0,
+    );
+  }
+}
+
+class DashboardMessage {
+  final int total;
+  final int reportCount;
+  final int functionCount;
+
+  DashboardMessage({
+    required this.total,
+    required this.reportCount,
+    required this.functionCount,
+  });
+
+  factory DashboardMessage.fromJson(Map<String, dynamic> json) {
+    return DashboardMessage(
+      total: json['total'] ?? 0,
+      reportCount: json['reportCount'] ?? 0,
+      functionCount: json['functionCount'] ?? 0,
+    );
+  }
+}

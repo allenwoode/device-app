@@ -198,4 +198,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get platformDispatch => 'Platform Dispatch';
+
+  @override
+  String get top5Usage => 'Top 5 Usage Amount';
 }

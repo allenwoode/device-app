@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:device/models/device_models.dart';
 import 'package:flutter/services.dart';
 import 'package:device/api/api_config.dart';
 import 'api_interceptor.dart';
@@ -250,6 +251,69 @@ class DeviceService {
       'onlineCount': 0,
       'offlineCount': 6
     };
+  }
+
+  static Future<List<DashboardUsage>> getDashboardUsage() async {
+    try {
+      // For now, load from local JSON file (can be extended to API call)
+      final String response = await rootBundle.loadString('lib/assets/dashboard_usage.json');
+      final Map<String, dynamic> data = json.decode(response);
+
+      if (data['result'] is List) {
+        final List<dynamic> resultList = data['result'];
+        return resultList.map((item) => DashboardUsage.fromJson(item)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Failed to load dashboard usage data: $e');
+      }
+      // Return fallback data
+      return [];
+    }
+  }
+
+  static Future<DashboardAlerts> getDashboardAlerts() async {
+    try {
+      // For now, load from local JSON file (can be extended to API call)
+      final String response = await rootBundle.loadString('lib/assets/dashboard_alerts.json');
+      final Map<String, dynamic> data = json.decode(response);
+
+      if (data['result'] is Map<String, dynamic>) {
+        return DashboardAlerts.fromJson(data['result']);
+      }
+
+      // Return fallback data
+      return DashboardAlerts(total: 16, alarmCount: 15, severeCount: 1);
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Failed to load dashboard alerts data: $e');
+      }
+      // Return fallback data
+      return DashboardAlerts(total: 16, alarmCount: 15, severeCount: 1);
+    }
+  }
+
+  static Future<DashboardMessage> getDashboardMessage() async {
+    try {
+      // For now, load from local JSON file (can be extended to API call)
+      final String response = await rootBundle.loadString('lib/assets/dashboard_message.json');
+      final Map<String, dynamic> data = json.decode(response);
+
+      if (data['result'] is Map<String, dynamic>) {
+        return DashboardMessage.fromJson(data['result']);
+      }
+
+      // Return fallback data
+      return DashboardMessage(total: 30, reportCount: 25, functionCount: 5);
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Failed to load dashboard message data: $e');
+      }
+      // Return fallback data
+      return DashboardMessage(total: 30, reportCount: 25, functionCount: 5);
+    }
   }
 }
 

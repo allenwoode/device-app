@@ -5,7 +5,8 @@ import 'package:device/models/device_models.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/services/device_service.dart';
 import 'package:flutter/material.dart';
-import '../widgets/dashboard_card.dart';
+import '../widgets/pie_chart_card.dart';
+import '../widgets/bar_chart_card.dart';
 import '../l10n/app_localizations.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -18,6 +19,9 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   User? _currentUser;
   DashboardDevices? _dashboardDevices;
+  List<DashboardUsage> _dashboardUsage = [];
+  DashboardAlerts? _dashboardAlerts;
+  DashboardMessage? _dashboardMessage;
   bool _isLoading = true;
   bool _shouldAnimateCards = true;
 
@@ -65,8 +69,15 @@ class _DashboardPageState extends State<DashboardPage> {
       });
 
       final dashboardData = await DeviceService.getDashboardDevices();
+      final usageData = await DeviceService.getDashboardUsage();
+      final alertsData = await DeviceService.getDashboardAlerts();
+      final messageData = await DeviceService.getDashboardMessage();
+
       setState(() {
         _dashboardDevices = DashboardDevices.fromJson(dashboardData);
+        _dashboardUsage = usageData;
+        _dashboardAlerts = alertsData;
+        _dashboardMessage = messageData;
         _isLoading = false;
       });
     } catch (e) {
@@ -79,6 +90,21 @@ class _DashboardPageState extends State<DashboardPage> {
         );
       }
     }
+  }
+
+  List<ChartBarData> _convertUsageToChartData(List<DashboardUsage> usageList) {
+    final colors = [Colors.blue, Colors.green, Colors.orange, Colors.purple, Colors.red];
+
+    return usageList.asMap().entries.map((entry) {
+      int index = entry.key;
+      DashboardUsage usage = entry.value;
+
+      return ChartBarData(
+        label: usage.label,
+        value: usage.value,
+        color: colors[index % colors.length],
+      );
+    }).toList();
   }
 
   @override
@@ -116,7 +142,13 @@ class _DashboardPageState extends State<DashboardPage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-              DashboardCard(
+              BarChartCard(
+                title: _l10n.top5Usage,
+                shouldAnimate: _shouldAnimateCards,
+                data: _convertUsageToChartData(_dashboardUsage),
+              ),
+              const SizedBox(height: 16),
+              PieChartCard(
                 title: _l10n.devices,
                 total: _dashboardDevices?.total,
                 primaryLabel: _l10n.online,
@@ -127,39 +159,39 @@ class _DashboardPageState extends State<DashboardPage> {
                 secondaryColor: Colors.grey,
                 shouldAnimate: _shouldAnimateCards,
               ),
+              // const SizedBox(height: 16),
+              // DashboardCard(
+              //   title: _l10n.usageDistribution,
+              //   total: null,
+              //   primaryLabel: '>60%',
+              //   primaryValue: 30,
+              //   primaryColor: Colors.green,
+              //   secondaryLabel: '<10%',
+              //   secondaryValue: 10,
+              //   secondaryColor: Colors.red,
+              //   shouldAnimate: _shouldAnimateCards,
+              // ),
               const SizedBox(height: 16),
-              DashboardCard(
-                title: _l10n.usageDistribution,
-                total: null,
-                primaryLabel: '>60%',
-                primaryValue: 30,
-                primaryColor: Colors.green,
-                secondaryLabel: '<10%',
-                secondaryValue: 10,
-                secondaryColor: Colors.red,
-                shouldAnimate: _shouldAnimateCards,
-              ),
-              const SizedBox(height: 16),
-              DashboardCard(
+              PieChartCard(
                 title: _l10n.todayAlerts,
-                total: 50,
+                total: _dashboardAlerts?.total,
                 primaryLabel: _l10n.alarm,
-                primaryValue: 40,
+                primaryValue: _dashboardAlerts?.alarmCount ?? 0,
                 primaryColor: Colors.green,
                 secondaryLabel: _l10n.severe,
-                secondaryValue: 10,
+                secondaryValue: _dashboardAlerts?.severeCount ?? 0,
                 secondaryColor: Colors.red,
                 shouldAnimate: _shouldAnimateCards,
               ),
               const SizedBox(height: 16),
-              DashboardCard(
+              PieChartCard(
                 title: _l10n.operationLog,
-                total: 50,
+                total: _dashboardMessage?.total,
                 primaryLabel: _l10n.deviceReport,
-                primaryValue: 40,
+                primaryValue: _dashboardMessage?.reportCount ?? 0,
                 primaryColor: Colors.green,
                 secondaryLabel: _l10n.platformDispatch,
-                secondaryValue: 10,
+                secondaryValue: _dashboardMessage?.functionCount ?? 0,
                 secondaryColor: Colors.red,
                 shouldAnimate: _shouldAnimateCards,
               ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class DashboardCard extends StatefulWidget {
+class PieChartCard extends StatefulWidget {
   final String title;
   final int? total;
   final String primaryLabel;
@@ -12,7 +12,7 @@ class DashboardCard extends StatefulWidget {
   final Color secondaryColor;
   final bool shouldAnimate;
 
-  const DashboardCard({
+  const PieChartCard({
     super.key,
     required this.title,
     required this.total,
@@ -26,10 +26,10 @@ class DashboardCard extends StatefulWidget {
   });
 
   @override
-  State<DashboardCard> createState() => _DashboardCardState();
+  State<PieChartCard> createState() => _PieChartCardState();
 }
 
-class _DashboardCardState extends State<DashboardCard>
+class _PieChartCardState extends State<PieChartCard>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -57,7 +57,7 @@ class _DashboardCardState extends State<DashboardCard>
   }
 
   @override
-  void didUpdateWidget(DashboardCard oldWidget) {
+  void didUpdateWidget(PieChartCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.shouldAnimate && !oldWidget.shouldAnimate) {
       _animationController.reset();

@@ -197,4 +197,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get platformDispatch => '平台下发';
+
+  @override
+  String get top5Usage => 'TOP5使用量';
 }

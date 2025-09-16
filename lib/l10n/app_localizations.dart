@@ -469,6 +469,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Platform Dispatch'**
   String get platformDispatch;
+
+  /// No description provided for @top5Usage.
+  ///
+  /// In en, this message translates to:
+  /// **'Top 5 Usage Amount'**
+  String get top5Usage;
 }
 
 class _AppLocalizationsDelegate

@@ -61,5 +61,6 @@
   "alarm": "报警",
   "severe": "严重",
   "deviceReport": "设备上报",
-  "platformDispatch": "平台下发"
+  "platformDispatch": "平台下发",
+  "top5Usage": "TOP5使用量"
 }

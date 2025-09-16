@@ -241,7 +241,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   
   Widget _buildTopMenu() {
     return Container(
-      margin: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
+      margin: const EdgeInsets.only(left: 16, top: 32, right: 16, bottom: 0),
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,

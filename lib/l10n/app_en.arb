@@ -75,5 +75,6 @@
   "alarm": "Alarm",
   "severe": "Severe",
   "deviceReport": "Device Report",
-  "platformDispatch": "Platform Dispatch"
+  "platformDispatch": "Platform Dispatch",
+  "top5Usage": "Top 5 Usage Amount"
 }
