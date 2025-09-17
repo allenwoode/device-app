@@ -470,11 +470,11 @@ abstract class AppLocalizations {
   /// **'Platform Dispatch'**
   String get platformDispatch;
 
-  /// No description provided for @top5Usage.
+  /// No description provided for @todayUsageTop5.
   ///
   /// In en, this message translates to:
-  /// **'Top 5 Usage Amount'**
-  String get top5Usage;
+  /// **'Today Usage Amount TOP5'**
+  String get todayUsageTop5;
 
   /// No description provided for @loadDeviceDataFailed.
   ///

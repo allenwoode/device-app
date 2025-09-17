@@ -62,7 +62,7 @@
   "severe": "严重",
   "deviceReport": "设备上报",
   "platformDispatch": "平台下发",
-  "top5Usage": "TOP5使用量",
+  "todayUsageTop5": "今日使用量TOP5",
   "loadDeviceDataFailed": "加载设备数据失败!",
   "retry": "重试",
   "remoteOpenCabinetDoor": "是否远程打开{slotId}柜门?",

@@ -1,16 +1,11 @@
-GET http://localhost:8848/device-instance/11110001/detail
-
 {
     "message": "success",
     "result": {
         "id": "11110001",
-        "name": "智能充电柜1",
+        "name": "1001 Classroom",
         "photoUrl": "http://localhost:8848/ui/device-manager/assets/device-product.png",
-        "protocol": "1946040665379160064",
-        "protocolName": "定制协议V3",
-        "transport": "TCP",
         "productId": "1947920655531909120",
-        "productName": "充电柜",
+        "productName": "ELLTE-MAX-16",
         "deviceType": {
             "text": "直连设备",
             "value": "device"
@@ -19,37 +14,15 @@ GET http://localhost:8848/device-instance/11110001/detail
             "text": "离线",
             "value": "offline"
         },
-        "address": "127.0.0.1/<unresolved>:59420",
-        "onlineTime": 1757404183582,
-        "offlineTime": 1757405301653,
+        "onlineTime": 0,
+        "offlineTime": 0,
         "createTime": 1753256474384,
         "registerTime": 1753256479843,
-        "extraData": "{\"charge_num\":16,\"gate_num\":16,\"organization\":\"浙江杰马电子科技\",\"power\":\"65W\"}",
-        "independentMetadata": true,
-        "cachedConfiguration": {},
-        "aloneConfiguration": false,
-        "tags": [],
-        "description": "智能充电柜1",
-        "features": [
-            {
-                "id": "eventNotInsertable",
-                "name": "物模型事件不可新增",
-                "type": "SimpleFeature",
-                "deprecated": false
-            },
-            {
-                "id": "eventNotModifiable",
-                "name": "物模型事件不可修改",
-                "type": "SimpleFeature",
-                "deprecated": false
-            }
-        ],
-        "accessId": "1946041126597410816",
-        "accessProvider": "tcp-server-gateway",
-        "accessName": "TCP直连8802",
+        "description": "1001 Classroom",
         "classifiedId": "f1feda9db6b7b00205878904c1db98b7",
-        "classifiedName": "智能充电柜"
+        "classifiedName": "智能充电柜",
+        "extraData": "{\"charge_num\":16,\"gate_num\":16,\"organization\":\"浙江杰马电子科技\",\"power\":\"65W\"}"
     },
     "status": 200,
-    "timestamp": 1757405317911
+    "timestamp": 1758071574013
 }

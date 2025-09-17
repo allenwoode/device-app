@@ -199,7 +199,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get platformDispatch => '平台下发';
 
   @override
-  String get top5Usage => 'TOP5使用量';
+  String get todayUsageTop5 => '今日使用量TOP5';
 
   @override
   String get loadDeviceDataFailed => '加载设备数据失败!';

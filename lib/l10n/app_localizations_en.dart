@@ -201,7 +201,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get platformDispatch => 'Platform Dispatch';
 
   @override
-  String get top5Usage => 'Top 5 Usage Amount';
+  String get todayUsageTop5 => 'Today Usage Amount TOP5';
 
   @override
   String get loadDeviceDataFailed => 'Failed to load device data!';

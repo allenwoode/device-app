@@ -143,7 +143,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Column(
                   children: [
               BarChartCard(
-                title: _l10n.top5Usage,
+                title: _l10n.todayUsageTop5,
                 shouldAnimate: _shouldAnimateCards,
                 data: _convertUsageToChartData(_dashboardUsage),
               ),

@@ -39,7 +39,7 @@ class DeviceCard extends StatelessWidget {
                 children: [
                   // Device Icon
                   _buildServerIcon(),
-                  // WiFi status indicator
+                  // Online status indicator
                   _buildStatusIcon(),
                 ],
               ),
@@ -52,7 +52,7 @@ class DeviceCard extends StatelessWidget {
                 children: [
                   // Device name
                   Text(
-                    device.description,
+                    device.name,
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -64,7 +64,7 @@ class DeviceCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   // Device ID and model
                   Text(
-                    '${device.name}',
+                    device.productName,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
@@ -76,7 +76,7 @@ class DeviceCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   // Device ID and model
                   Text(
-                    '${device.id}',
+                    device.id,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
@@ -95,11 +95,13 @@ class DeviceCard extends StatelessWidget {
   }
 
   Widget _buildServerIcon() {
-    return Container(
+    final int spec = device.extraData.gateNum;
+
+    return SizedBox(
       width: 68,
       height: 68,
       child: Image.asset(
-        'lib/assets/images/${device.name}.png',
+        'lib/assets/images/ELLTE-MAX-$spec.png',
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           // Fallback to default image if specific device image not found

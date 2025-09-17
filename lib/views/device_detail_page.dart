@@ -45,8 +45,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   List<LockSlot> lockSlots = [];
   bool _isLoading = true;
   String? _errorMessage;
-  ExtraData? _extraData;
-  //String _deviceName = '';
+  String _deviceName = '';
   int _state = 0;
   int? _num;
 
@@ -75,11 +74,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   
   Future<void> _loadDeviceData() async {
     try {
-      
-      final deviceStateData = await DeviceService.getDeviceState(widget.deviceId, widget.productId);
       final deviceDetailData = await DeviceService.getDeviceDetail(widget.deviceId);
+      _deviceName = deviceDetailData.name;
+      _state = deviceDetailData.state;
+      _num = deviceDetailData.extraData.gateNum;
 
-      _parseDeviceData(deviceDetailData, deviceStateData);
+      final deviceStateData = await DeviceService.getDeviceState(widget.deviceId, widget.productId);
+      _parseDeviceStateData(deviceStateData);
       
       setState(() {
         _isLoading = false;
@@ -93,15 +94,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
   
-  void _parseDeviceData(Map<String, dynamic> detailData, Map<String, dynamic> stateData) {
-
-    //_deviceName = deviceDetailData['result']['name'];
-      _state = detailData['result']['state']['value'] == 'online' ? 1 : 0;
-
-      // device.extra: "extraData": "{\"charge_num\":11,\"gate_num\":11,\"organization\":\"浙江杰马电子科技\",\"power\":\"45W\"}"
-      final extraData = detailData['result']['extraData'];
-      _extraData = ExtraData.decode(extraData);
-      _num = _extraData?.gateNum;
+  void _parseDeviceStateData(Map<String, dynamic> stateData) {
 
     // Initialize with default empty states
     String lockStateString = '0000000000000000';
@@ -258,7 +251,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildMenuIcon(FontAwesomeIcons.chartPie, _l10n.usageRate, onPressed: () {
+          _buildMenuIcon(FontAwesomeIcons.chartArea, _l10n.usageRate, onPressed: () {
             // TODO: Navigate to usage statistics page
           }),
           _buildMenuIcon(FontAwesomeIcons.solidBell, _l10n.alerts, onPressed: () {

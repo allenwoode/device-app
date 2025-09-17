@@ -76,7 +76,7 @@
   "severe": "Severe",
   "deviceReport": "Device Report",
   "platformDispatch": "Platform Dispatch",
-  "top5Usage": "Top 5 Usage Amount",
+  "todayUsageTop5": "Today Usage Amount TOP5",
   "loadDeviceDataFailed": "Failed to load device data!",
   "retry": "Retry",
   "remoteOpenCabinetDoor": "Do you want to remotely open cabinet door {slotId}?",
