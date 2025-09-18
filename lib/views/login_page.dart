@@ -1,3 +1,4 @@
+import 'package:device/views/route_component.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
@@ -24,19 +25,19 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _loadSavedLocale();
+    _initializeLocale();
     _checkExistingLogin();
   }
 
-  // Future<void> _initializeLocale() async {
-  //   await _loadSavedLocale();
-  //   // Ensure the context is ready before setting locale
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (mounted) {
-  //       _applyLocaleToApp(_selectedLocale);
-  //     }
-  //   });
-  // }
+  Future<void> _initializeLocale() async {
+    await _loadSavedLocale();
+    // Ensure the context is ready before setting locale
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _applyLocaleToApp(_selectedLocale);
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -65,14 +66,14 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // void _applyLocaleToApp(Locale locale) {
-  //   try {
-  //     final route = RouteComponent.of(context);
-  //     route?.setLocale(locale);
-  //   } catch (e) {
-  //     print('Error applying locale to app: $e');
-  //   }
-  // }
+  void _applyLocaleToApp(Locale locale) {
+    try {
+      final route = RouteComponent.of(context);
+      route?.setLocale(locale);
+    } catch (e) {
+      print('Error applying locale to app: $e');
+    }
+  }
 
   Future<void> _saveLocale(Locale locale) async {
     try {
@@ -425,6 +426,7 @@ class _LoginPageState extends State<LoginPage> {
     });
     // Save locale to shared preferences
     _saveLocale(locale);
+    _applyLocaleToApp(locale);
   }
 
   AppLocalizations get _l10n {

@@ -1,23 +1,20 @@
+import 'package:device/config/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:device/services/device_service.dart';
+import 'package:device/api/api_config.dart';
 import 'package:device/routes/app_routes.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/confirm_dialog.dart';
 
-enum LockState {
-  locked,
-  unlocked,
-  charging,
-  charged,
-  empty
-}
+enum LockState { locked, unlocked, charging, charged, empty }
 
 class LockSlot {
   final String id;
   final LockState lockState;
   final LockState chargingState;
   final bool isUsed;
-  
+
   LockSlot({
     required this.id,
     required this.lockState,
@@ -29,7 +26,7 @@ class LockSlot {
 class DeviceDetailPage extends StatefulWidget {
   final String deviceId;
   final String productId;
-  
+
   const DeviceDetailPage({
     super.key,
     required this.deviceId,
@@ -64,23 +61,28 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       return 'Server error';
     }
   }
-  
+
   @override
   void initState() {
     super.initState();
     _loadDeviceData();
   }
-  
+
   Future<void> _loadDeviceData() async {
     try {
-      final deviceDetailData = await DeviceService.getDeviceDetail(widget.deviceId);
+      final deviceDetailData = await DeviceService.getDeviceDetail(
+        widget.deviceId,
+      );
       _deviceName = deviceDetailData.name;
       _state = deviceDetailData.state;
       _num = deviceDetailData.extraData.gateNum;
 
-      final deviceStateData = await DeviceService.getDeviceState(widget.deviceId, widget.productId);
+      final deviceStateData = await DeviceService.getDeviceState(
+        widget.deviceId,
+        widget.productId,
+      );
       _parseDeviceStateData(deviceStateData);
-      
+
       setState(() {
         _isLoading = false;
         _errorMessage = null;
@@ -92,23 +94,22 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       });
     }
   }
-  
-  void _parseDeviceStateData(Map<String, dynamic> stateData) {
 
+  void _parseDeviceStateData(Map<String, dynamic> stateData) {
     // Initialize with default empty states
     String lockStateString = '0000000000000000';
     String chargeStateString = '0000000000000000';
     String usedStateString = '0000000000000000';
-    
+
     // Parse state data
     if (stateData['result'] != null && stateData['result'] is List) {
       final List<dynamic> results = stateData['result'];
-      
+
       for (var result in results) {
         if (result['data'] != null && result['data']['value'] != null) {
           final property = result['data']['value']['property'];
           final state = result['data']['value']['value']['state'];
-          
+
           if (property == 'LOCK_STATE') {
             lockStateString = state;
           } else if (property == 'CHARGE_STATE') {
@@ -119,21 +120,27 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         }
       }
     }
-    
+
     // Generate lock slots from state data
     lockSlots = List.generate(16, (index) {
       final slotId = 'C${index + 1}';
-      
+
       // Parse lock state (0 = locked, 1 = unlocked)
-      final lockChar = index < lockStateString.length ? lockStateString[index] : '0';
+      final lockChar = index < lockStateString.length
+          ? lockStateString[index]
+          : '0';
       final isUnlocked = lockChar == '1';
-      
+
       // Parse charging state (0 = empty, 2 = charging, 1 = charged)
-      final chargeChar = index < chargeStateString.length ? chargeStateString[index] : '0';
+      final chargeChar = index < chargeStateString.length
+          ? chargeStateString[index]
+          : '0';
       LockState chargingState;
 
       // Parse used state (1 = used, 0 = default)
-      final usedChar = index < usedStateString.length ? usedStateString[index] : '0';
+      final usedChar = index < usedStateString.length
+          ? usedStateString[index]
+          : '0';
       final isUsed = usedChar == '1';
 
       switch (chargeChar) {
@@ -146,7 +153,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         default:
           chargingState = LockState.empty;
       }
-      
+
       return LockSlot(
         id: slotId,
         lockState: isUnlocked ? LockState.unlocked : LockState.locked,
@@ -154,6 +161,66 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         isUsed: isUsed,
       );
     });
+  }
+
+  void _showConfirmDialog() {
+    ConfirmDialog.show(
+      context: context,
+      title: '设备解绑',
+      message: '确定对当前设备解绑吗？',
+      confirmText: '解绑',
+      confirmButtonColor: AppColors.primaryColor,
+      onConfirm: () async {
+        await _performUnbindDevice();
+      },
+      onCancel: () => Navigator.of(context).pop(),
+    );
+  }
+
+  Future<void> _performUnbindDevice() async {
+    try {
+      // Show loading indicator
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Text('正在处理...'),
+            ],
+          ),
+          duration: const Duration(seconds: 10),
+        ),
+      );
+
+      final resp = await DeviceService.unbindDevice(deviceId: widget.deviceId);
+
+      // Hide loading indicator if still showing
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      if (resp) {
+        AppRoutes.goToMain(context);
+      }
+    } catch (err) {
+      // Hide loading indicator if still showing
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      // Show error dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('操作失败'), backgroundColor: Colors.orange),
+      );
+
+      if (ApiConfig.enableLogging) {
+        print('Device unbind failed: $err');
+      }
+    }
   }
 
   @override
@@ -164,7 +231,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.chevronLeft, color: Colors.black, size: 18),
+          icon: const FaIcon(
+            FontAwesomeIcons.chevronLeft,
+            color: Colors.black,
+            size: 18,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -176,61 +247,68 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           ),
         ),
         centerTitle: true,
-        
+        actions: [
+          IconButton(
+            onPressed: _showConfirmDialog,
+            icon: const FaIcon(
+              FontAwesomeIcons.circleMinus,
+              color: Colors.black,
+              size: 18,
+            ),
+            tooltip: '解绑设备',
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FaIcon(
-                        FontAwesomeIcons.triangleExclamation,
-                        size: 40,
-                        color: Colors.grey[400],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        _errorMessage!,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 16,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _isLoading = true;
-                            _errorMessage = null;
-                          });
-                          _loadDeviceData();
-                        },
-                        child: Text(_l10n.retry),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FaIcon(
+                    FontAwesomeIcons.triangleExclamation,
+                    size: 40,
+                    color: Colors.grey[400],
                   ),
-                )
-              : RefreshIndicator(
-                  onRefresh: _loadDeviceData,
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Column(
-                      children: [
-                        _buildTopMenu(),
-                        const SizedBox(height: 8),
-                        _buildLockGrid(),
-                        const SizedBox(height: 8),
-                        _buildLegend(),
-                      ],
-                    ),
+                  const SizedBox(height: 16),
+                  Text(
+                    _errorMessage!,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                    textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _isLoading = true;
+                        _errorMessage = null;
+                      });
+                      _loadDeviceData();
+                    },
+                    child: Text(_l10n.retry),
+                  ),
+                ],
+              ),
+            )
+          : RefreshIndicator(
+              onRefresh: _loadDeviceData,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    _buildTopMenu(),
+                    const SizedBox(height: 8),
+                    _buildLockGrid(),
+                    const SizedBox(height: 8),
+                    _buildLegend(),
+                  ],
                 ),
+              ),
+            ),
     );
   }
-  
+
   Widget _buildTopMenu() {
     return Container(
       margin: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
@@ -250,51 +328,74 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildMenuIcon(FontAwesomeIcons.chartArea, _l10n.usageRate, onPressed: () {
-            AppRoutes.goToDeviceUsage(
-              context,
-              widget.deviceId,
-              widget.productId,
-              _num,
-            );
-          }),
-          _buildMenuIcon(FontAwesomeIcons.solidBell, _l10n.alerts, onPressed: () {
-            AppRoutes.goToDeviceAlert(
-              context,
-              widget.deviceId,
-              widget.productId,
-            );
-          }),
-          _buildMenuIcon(FontAwesomeIcons.clipboardList, _l10n.operationLog, onPressed: () {
-            AppRoutes.goToDeviceLog(
-              context,
-              widget.deviceId,
-              widget.productId,
-            );
-          }),
-          _buildMenuIcon(FontAwesomeIcons.gear, _l10n.remoteSettings, onPressed: () {
-            if (_state == 1) {
-              AppRoutes.goToDeviceFunction(
+          _buildMenuIcon(
+            FontAwesomeIcons.chartArea,
+            _l10n.usageRate,
+            onPressed: () {
+              AppRoutes.goToDeviceUsage(
                 context,
                 widget.deviceId,
                 widget.productId,
                 _num,
               );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(_l10n.deviceOfflineCannotRemoteSet),
-                  backgroundColor: Colors.orange,
-                ),
+            },
+          ),
+          _buildMenuIcon(
+            FontAwesomeIcons.solidBell,
+            _l10n.alerts,
+            onPressed: () {
+              AppRoutes.goToDeviceAlert(
+                context,
+                widget.deviceId,
+                widget.productId,
               );
-            }
-          }),
+            },
+          ),
+          _buildMenuIcon(
+            FontAwesomeIcons.clipboardList,
+            _l10n.operationLog,
+            onPressed: () {
+              AppRoutes.goToDeviceLog(
+                context,
+                widget.deviceId,
+                widget.productId,
+              );
+            },
+          ),
+          _buildMenuIcon(
+            FontAwesomeIcons.gear,
+            _l10n.remoteSettings,
+            onPressed: () {
+              if (_state == 1) {
+                AppRoutes.goToDeviceFunction(
+                  context,
+                  widget.deviceId,
+                  widget.productId,
+                  _num,
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      _l10n.deviceOfflineCannotRemoteSet,
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
+              }
+            },
+          ),
         ],
       ),
     );
   }
-  
-  Widget _buildMenuIcon(IconData icon, String label, {VoidCallback? onPressed}) {
+
+  Widget _buildMenuIcon(
+    IconData icon,
+    String label, {
+    VoidCallback? onPressed,
+  }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -307,18 +408,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
             children: [
-              FaIcon(
-                icon,
-                size: 24,
-                color: Colors.grey[600],
-              ),
+              FaIcon(icon, size: 24, color: Colors.grey[600]),
               const SizedBox(height: 8),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
             ],
           ),
@@ -326,7 +420,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       ),
     );
   }
-  
+
   Widget _buildLockGrid() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -354,12 +448,14 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         ),
         itemCount: _num ?? lockSlots.length,
         itemBuilder: (context, index) {
-          return _state == 1 ? _buildOnlineLockSlot(lockSlots[index]) : _buildOfflineLockSlot(lockSlots[index]);
+          return _state == 1
+              ? _buildOnlineLockSlot(lockSlots[index])
+              : _buildOfflineLockSlot(lockSlots[index]);
         },
       ),
     );
   }
-  
+
   Widget _buildOnlineLockSlot(LockSlot slot) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -397,7 +493,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FaIcon(
-                    slot.lockState == LockState.unlocked ? FontAwesomeIcons.lockOpen : FontAwesomeIcons.lock,
+                    slot.lockState == LockState.unlocked
+                        ? FontAwesomeIcons.lockOpen
+                        : FontAwesomeIcons.lock,
                     size: 20,
                     color: Colors.grey[600],
                   ),
@@ -412,7 +510,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                     ),
                   ),
                 ],
-              )
+              ),
             ),
           ),
         ),
@@ -448,11 +546,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              FaIcon(
-                FontAwesomeIcons.lock,
-                size: 20,
-                color: Colors.grey[600],
-              ),
+              FaIcon(FontAwesomeIcons.lock, size: 20, color: Colors.grey[600]),
               const SizedBox(height: 4),
               // Slot ID
               Text(
@@ -464,17 +558,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
             ],
-          )
+          ),
         ),
         const SizedBox(height: 8),
         // Charging status indicator
-        Text(
-          '--', 
-          style: TextStyle(
-            color: Colors.grey, 
-            fontSize: 14,
-            ),
-        ),
+        Text('--', style: TextStyle(color: Colors.grey, fontSize: 14)),
       ],
     );
   }
@@ -495,7 +583,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
-            ]
+            ],
           ),
         );
       case LockState.charged:
@@ -512,7 +600,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
-            ]
+            ],
           ),
         );
       case LockState.empty:
@@ -529,14 +617,14 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
-            ]
+            ],
           ),
         );
       default:
-        return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14),);
+        return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14));
     }
   }
-  
+
   Widget _buildLegend() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -558,7 +646,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           // Lock status legend
           Row(
             children: [
-              FaIcon(FontAwesomeIcons.lockOpen, color: Colors.grey[600], size: 14),
+              FaIcon(
+                FontAwesomeIcons.lockOpen,
+                color: Colors.grey[600],
+                size: 14,
+              ),
               const SizedBox(width: 8),
               Text(_l10n.deviceUnlock, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 24),
@@ -584,7 +676,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
-                  ]
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
@@ -603,7 +695,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
-                  ]
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
@@ -622,7 +714,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
-                  ]
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
@@ -642,16 +734,18 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          title: Text('${slot.id} 详情'),
+          title: Text('${slot.id} State'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('锁状态: ${slot.lockState == LockState.unlocked ? '已开锁' : '已锁定'}'),
+              Text(
+                'Lock: ${slot.lockState == LockState.unlocked ? 'Unlock' : 'Lock'}',
+              ),
               const SizedBox(height: 8),
-              Text('充电状态: ${_getChargingStatusText(slot.chargingState)}'),
+              Text('Charge: ${_getChargingStatusText(slot.chargingState)}'),
               const SizedBox(height: 8),
-              Text('使用状态: ${slot.isUsed ? '使用中' : '空闲'}'),
+              Text('Used: ${slot.isUsed ? 'In Use' : 'Idle'}'),
             ],
           ),
           actions: [
@@ -664,35 +758,38 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 highlightColor: Colors.grey.withOpacity(0.15),
                 splashFactory: InkRipple.splashFactory,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Text(
-                    '关闭',
+                    'Close',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                 ),
               ),
             ),
-            if (slot.lockState == LockState.locked && _state == 1)
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _performLockAction(slot);
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  splashColor: Colors.blue.withOpacity(0.3),
-                  highlightColor: Colors.blue.withOpacity(0.15),
-                  splashFactory: InkRipple.splashFactory,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: const Text(
-                      '开锁',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ),
-              ),
+            // if (slot.lockState == LockState.locked && _state == 1)
+            //   Material(
+            //     color: Colors.transparent,
+            //     child: InkWell(
+            //       onTap: () {
+            //         Navigator.of(context).pop();
+            //         _performLockAction(slot);
+            //       },
+            //       borderRadius: BorderRadius.circular(8),
+            //       splashColor: Colors.blue.withOpacity(0.3),
+            //       highlightColor: Colors.blue.withOpacity(0.15),
+            //       splashFactory: InkRipple.splashFactory,
+            //       child: Container(
+            //         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            //         child: const Text(
+            //           '开锁',
+            //           style: TextStyle(color: Colors.blue),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
           ],
         );
       },
@@ -702,48 +799,48 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   String _getChargingStatusText(LockState state) {
     switch (state) {
       case LockState.charging:
-        return '充电中';
+        return 'Charging';
       case LockState.charged:
-        return '已充满';
+        return 'Fully Charged';
       case LockState.empty:
-        return '未充电';
+        return 'Not Powered';
       default:
-        return '未知';
+        return 'Unknown';
     }
   }
 
-  void _performLockAction(LockSlot slot) async {
-    try {
-      final portNumber = int.parse(slot.id.substring(1));
+  // void _performLockAction(LockSlot slot) async {
+  //   try {
+  //     final portNumber = int.parse(slot.id.substring(1));
 
-      final success = await DeviceService.invokeDeviceLockOpen(
-        deviceId: widget.deviceId,
-        port: portNumber,
-      );
+  //     final success = await DeviceService.invokeDeviceLockOpen(
+  //       deviceId: widget.deviceId,
+  //       port: portNumber,
+  //     );
 
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${slot.id} 开锁成功'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        _loadDeviceData();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${slot.id} 开锁失败'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${slot.id} 开锁操作异常: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
+  //     if (success) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('${slot.id} 开锁成功'),
+  //           backgroundColor: Colors.green,
+  //         ),
+  //       );
+  //       _loadDeviceData();
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('${slot.id} 开锁失败'),
+  //           backgroundColor: Colors.red,
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('${slot.id} 开锁操作异常: $e'),
+  //         backgroundColor: Colors.red,
+  //       ),
+  //     );
+  //   }
+  // }
 }

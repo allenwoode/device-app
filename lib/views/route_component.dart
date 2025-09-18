@@ -9,6 +9,8 @@ class RouteComponent extends StatefulWidget {
 
   @override
   State<RouteComponent> createState() => _RouteComponentState();
+
+  static _RouteComponentState? of(BuildContext context) => context.findAncestorStateOfType<_RouteComponentState>();
 }
 
 class _RouteComponentState extends State<RouteComponent> {
@@ -40,6 +42,22 @@ class _RouteComponentState extends State<RouteComponent> {
       }
     }
   }
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+    //_saveLocale(locale);
+  }
+
+  // Future<void> _saveLocale(Locale locale) async {
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     await prefs.setString('locale', locale.languageCode);
+  //   } catch (e) {
+  //     print('Error saving locale in RouteComponent: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,7 @@ import 'package:device/models/device_models.dart';
 import 'package:flutter/services.dart';
 import 'package:device/api/api_config.dart';
 import 'api_interceptor.dart';
+import 'auth_service.dart';
 
 class DeviceService {
   // Device endpoints
@@ -245,7 +246,7 @@ class DeviceService {
   }
 
   static Future<Map<String, dynamic>> _loadLocalDashboardDevices() async {
-    return {'total': 6, 'onlineCount': 0, 'offlineCount': 6};
+    return {'total': 0, 'onlineCount': 0, 'offlineCount': 0};
   }
 
   static Future<List<DashboardUsage>> getDashboardUsage() async {
@@ -524,6 +525,96 @@ class DeviceService {
       return dataList.map((item) => DeviceLog.fromJson(item)).toList();
     } catch (e) {
       throw Exception('Failed to load device log data: $e');
+    }
+  }
+
+  static Future<bool> bindDevice({
+    required String deviceId,
+  }) async {
+    try {
+      // Get current user to retrieve orgId
+      final currentUser = await AuthService.getCurrentUser();
+      if (currentUser == null) {
+        throw Exception('无法获取用户信息');
+      }
+
+      final orgId = currentUser.orgId;
+      if (orgId.isEmpty) {
+        throw Exception('无法获取用户组织信息');
+      }
+
+      // Prepare request body - array of device IDs
+      final requestBody = [deviceId];
+
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/assets/bind/$orgId/device',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Bind API Response Status: ${response.statusCode}');
+        print('Device Bind API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          return responseData['status'] == 200 &&
+                 responseData['message'] == 'success';
+        }
+      }
+
+      return false;
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Device bind API request failed: $e');
+      }
+      return false;
+    }
+  }
+
+  static Future<bool> unbindDevice({
+    required String deviceId,
+  }) async {
+    try {
+      // Get current user to retrieve orgId
+      final currentUser = await AuthService.getCurrentUser();
+      if (currentUser == null) {
+        throw Exception('无法获取用户信息');
+      }
+
+      final orgId = currentUser.orgId;
+      if (orgId.isEmpty) {
+        throw Exception('无法获取用户组织信息');
+      }
+
+      // Prepare request body - array of device IDs
+      final requestBody = [deviceId];
+
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/assets/unbind/$orgId/device',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Unbind API Response Status: ${response.statusCode}');
+        print('Device Unbind API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          return responseData['status'] == 200 &&
+                 responseData['message'] == 'success';
+        }
+      }
+
+      return false;
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Device unbind API request failed: $e');
+      }
+      return false;
     }
   }
 }

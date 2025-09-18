@@ -5,7 +5,9 @@ import 'package:device/services/device_service.dart';
 import 'package:device/widgets/device_card.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/models/login_models.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
+import 'add_device_page.dart';
 
 class DevicePage extends StatefulWidget {
   const DevicePage({super.key});
@@ -19,6 +21,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<DeviceData> _devices = [];
+  List<DeviceData> _filteredDevices = [];
   bool _isLoading = true;
   bool _isLoadingMore = false;
   bool _hasMoreData = true;
@@ -42,11 +45,13 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     _loadDevices();
     _loadUserInfo();
     _scrollController.addListener(_scrollListener);
+    _searchController.addListener(_performSearch);
   }
 
   @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
+    _searchController.removeListener(_performSearch);
     _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -60,6 +65,24 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         _loadMoreDevices();
       }
     }
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.trim();
+    if (query.isEmpty) {
+      _filteredDevices = _devices;
+    } else {
+      _filteredDevices = _devices.where((device) {
+        return device.id.contains(query) ||
+               device.name.contains(query);
+      }).toList();
+    }
+  }
+
+  void _performSearch() {
+    setState(() {
+      _onSearchChanged();
+    });
   }
 
   Future<void> _loadUserInfo() async {
@@ -108,15 +131,18 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             } else {
               _devices = devices;
             }
-            
+
+            // 更新过滤后的设备列表
+            _onSearchChanged();
+
             // 更新总数信息
             if (data['total'] != null) {
               _totalDevices = data['total'];
             }
-            
+
             _isLoading = false;
             _errorMessage = null;
-            
+
             // 使用总数判断是否还有更多数据
             if (_totalDevices != null) {
               _hasMoreData = _devices.length < _totalDevices!;
@@ -129,6 +155,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         if (mounted) {
           setState(() {
             _devices = [];
+            _filteredDevices = [];
             _isLoading = false;
             _errorMessage = null;
             _hasMoreData = false;
@@ -167,12 +194,15 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             _devices.addAll(newDevices);
             _currentPage = nextPage;
             _isLoadingMore = false;
-            
+
+            // 更新过滤后的设备列表
+            _onSearchChanged();
+
             // 更新总数信息
             if (data['total'] != null) {
               _totalDevices = data['total'];
             }
-            
+
             // 使用总数判断是否还有更多数据
             if (_totalDevices != null) {
               _hasMoreData = _devices.length < _totalDevices!;
@@ -204,6 +234,20 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     await _loadDevices(isRefresh: true);
   }
 
+  void _onScanDevice() async {
+    // Navigate to Add Device page
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const AddDevicePage(),
+      ),
+    );
+
+    // Refresh device list if a device was successfully bound
+    if (result == true) {
+      _loadDevices(isRefresh: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -223,6 +267,17 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
           ),
         ),
         centerTitle: false,
+        actions: [
+          IconButton(
+            onPressed: _onScanDevice,
+            icon: const FaIcon(
+              FontAwesomeIcons.circlePlus,
+              color: Colors.black,
+              size: 20,
+            ),
+            tooltip: 'Scan QR code',
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -239,8 +294,16 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: _l10n.searchDeviceIdName,
-                  hintStyle: const TextStyle(color: Colors.grey),
+                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  suffixIcon: _searchController.text.isNotEmpty
+                      ? IconButton(
+                          icon: const FaIcon(FontAwesomeIcons.circleXmark, color: Colors.grey, size: 20),
+                          onPressed: () {
+                            _searchController.clear();
+                          },
+                        )
+                      : null,
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -289,7 +352,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                               ),
                             ),
                           )
-                        : _devices.isEmpty
+                        : _filteredDevices.isEmpty
                         ? SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             child: Container(
@@ -316,28 +379,30 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                               ),
                             ),
                           )
-                        : Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: GridView.builder(
-                                    controller: _scrollController,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          crossAxisSpacing: 12,
-                                          mainAxisSpacing: 12,
-                                          childAspectRatio: 0.85,
-                                        ),
-                                    itemCount: _devices.length,
-                                    itemBuilder: (context, index) {
-                                      return DeviceCard(device: _devices[index]);
+                        : CustomScrollView(
+                            controller: _scrollController,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            slivers: [
+                              SliverPadding(
+                                padding: const EdgeInsets.all(16),
+                                sliver: SliverGrid(
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 12,
+                                    mainAxisSpacing: 12,
+                                    childAspectRatio: 0.85,
+                                  ),
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) {
+                                      return DeviceCard(device: _filteredDevices[index]);
                                     },
+                                    childCount: _filteredDevices.length,
                                   ),
                                 ),
-                                if (_isLoadingMore)
-                                  Container(
+                              ),
+                              if (_isLoadingMore)
+                                SliverToBoxAdapter(
+                                  child: Container(
                                     padding: const EdgeInsets.all(10.0),
                                     child: Column(
                                       children: [
@@ -359,8 +424,10 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                       ],
                                     ),
                                   ),
-                                if (!_hasMoreData && _devices.isNotEmpty && !_isLoading)
-                                  Container(
+                                ),
+                              if (!_hasMoreData && _filteredDevices.isNotEmpty && !_isLoading)
+                                SliverToBoxAdapter(
+                                  child: Container(
                                     padding: const EdgeInsets.all(10.0),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -372,17 +439,18 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          _l10n.allDevicesLoaded(_totalDevices ?? _devices.length),
+                                          _l10n.allDevicesLoaded(_totalDevices ?? _filteredDevices.length),
                                           style: TextStyle(
                                             color: Colors.grey[600],
-                                            fontSize: 14,
+                                            fontSize: 12,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                              ],
-                            ),
+                                ),
+
+                            ],
                           ),
                   ),
           ),

@@ -127,6 +127,8 @@ class User {
   final int modifyTime;
   final Gender gender;
   final Register register;
+  String orgId;
+  String orgName;
 
   User({
     required this.id,
@@ -145,9 +147,14 @@ class User {
     required this.modifyTime,
     required this.gender,
     required this.register,
+    this.orgId = '',
+    this.orgName = '',
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    final orgList = (json['orgList'] as List<dynamic>?)
+          ?.map((o) => Organization.fromJson(o))
+          .toList() ?? [];
     return User(
       id: json['id'] ?? '',
       username: json['username'] ?? '',
@@ -159,9 +166,7 @@ class User {
       roleList: (json['roleList'] as List<dynamic>?)
           ?.map((r) => UserRole.fromJson(r))
           .toList() ?? [],
-      orgList: (json['orgList'] as List<dynamic>?)
-          ?.map((o) => Organization.fromJson(o))
-          .toList() ?? [],
+      orgList: orgList,
       creatorId: json['creatorId'] ?? '',
       creatorName: json['creatorName'] ?? '',
       modifierId: json['modifierId'] ?? '',
@@ -169,6 +174,8 @@ class User {
       modifyTime: json['modifyTime'] ?? 0,
       gender: Gender.fromJson(json['gender'] ?? {}),
       register: Register.fromJson(json['register'] ?? {}),
+      orgId: orgList.first.id,
+      orgName: orgList.first.fullName,
     );
   }
 

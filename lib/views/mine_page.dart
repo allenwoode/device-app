@@ -1,4 +1,6 @@
+import 'package:device/config/app_colors.dart';
 import 'package:device/routes/app_routes.dart';
+import 'package:device/widgets/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../services/storage_service.dart';
@@ -55,110 +57,124 @@ class _MinePageState extends State<MinePage> {
     }
   }
 
-  Future<void> _handleLogout() async {
-    _showLogoutConfirmDialog();
-  }
+  // Future<void> _handleLogout() async {
+  //   _showLogoutConfirmDialog();
+  // }
 
-  void _showLogoutConfirmDialog() {
-    showDialog(
+  void _handleLogout() {
+    ConfirmDialog.show(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          contentPadding: const EdgeInsets.all(24),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Title
-              Text(
-                _l10n.confirmExit,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-
-              // Message
-              Text(
-                _l10n.confirmLogoutMessage,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black54,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-
-              // Buttons
-              Row(
-                children: [
-                  // Cancel button
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        _l10n.cancel,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  // Confirm button
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        await _performLogout();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        _l10n.confirm,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
+      title: '设备解绑',
+      message: '确定对当前设备解绑吗？',
+      confirmText: '解绑',
+      confirmButtonColor: AppColors.primaryColor,
+      onConfirm: () async {
+        Navigator.of(context).pop();
+        await _performLogout();
       },
+      onCancel: () => Navigator.of(context).pop(),
     );
   }
 
-  Future<void> _performLogout() async {
+  // void _showLogoutConfirmDialog() {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         backgroundColor: Colors.white,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(16),
+  //         ),
+  //         contentPadding: const EdgeInsets.all(24),
+  //         content: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             // Title
+  //             Text(
+  //               _l10n.confirmExit,
+  //               style: const TextStyle(
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.w600,
+  //                 color: Colors.black87,
+  //               ),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             const SizedBox(height: 16),
 
+  //             // Message
+  //             Text(
+  //               _l10n.confirmLogoutMessage,
+  //               style: const TextStyle(
+  //                 fontSize: 14,
+  //                 color: Colors.black54,
+  //               ),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             const SizedBox(height: 24),
+
+  //             // Buttons
+  //             Row(
+  //               children: [
+  //                 // Cancel button
+  //                 Expanded(
+  //                   child: TextButton(
+  //                     onPressed: () {
+  //                       Navigator.of(context).pop();
+  //                     },
+  //                     style: TextButton.styleFrom(
+  //                       padding: const EdgeInsets.symmetric(vertical: 12),
+  //                       shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(8),
+  //                       ),
+  //                     ),
+  //                     child: Text(
+  //                       _l10n.cancel,
+  //                       style: const TextStyle(
+  //                         fontSize: 16,
+  //                         color: Colors.grey,
+  //                         fontWeight: FontWeight.w500,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 12),
+
+  //                 // Confirm button
+  //                 Expanded(
+  //                   child: ElevatedButton(
+  //                     onPressed: () async {
+  //                       Navigator.pop(context);
+  //                       await _performLogout();
+  //                     },
+  //                     style: ElevatedButton.styleFrom(
+  //                       backgroundColor: Colors.orange,
+  //                       padding: const EdgeInsets.symmetric(vertical: 12),
+  //                       shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(8),
+  //                       ),
+  //                       elevation: 0,
+  //                     ),
+  //                     child: Text(
+  //                       _l10n.confirm,
+  //                       style: const TextStyle(
+  //                         fontSize: 16,
+  //                         color: Colors.white,
+  //                         fontWeight: FontWeight.w500,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  Future<void> _performLogout() async {
     try {
       // Show loading indicator
       showDialog(

@@ -1,0 +1,12 @@
+POST /assets/bind/{orgId}/device
+
+# body
+["1968495383549747200"]
+
+# response
+{
+    "message": "success",
+    "result": 1,
+    "status": 200,
+    "timestamp": 1758179484860
+}
