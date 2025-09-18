@@ -133,3 +133,204 @@ class DashboardMessage {
     );
   }
 }
+
+class DeviceUsage {
+  final int port;
+  final String type;
+  final int timestamp;
+  final String typeFormat;
+  final String portFormat;
+  final int timestampFormat;
+  final String deviceId;
+  final String depo;
+  final String depoFormat;
+  final String createTime;
+
+  DeviceUsage({
+    required this.port,
+    required this.type,
+    required this.timestamp,
+    required this.typeFormat,
+    required this.portFormat,
+    required this.timestampFormat,
+    required this.deviceId,
+    required this.depo,
+    required this.depoFormat,
+    required this.createTime,
+  });
+
+  factory DeviceUsage.fromJson(Map<String, dynamic> json) {
+    return DeviceUsage(
+      port: json['port'] ?? 0,
+      type: json['type'] ?? '',
+      timestamp: json['timestamp'] ?? 0,
+      typeFormat: json['type_format'] ?? '',
+      portFormat: json['port_format'] ?? '',
+      timestampFormat: json['timestamp_format'] ?? 0,
+      deviceId: json['deviceId'] ?? '',
+      depo: json['depo'] ?? '',
+      depoFormat: json['depo_format'] ?? '',
+      createTime: json['createTime'] ?? '',
+    );
+  }
+}
+
+class DeviceAlert {
+  final int level;
+  final String levelFormat;
+  final String text;
+  final String createTime;
+  final String deviceId;
+  final int port;
+  final int timestamp;
+
+  DeviceAlert({
+    required this.level,
+    required this.levelFormat,
+    required this.text,
+    required this.createTime,
+    required this.deviceId,
+    required this.port,
+    required this.timestamp,
+  });
+
+  factory DeviceAlert.fromJson(Map<String, dynamic> json) {
+    return DeviceAlert(
+      level: json['level'] ?? 0,
+      levelFormat: json['level_format'] ?? '',
+      text: json['text'] ?? '',
+      createTime: json['createTime'] ?? '',
+      deviceId: json['deviceId'] ?? '',
+      port: json['port'] ?? 0,
+      timestamp: json['timestamp'] ?? 0,
+    );
+  }
+
+  String get alertInfo => port > 0 ? 'C$port $text' : text;
+}
+
+class DeviceLog {
+  final String category;
+  final String text;
+  final String createTime;
+  final String deviceId;
+  final int timestamp;
+
+  DeviceLog({
+    required this.category,
+    required this.text,
+    required this.createTime,
+    required this.deviceId,
+    required this.timestamp,
+  });
+
+  factory DeviceLog.fromJson(Map<String, dynamic> json) {
+    return DeviceLog(
+      category: json['category'] ?? '',
+      text: json['text'] ?? '',
+      createTime: json['createTime'] ?? '',
+      deviceId: json['deviceId'] ?? '',
+      timestamp: json['timestamp'] ?? 0,
+    );
+  }
+
+  String get logInfo => '[$category] $text';
+}
+
+class DeviceAlertResponse {
+  final String message;
+  final DeviceAlertResult result;
+  final int status;
+  final int timestamp;
+
+  DeviceAlertResponse({
+    required this.message,
+    required this.result,
+    required this.status,
+    required this.timestamp,
+  });
+
+  factory DeviceAlertResponse.fromJson(Map<String, dynamic> json) {
+    return DeviceAlertResponse(
+      message: json['message'] ?? '',
+      result: DeviceAlertResult.fromJson(json['result'] ?? {}),
+      status: json['status'] ?? 0,
+      timestamp: json['timestamp'] ?? 0,
+    );
+  }
+}
+
+class DeviceAlertResult {
+  final int pageIndex;
+  final int pageSize;
+  final int total;
+  final List<DeviceAlert> data;
+
+  DeviceAlertResult({
+    required this.pageIndex,
+    required this.pageSize,
+    required this.total,
+    required this.data,
+  });
+
+  factory DeviceAlertResult.fromJson(Map<String, dynamic> json) {
+    List<dynamic> dataList = json['data'] ?? [];
+    List<DeviceAlert> alertList = dataList.map((item) => DeviceAlert.fromJson(item)).toList();
+
+    return DeviceAlertResult(
+      pageIndex: json['pageIndex'] ?? 0,
+      pageSize: json['pageSize'] ?? 0,
+      total: json['total'] ?? 0,
+      data: alertList,
+    );
+  }
+}
+
+class DeviceUsageResponse {
+  final String message;
+  final DeviceUsageResult result;
+  final int status;
+  final int timestamp;
+
+  DeviceUsageResponse({
+    required this.message,
+    required this.result,
+    required this.status,
+    required this.timestamp,
+  });
+
+  factory DeviceUsageResponse.fromJson(Map<String, dynamic> json) {
+    return DeviceUsageResponse(
+      message: json['message'] ?? '',
+      result: DeviceUsageResult.fromJson(json['result'] ?? {}),
+      status: json['status'] ?? 0,
+      timestamp: json['timestamp'] ?? 0,
+    );
+  }
+}
+
+class DeviceUsageResult {
+  final int pageIndex;
+  final int pageSize;
+  final int total;
+  final List<DeviceUsage> data;
+
+  DeviceUsageResult({
+    required this.pageIndex,
+    required this.pageSize,
+    required this.total,
+    required this.data,
+  });
+
+  factory DeviceUsageResult.fromJson(Map<String, dynamic> json) {
+    List<dynamic> dataList = json['data'] ?? [];
+    List<DeviceUsage> usageList = dataList.map((item) => DeviceUsage.fromJson(item)).toList();
+
+    return DeviceUsageResult(
+      pageIndex: json['pageIndex'] ?? 0,
+      pageSize: json['pageSize'] ?? 0,
+      total: json['total'] ?? 0,
+      data: usageList,
+    );
+  }
+}

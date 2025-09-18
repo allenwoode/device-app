@@ -2,8 +2,11 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import '../views/main_page.dart';
 import '../views/login_page.dart';
-import '../views/device_detail_page.dart';
-import '../views/function_page.dart';
+import '../views/instance/device_detail_page.dart';
+import '../views/instance/function_page.dart';
+import '../views/instance/device_usage_page.dart';
+import '../views/instance/device_alert_page.dart';
+import '../views/instance/device_log_page.dart';
 
 class AppRoutes {
   static final FluroRouter router = FluroRouter();
@@ -14,6 +17,9 @@ class AppRoutes {
   static const String main = '/main';
   static const String deviceDetail = '/device-detail';
   static const String function = '/function';
+  static const String deviceUsage = '/device-usage';
+  static const String deviceAlert = '/device-alert';
+  static const String deviceLog = '/device-log';
 
   // Route handlers
   static final Handler _rootHandler = Handler(
@@ -60,7 +66,7 @@ class AppRoutes {
       final productId = params['productId']?.first ?? '';
       final numString = params['num']?.first;
       final num = numString != null ? int.tryParse(numString) : null;
-      
+
       if (deviceId.isEmpty || productId.isEmpty) {
         return const Scaffold(
           body: Center(
@@ -68,12 +74,69 @@ class AppRoutes {
           ),
         );
       }
-      
+
       return FunctionPage(
         deviceId: deviceId,
         productId: productId,
         num: num,
       );
+    },
+  );
+
+  static final Handler _deviceUsageHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      final deviceId = params['deviceId']?.first ?? '';
+      final productId = params['productId']?.first ?? '';
+      final numString = params['num']?.first;
+      final num = numString != null ? int.tryParse(numString) : null;
+
+      if (deviceId.isEmpty || productId.isEmpty) {
+        return const Scaffold(
+          body: Center(
+            child: Text('Invalid device usage parameters'),
+          ),
+        );
+      }
+
+      return DeviceUsagePage(
+        deviceId: deviceId, 
+        productId: productId, 
+        num: num
+      );
+    },
+  );
+
+  static final Handler _deviceAlertHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      final deviceId = params['deviceId']?.first ?? '';
+      final productId = params['productId']?.first ?? '';
+
+      if (deviceId.isEmpty || productId.isEmpty) {
+        return const Scaffold(
+          body: Center(
+            child: Text('Invalid device alert parameters'),
+          ),
+        );
+      }
+
+      return DeviceAlertPage(deviceId: deviceId, productId: productId);
+    },
+  );
+
+  static final Handler _deviceLogHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      final deviceId = params['deviceId']?.first ?? '';
+      final productId = params['productId']?.first ?? '';
+
+      if (deviceId.isEmpty || productId.isEmpty) {
+        return const Scaffold(
+          body: Center(
+            child: Text('Invalid device log parameters'),
+          ),
+        );
+      }
+
+      return DeviceLogPage(deviceId: deviceId, productId: productId,);
     },
   );
 
@@ -107,6 +170,24 @@ class AppRoutes {
     router.define(
       '$function/:deviceId/:productId/:num',
       handler: _functionHandler,
+      transitionType: TransitionType.cupertino,
+    );
+
+    router.define(
+      '$deviceUsage/:deviceId/:productId/:num',
+      handler: _deviceUsageHandler,
+      transitionType: TransitionType.cupertino,
+    );
+
+    router.define(
+      '$deviceAlert/:deviceId/:productId',
+      handler: _deviceAlertHandler,
+      transitionType: TransitionType.cupertino,
+    );
+
+    router.define(
+      '$deviceLog/:deviceId/:productId',
+      handler: _deviceLogHandler,
       transitionType: TransitionType.cupertino,
     );
 
@@ -174,13 +255,38 @@ class AppRoutes {
     return navigateTo(context, '$deviceDetail/$deviceId/$productId');
   }
 
-  static Future<dynamic> goToFunction(
+  static Future<dynamic> goToDeviceFunction(
     BuildContext context,
     String deviceId,
     String productId,
     int? num,
   ) {
-    final numParam = num?.toString() ?? '0';
-    return navigateTo(context, '$function/$deviceId/$productId/$numParam');
+    //final numParam = num?.toString() ?? '0';
+    return navigateTo(context, '$function/$deviceId/$productId/$num');
+  }
+
+  static Future<dynamic> goToDeviceUsage(
+    BuildContext context,
+    String deviceId,
+    String productId,
+    int? num,
+  ) {
+    return navigateTo(context, '$deviceUsage/$deviceId/$productId/$num');
+  }
+
+  static Future<dynamic> goToDeviceAlert(
+    BuildContext context,
+    String deviceId,
+    String productId,
+  ) {
+    return navigateTo(context, '$deviceAlert/$deviceId/$productId');
+  }
+
+  static Future<dynamic> goToDeviceLog(
+    BuildContext context,
+    String deviceId,
+    String productId,
+  ) {
+    return navigateTo(context, '$deviceLog/$deviceId/$productId');
   }
 }

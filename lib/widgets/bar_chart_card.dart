@@ -5,12 +5,14 @@ class BarChartCard extends StatefulWidget {
   final String title;
   final List<ChartBarData> data;
   final bool shouldAnimate;
+  final double? maxY;
 
   const BarChartCard({
     super.key,
     required this.title,
     required this.data,
     this.shouldAnimate = true,
+    this.maxY,
   });
 
   @override
@@ -89,10 +91,15 @@ class _BarChartCardState extends State<BarChartCard>
               child: AnimatedBuilder(
                 animation: _animation,
                 builder: (context, child) {
+                  double chartMaxY = widget.maxY ??
+                      (widget.data.isNotEmpty
+                        ? widget.data.map((e) => e.value.toDouble()).reduce((a, b) => a > b ? a : b) + 2
+                        : 100);
+
                   return BarChart(
                     BarChartData(
                       alignment: BarChartAlignment.spaceAround,
-                      maxY: 100,
+                      maxY: chartMaxY,
                       // barTouchData: BarTouchData(
                       //   enabled: true,
                       //   touchTooltipData: BarTouchTooltipData(
@@ -142,10 +149,10 @@ class _BarChartCardState extends State<BarChartCard>
                           sideTitles: SideTitles(
                             showTitles: true,
                             reservedSize: 40,
-                            interval: 20,
+                            interval: chartMaxY <= 10 ? 1 : (chartMaxY / 5).ceilToDouble(),
                             getTitlesWidget: (value, meta) {
                               return Text(
-                                '$value',
+                                '${value.toInt()}',
                                 style: const TextStyle(
                                   color: Colors.grey,
                                   fontWeight: FontWeight.bold,
@@ -180,7 +187,7 @@ class _BarChartCardState extends State<BarChartCard>
                       gridData: FlGridData(
                         show: true,
                         drawVerticalLine: false,
-                        horizontalInterval: 20,
+                        horizontalInterval: chartMaxY <= 10 ? 1 : (chartMaxY / 5).ceilToDouble(),
                         getDrawingHorizontalLine: (value) {
                           return FlLine(
                             color: Colors.grey[300],

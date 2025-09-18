@@ -113,16 +113,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offline => 'Offline';
 
   @override
-  String get usageRate => 'Usage Rate';
+  String get usageRate => 'Usage';
 
   @override
   String get alerts => 'Alerts';
 
   @override
-  String get operationLog => 'Operation Log';
+  String get operationLog => 'Operation';
 
   @override
-  String get remoteSettings => 'Remote Settings';
+  String get remoteSettings => 'Remote';
 
   @override
   String get deviceOfflineCannotRemoteSet =>
@@ -189,19 +189,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get operationLogs => 'Operation Logs';
 
   @override
-  String get alarm => 'Alarm';
+  String get alarm => 'Notice';
 
   @override
   String get severe => 'Severe';
 
   @override
-  String get deviceReport => 'Device Report';
+  String get deviceReport => 'Report';
 
   @override
-  String get platformDispatch => 'Platform Dispatch';
+  String get platformDispatch => 'Dispatch';
 
   @override
-  String get todayUsageTop5 => 'Today Usage Amount TOP5';
+  String get todayUsageTop5 => 'Today\'s Usage TOP5';
 
   @override
   String get loadDeviceDataFailed => 'Failed to load device data!';
@@ -237,4 +237,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginError => 'Login Error';
+
+  @override
+  String get todayUsage => 'Today\'s Usage';
+
+  @override
+  String get noUsageRecords => 'No usage records';
+
+  @override
+  String get noUsageDataAvailable => 'No usage data available';
+
+  @override
+  String get operationInfo => 'Operation Info';
+
+  @override
+  String get operationTime => 'Operation Time';
+
+  @override
+  String get usageInfo => 'Usage Info';
+
+  @override
+  String get usageTime => 'Usage Time';
+
+  @override
+  String inUse(Object port) {
+    return '$port In Use';
+  }
+
+  @override
+  String get noAlertData => 'No alert data';
+
+  @override
+  String get noAlertInfo => 'No alert information';
+
+  @override
+  String get alertInfo => 'Alert Info';
+
+  @override
+  String get alertTime => 'Alert Time';
+
+  @override
+  String get propertyReport => 'Report';
+
+  @override
+  String get noLogData => 'No log data';
+
+  @override
+  String get noLogInfo => 'No log information';
 }

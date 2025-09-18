@@ -16,7 +16,7 @@ class MinePage extends StatefulWidget {
 class _MinePageState extends State<MinePage> {
   User? _currentUser;
   bool _isLoading = true;
-  bool _isLoggingOut = false;
+  //bool _isLoggingOut = false;
 
   AppLocalizations get _l10n {
     try {
@@ -53,13 +53,6 @@ class _MinePageState extends State<MinePage> {
         _isLoading = false;
       });
     }
-  }
-
-  void _do() {
-    print('==========================> auth expiered');
-    // Fire unauthorized event
-    //EventBusService.fire(UnauthorizedEvent('Authentication expired'));
-    AppRoutes.goToLogin(context, clearStack: true);
   }
 
   Future<void> _handleLogout() async {
@@ -165,9 +158,6 @@ class _MinePageState extends State<MinePage> {
   }
 
   Future<void> _performLogout() async {
-    setState(() {
-      _isLoggingOut = true;
-    });
 
     try {
       // Show loading indicator
@@ -185,7 +175,7 @@ class _MinePageState extends State<MinePage> {
       Navigator.pop(context);
 
       if (success) {
-        _showStyledAlertDialog(_l10n.logoutSuccess, _l10n.logoutSuccess);
+        //_showStyledAlertDialog(_l10n.logoutSuccess, _l10n.logoutSuccess);
         // Navigate after showing success message
         Future.delayed(const Duration(milliseconds: 1500), () {
           if (mounted) {
@@ -202,12 +192,6 @@ class _MinePageState extends State<MinePage> {
       }
 
       _showStyledAlertDialog(_l10n.error, _l10n.networkError);
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoggingOut = false;
-        });
-      }
     }
   }
 

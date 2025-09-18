@@ -185,7 +185,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               const SizedBox(height: 16),
               PieChartCard(
-                title: _l10n.operationLog,
+                title: _l10n.operationLogs,
                 total: _dashboardMessage?.total,
                 primaryLabel: _l10n.deviceReport,
                 primaryValue: _dashboardMessage?.reportCount ?? 0,

@@ -1,6 +1,7 @@
 import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
 
 class RouteComponent extends StatefulWidget {
@@ -8,8 +9,6 @@ class RouteComponent extends StatefulWidget {
 
   @override
   State<RouteComponent> createState() => _RouteComponentState();
-
-  static _RouteComponentState? of(BuildContext context) => context.findAncestorStateOfType<_RouteComponentState>();
 }
 
 class _RouteComponentState extends State<RouteComponent> {
@@ -19,12 +18,27 @@ class _RouteComponentState extends State<RouteComponent> {
   void initState() {
     super.initState();
     AppRoutes.configureRoutes();
+    _loadSavedLocale();
   }
 
-  void setLocale(Locale locale) {
-    setState(() {
-      _locale = locale;
-    });
+  Future<void> _loadSavedLocale() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedLocaleCode = prefs.getString('locale') ?? 'zh';
+      if (mounted) {
+        setState(() {
+          _locale = Locale(savedLocaleCode);
+        });
+      }
+    } catch (e) {
+      print('Error loading saved locale in RouteComponent: $e');
+      // Fallback to default locale on error
+      if (mounted) {
+        setState(() {
+          _locale = const Locale('zh');
+        });
+      }
+    }
   }
 
   @override

@@ -299,7 +299,7 @@ abstract class AppLocalizations {
   /// No description provided for @usageRate.
   ///
   /// In en, this message translates to:
-  /// **'Usage Rate'**
+  /// **'Usage'**
   String get usageRate;
 
   /// No description provided for @alerts.
@@ -311,13 +311,13 @@ abstract class AppLocalizations {
   /// No description provided for @operationLog.
   ///
   /// In en, this message translates to:
-  /// **'Operation Log'**
+  /// **'Operation'**
   String get operationLog;
 
   /// No description provided for @remoteSettings.
   ///
   /// In en, this message translates to:
-  /// **'Remote Settings'**
+  /// **'Remote'**
   String get remoteSettings;
 
   /// No description provided for @deviceOfflineCannotRemoteSet.
@@ -449,7 +449,7 @@ abstract class AppLocalizations {
   /// No description provided for @alarm.
   ///
   /// In en, this message translates to:
-  /// **'Alarm'**
+  /// **'Notice'**
   String get alarm;
 
   /// No description provided for @severe.
@@ -461,19 +461,19 @@ abstract class AppLocalizations {
   /// No description provided for @deviceReport.
   ///
   /// In en, this message translates to:
-  /// **'Device Report'**
+  /// **'Report'**
   String get deviceReport;
 
   /// No description provided for @platformDispatch.
   ///
   /// In en, this message translates to:
-  /// **'Platform Dispatch'**
+  /// **'Dispatch'**
   String get platformDispatch;
 
   /// No description provided for @todayUsageTop5.
   ///
   /// In en, this message translates to:
-  /// **'Today Usage Amount TOP5'**
+  /// **'Today\'s Usage TOP5'**
   String get todayUsageTop5;
 
   /// No description provided for @loadDeviceDataFailed.
@@ -529,6 +529,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login Error'**
   String get loginError;
+
+  /// No description provided for @todayUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Usage'**
+  String get todayUsage;
+
+  /// No description provided for @noUsageRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'No usage records'**
+  String get noUsageRecords;
+
+  /// No description provided for @noUsageDataAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No usage data available'**
+  String get noUsageDataAvailable;
+
+  /// No description provided for @operationInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation Info'**
+  String get operationInfo;
+
+  /// No description provided for @operationTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation Time'**
+  String get operationTime;
+
+  /// No description provided for @usageInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage Info'**
+  String get usageInfo;
+
+  /// No description provided for @usageTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage Time'**
+  String get usageTime;
+
+  /// No description provided for @inUse.
+  ///
+  /// In en, this message translates to:
+  /// **'{port} In Use'**
+  String inUse(Object port);
+
+  /// No description provided for @noAlertData.
+  ///
+  /// In en, this message translates to:
+  /// **'No alert data'**
+  String get noAlertData;
+
+  /// No description provided for @noAlertInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'No alert information'**
+  String get noAlertInfo;
+
+  /// No description provided for @alertInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert Info'**
+  String get alertInfo;
+
+  /// No description provided for @alertTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert Time'**
+  String get alertTime;
+
+  /// No description provided for @propertyReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get propertyReport;
+
+  /// No description provided for @noLogData.
+  ///
+  /// In en, this message translates to:
+  /// **'No log data'**
+  String get noLogData;
+
+  /// No description provided for @noLogInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'No log information'**
+  String get noLogInfo;
 }
 
 class _AppLocalizationsDelegate

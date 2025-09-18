@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:device/services/device_service.dart';
-import 'package:device/models/device_models.dart';
 import 'package:device/routes/app_routes.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 
 enum LockState {
   locked,
@@ -234,11 +233,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   
   Widget _buildTopMenu() {
     return Container(
-      margin: const EdgeInsets.only(left: 16, top: 32, right: 16, bottom: 0),
+      margin: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
@@ -252,17 +251,30 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildMenuIcon(FontAwesomeIcons.chartArea, _l10n.usageRate, onPressed: () {
-            // TODO: Navigate to usage statistics page
+            AppRoutes.goToDeviceUsage(
+              context,
+              widget.deviceId,
+              widget.productId,
+              _num,
+            );
           }),
           _buildMenuIcon(FontAwesomeIcons.solidBell, _l10n.alerts, onPressed: () {
-            // TODO: Navigate to alerts page
+            AppRoutes.goToDeviceAlert(
+              context,
+              widget.deviceId,
+              widget.productId,
+            );
           }),
           _buildMenuIcon(FontAwesomeIcons.clipboardList, _l10n.operationLog, onPressed: () {
-            // TODO: Navigate to operation logs page
+            AppRoutes.goToDeviceLog(
+              context,
+              widget.deviceId,
+              widget.productId,
+            );
           }),
           _buildMenuIcon(FontAwesomeIcons.gear, _l10n.remoteSettings, onPressed: () {
             if (_state == 1) {
-              AppRoutes.goToFunction(
+              AppRoutes.goToDeviceFunction(
                 context,
                 widget.deviceId,
                 widget.productId,
@@ -283,24 +295,34 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   }
   
   Widget _buildMenuIcon(IconData icon, String label, {VoidCallback? onPressed}) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Column(
-        children: [
-          FaIcon(
-            icon,
-            size: 24,
-            color: Colors.grey[600],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        //borderRadius: BorderRadius.circular(12),
+        splashColor: Colors.blue.withOpacity(0.2),
+        //highlightColor: Colors.white.withOpacity(0.2),
+        splashFactory: InkRipple.splashFactory,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Column(
+            children: [
+              FaIcon(
+                icon,
+                size: 24,
+                color: Colors.grey[600],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -343,43 +365,56 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Circular background with lock icon
-        Container(
-          width: 64,
-          height: 64,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: slot.isUsed ? Colors.white : Colors.grey[300],
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
+        // Circular background with lock icon and ripple effect
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              // Handle lock slot tap - could open a dialog or perform action
+              _showLockSlotDialog(slot);
+            },
+            borderRadius: BorderRadius.circular(32),
+            splashColor: Colors.blue.withOpacity(0.3),
+            highlightColor: Colors.blue.withOpacity(0.15),
+            splashFactory: InkRipple.splashFactory,
+            child: Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: slot.isUsed ? Colors.white : Colors.grey[300],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 0,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-            ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FaIcon(
+                    slot.lockState == LockState.unlocked ? FontAwesomeIcons.lockOpen : FontAwesomeIcons.lock,
+                    size: 20,
+                    color: Colors.grey[600],
+                  ),
+                  const SizedBox(height: 4),
+                  // Slot ID
+                  Text(
+                    slot.id,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              )
+            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FaIcon(
-                slot.lockState == LockState.unlocked ? FontAwesomeIcons.lockOpen : FontAwesomeIcons.lock,
-                size: 20,
-                color: Colors.grey[600],
-              ),
-              const SizedBox(height: 4),
-              // Slot ID
-              Text(
-                slot.id,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
-          )
         ),
         const SizedBox(height: 8),
         // Charging status indicator
@@ -597,5 +632,118 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         ],
       ),
     );
+  }
+
+  void _showLockSlotDialog(LockSlot slot) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text('${slot.id} 详情'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('锁状态: ${slot.lockState == LockState.unlocked ? '已开锁' : '已锁定'}'),
+              const SizedBox(height: 8),
+              Text('充电状态: ${_getChargingStatusText(slot.chargingState)}'),
+              const SizedBox(height: 8),
+              Text('使用状态: ${slot.isUsed ? '使用中' : '空闲'}'),
+            ],
+          ),
+          actions: [
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                borderRadius: BorderRadius.circular(8),
+                splashColor: Colors.grey.withOpacity(0.3),
+                highlightColor: Colors.grey.withOpacity(0.15),
+                splashFactory: InkRipple.splashFactory,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text(
+                    '关闭',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ),
+              ),
+            ),
+            if (slot.lockState == LockState.locked && _state == 1)
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _performLockAction(slot);
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  splashColor: Colors.blue.withOpacity(0.3),
+                  highlightColor: Colors.blue.withOpacity(0.15),
+                  splashFactory: InkRipple.splashFactory,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: const Text(
+                      '开锁',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  String _getChargingStatusText(LockState state) {
+    switch (state) {
+      case LockState.charging:
+        return '充电中';
+      case LockState.charged:
+        return '已充满';
+      case LockState.empty:
+        return '未充电';
+      default:
+        return '未知';
+    }
+  }
+
+  void _performLockAction(LockSlot slot) async {
+    try {
+      final portNumber = int.parse(slot.id.substring(1));
+
+      final success = await DeviceService.invokeDeviceLockOpen(
+        deviceId: widget.deviceId,
+        port: portNumber,
+      );
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${slot.id} 开锁成功'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        _loadDeviceData();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${slot.id} 开锁失败'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${slot.id} 开锁操作异常: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }

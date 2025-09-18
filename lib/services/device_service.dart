@@ -356,6 +356,176 @@ class DeviceService {
       return false;
     }
   }
+
+  static Future<List<DeviceUsage>> getDeviceUsage({
+    required String deviceId,
+  }) async {
+    // try {
+    //   // Try API first
+    //   final response = await ApiInterceptor.post(
+    //     '${ApiConfig.baseUrl}/device-instance/$deviceId/event/LOCK_OPEN_TYPE',
+    //     data: {
+    //       'terms': []
+    //     },
+    //   ).timeout(ApiConfig.timeout);
+
+    //   if (ApiConfig.enableLogging) {
+    //     print('Device Usage API Response Status: ${response.statusCode}');
+    //     print('Device Usage API Response Body: ${response.data}');
+    //   }
+
+    //   if (response.statusCode == 201) {
+    //     List<dynamic> dataList = response.data['result']['data'] ?? [];
+    //     return dataList.map((item) => DeviceUsage.fromJson(item)).toList();
+    //   } else {
+    //     throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+    //   }
+    // } catch (e) {
+    //   if (ApiConfig.enableLogging) {
+    //     print('Device usage API request failed: $e, falling back to local data');
+    //   }
+
+    //   if (ApiConfig.useLocalFallback) {
+    //     return await _loadLocalDeviceUsage();
+    //   } else {
+    //     rethrow;
+    //   }
+    // }
+
+    if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceUsage();
+    }
+    return [];
+  }
+
+  static Future<List<DeviceUsage>> _loadLocalDeviceUsage() async {
+    try {
+      final String response = await rootBundle.loadString(
+        'lib/assets/device_usage.json',
+      );
+      final json = jsonDecode(response);
+      List<dynamic> dataList = json['result']['data'] ?? [];
+      return dataList.map((item) => DeviceUsage.fromJson(item)).toList();
+    } catch (e) {
+      throw Exception('Failed to load device usage data: $e');
+    }
+  }
+
+  static Future<List<DeviceAlert>> getDeviceAlerts({
+    required String deviceId,
+    int pageIndex = 0,
+    int pageSize = 12,
+  }) async {
+    try {
+      // Try API first (commented for now, using local fallback)
+      // final response = await ApiInterceptor.post(
+      //   '${ApiConfig.baseUrl}/device-instance/$deviceId/alerts',
+      //   data: {
+      //     'pageIndex': pageIndex,
+      //     'pageSize': pageSize,
+      //   },
+      // ).timeout(ApiConfig.timeout);
+
+      // if (ApiConfig.enableLogging) {
+      //   print('Device Alert API Response Status: ${response.statusCode}');
+      //   print('Device Alert API Response Body: ${response.data}');
+      // }
+
+      // if (response.statusCode == 200) {
+      //   DeviceAlertResponse alertResponse = DeviceAlertResponse.fromJson(response.data);
+      //   return alertResponse.result.data;
+      // } else {
+      //   throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      // }
+
+      // For now, always use local fallback
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceAlerts();
+      }
+      return [];
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Device alert API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceAlerts();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<List<DeviceAlert>> _loadLocalDeviceAlerts() async {
+    try {
+      final String response = await rootBundle.loadString(
+        'lib/assets/device_alert.json',
+      );
+      final json = jsonDecode(response);
+      List<dynamic> dataList = json['result']['data'] ?? [];
+      return dataList.map((item) => DeviceAlert.fromJson(item)).toList();
+    } catch (e) {
+      throw Exception('Failed to load device alert data: $e');
+    }
+  }
+
+  static Future<List<DeviceLog>> getDeviceLogs({
+    required String deviceId,
+    int pageIndex = 0,
+    int pageSize = 12,
+  }) async {
+    try {
+      // Try API first (commented for now, using local fallback)
+      // final response = await ApiInterceptor.post(
+      //   '${ApiConfig.baseUrl}/device-instance/$deviceId/logs',
+      //   data: {
+      //     'pageIndex': pageIndex,
+      //     'pageSize': pageSize,
+      //   },
+      // ).timeout(ApiConfig.timeout);
+
+      // if (ApiConfig.enableLogging) {
+      //   print('Device Log API Response Status: ${response.statusCode}');
+      //   print('Device Log API Response Body: ${response.data}');
+      // }
+
+      // if (response.statusCode == 200) {
+      //   List<dynamic> dataList = response.data['result']['data'] ?? [];
+      //   return dataList.map((item) => DeviceLog.fromJson(item)).toList();
+      // } else {
+      //   throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      // }
+
+      // For now, always use local fallback
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceLogs();
+      }
+      return [];
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Device log API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceLogs();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<List<DeviceLog>> _loadLocalDeviceLogs() async {
+    try {
+      final String response = await rootBundle.loadString(
+        'lib/assets/device_log.json',
+      );
+      final json = jsonDecode(response);
+      List<dynamic> dataList = json['result']['data'] ?? [];
+      return dataList.map((item) => DeviceLog.fromJson(item)).toList();
+    } catch (e) {
+      throw Exception('Failed to load device log data: $e');
+    }
+  }
 }
 
 class HttpException implements Exception {

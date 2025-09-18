@@ -112,7 +112,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get offline => '离线';
 
   @override
-  String get usageRate => '使用率';
+  String get usageRate => '使用量';
 
   @override
   String get alerts => '告警';
@@ -187,7 +187,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationLogs => '操作日志';
 
   @override
-  String get alarm => '报警';
+  String get alarm => '提醒';
 
   @override
   String get severe => '严重';
@@ -235,4 +235,51 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get loginError => '登录错误';
+
+  @override
+  String get todayUsage => '今日使用量';
+
+  @override
+  String get noUsageRecords => '暂无使用记录';
+
+  @override
+  String get noUsageDataAvailable => '暂无使用数据';
+
+  @override
+  String get operationInfo => '操作信息';
+
+  @override
+  String get operationTime => '操作时间';
+
+  @override
+  String get usageInfo => '使用信息';
+
+  @override
+  String get usageTime => '使用时间';
+
+  @override
+  String inUse(Object port) {
+    return '$port 正在使用';
+  }
+
+  @override
+  String get noAlertData => '暂无告警数据';
+
+  @override
+  String get noAlertInfo => '暂无告警信息';
+
+  @override
+  String get alertInfo => '告警信息';
+
+  @override
+  String get alertTime => '告警时间';
+
+  @override
+  String get propertyReport => '属性上报';
+
+  @override
+  String get noLogData => '暂无日志数据';
+
+  @override
+  String get noLogInfo => '暂无日志信息';
 }

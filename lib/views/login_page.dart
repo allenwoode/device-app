@@ -1,5 +1,5 @@
-import 'package:device/views/route_component.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 import '../config/app_colors.dart';
 import '../routes/app_routes.dart';
@@ -24,14 +24,63 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _loadSavedLocale();
     _checkExistingLogin();
   }
+
+  // Future<void> _initializeLocale() async {
+  //   await _loadSavedLocale();
+  //   // Ensure the context is ready before setting locale
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (mounted) {
+  //       _applyLocaleToApp(_selectedLocale);
+  //     }
+  //   });
+  // }
 
   @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadSavedLocale() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedLocaleCode = prefs.getString('locale') ?? 'zh';
+      if (mounted) {
+        setState(() {
+          _selectedLocale = Locale(savedLocaleCode);
+        });
+      }
+    } catch (e) {
+      print('Error loading saved locale: $e');
+      // Fallback to default locale on error
+      if (mounted) {
+        setState(() {
+          _selectedLocale = const Locale('zh');
+        });
+      }
+    }
+  }
+
+  // void _applyLocaleToApp(Locale locale) {
+  //   try {
+  //     final route = RouteComponent.of(context);
+  //     route?.setLocale(locale);
+  //   } catch (e) {
+  //     print('Error applying locale to app: $e');
+  //   }
+  // }
+
+  Future<void> _saveLocale(Locale locale) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('locale', locale.languageCode);
+    } catch (e) {
+      print('Error saving locale: $e');
+    }
   }
 
   Future<void> _checkExistingLogin() async {
@@ -124,6 +173,8 @@ class _LoginPageState extends State<LoginPage> {
           _passwordController.text,
         );
 
+        if (!mounted) return;
+
         if (loginResponse != null && loginResponse.status == 200) {
           // Login successful
           // ScaffoldMessenger.of(context).showSnackBar(
@@ -187,182 +238,182 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 80),
-                Text(
-                  _l10n.passwordLogin,
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
+        child: Stack(
+          children: [
+            // Language selector in top right
+            Positioned(
+              top: 16,
+              right: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[300]!),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const SizedBox(height: 60),
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    hintText: _l10n.pleaseEnterUsername,
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<Locale>(
+                    value: _selectedLocale,
+                    icon: const Icon(Icons.language, size: 16),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
                     ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.primaryColor),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  style: const TextStyle(fontSize: 16),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return _l10n.pleaseEnterUsername;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    hintText: _l10n.pleaseEnterPassword,
-                    hintStyle: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
-                    ),
-                    border: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.primaryColor),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                      icon: Icon(
-                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.grey,
+                    onChanged: (Locale? newLocale) {
+                      if (newLocale != null) {
+                        _updateLocale(newLocale);
+                      }
+                    },
+                    items: const [
+                      DropdownMenuItem(
+                        value: Locale('zh'),
+                        child: Text('中文'),
                       ),
-                    ),
-                  ),
-                  style: const TextStyle(fontSize: 16),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return _l10n.pleaseEnterPassword;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: _showResetPasswordModal,
-                    child: Text(
-                      _l10n.loginProblem,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
+                      DropdownMenuItem(
+                        value: Locale('en'),
+                        child: Text('English'),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 24),
-                // Language Selector
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ),
+
+            // Main login form
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
-                        borderRadius: BorderRadius.circular(20),
+                    const SizedBox(height: 80),
+                    Text(
+                      _l10n.passwordLogin,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
                       ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<Locale>(
-                          value: _selectedLocale,
-                          icon: const Icon(Icons.language, size: 16),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black87,
-                          ),
-                          onChanged: (Locale? newLocale) {
-                            if (newLocale != null) {
-                              setState(() {
-                                _selectedLocale = newLocale;
-                              });
-                              // Update app locale
-                              _updateLocale(newLocale);
-                            }
-                          },
-                          items: const [
-                            DropdownMenuItem(
-                              value: Locale('zh'),
-                              child: Text('中文'),
-                            ),
-                            DropdownMenuItem(
-                              value: Locale('en'),
-                              child: Text('English'),
-                            ),
-                          ],
+                    ),
+                    const SizedBox(height: 60),
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        hintText: _l10n.pleaseEnterUsername,
+                        hintStyle: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
                         ),
+                        border: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.primaryColor),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      style: const TextStyle(fontSize: 16),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return _l10n.pleaseEnterUsername;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      decoration: InputDecoration(
+                        hintText: _l10n.pleaseEnterPassword,
+                        hintStyle: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                        border: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.primaryColor),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      style: const TextStyle(fontSize: 16),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return _l10n.pleaseEnterPassword;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: _showResetPasswordModal,
+                        child: Text(
+                          _l10n.loginProblem,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 56),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _handleLogin,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                _l10n.loginButton,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 32),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : Text(
-                            _l10n.loginButton,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -372,9 +423,8 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _selectedLocale = locale;
     });
-    // Update the app's locale
-    final route = RouteComponent.of(context);
-    route?.setLocale(locale);
+    // Save locale to shared preferences
+    _saveLocale(locale);
   }
 
   AppLocalizations get _l10n {
@@ -385,7 +435,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       // Context not ready or MaterialLocalizations not available
-      print('============================> $e');
     }
 
     // Fallback when context is not ready or MaterialLocalizations not found
