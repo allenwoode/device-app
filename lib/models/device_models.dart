@@ -7,7 +7,7 @@ class DeviceData {
   final String productId;
   final String productName;
   final String description;
-  final ExtraData extraData;
+  final int spec;
   final String lastUpdated;
 
   DeviceData({
@@ -17,11 +17,13 @@ class DeviceData {
     required this.productId,
     required this.productName,
     required this.description,
-    required this.extraData,
+    required this.spec,
     required this.lastUpdated,
   });
 
   factory DeviceData.fromJson(Map<String, dynamic> json) {
+    final extraData = json['extraData'];
+    final spec = extraData == "" ? 16 : ExtraData.decode(extraData).gateNum;
     return DeviceData(
       id: json['id'] ?? '',
       state: json['state']?['value'] == 'online' ? 1 : 0,
@@ -29,7 +31,7 @@ class DeviceData {
       productId: json['productId'] ?? '',
       productName: json['productName'] ?? '',
       description: json['description'] ?? '',
-      extraData: ExtraData.decode(json['extraData'] ?? {}),
+      spec: spec,
       lastUpdated: json['createTime']?.toString() ?? json['lastUpdated'] ?? '',
     );
   }

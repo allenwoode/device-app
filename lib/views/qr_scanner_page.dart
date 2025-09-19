@@ -45,8 +45,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
         if (mounted) {
           SimpleAlertDialog.show(
             context: context,
-            title: '权限不足',
-            message: '需要相机权限才能扫描二维码，请在设置中开启相机权限。',
+            title: _l10n.permissionInsufficient,
+            message: _l10n.cameraPermissionRequired,
             onConfirm: () {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
@@ -79,33 +79,13 @@ class _QRScannerPageState extends State<QRScannerPage> {
     await cameraController.stop();
 
     try {
-      // Show confirmation dialog
-      // final shouldBind = await ConfirmDialog.show(
-      //   context: context,
-      //   title: '确认绑定设备',
-      //   message: '扫描到设备编号[$code]，确定要绑定此设备吗？',
-      //   confirmText: '绑定',
-      //   cancelText: '取消',
-      //   confirmButtonColor: AppColors.primaryColor,
-      // );
-
       if (mounted) {
         await _bindDevice(code);
       } else {
         _resetScanning();
       }
     } catch (e) {
-      // if (mounted) {
-      //   SimpleAlertDialog.show(
-      //     context: context,
-      //     title: '错误',
-      //     message: '处理二维码',
-      //     onConfirm: () {
-      //       Navigator.of(context).pop();
-      //       _resetScanning();
-      //     },
-      //   );
-      // }
+      _resetScanning();
     }
   }
 
@@ -114,7 +94,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
     // Show loading indicator
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Row(
           children: [
             SizedBox(
@@ -125,8 +105,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
             ),
-            SizedBox(width: 16),
-            Text('正在绑定设备...'),
+            SizedBox(width: 12),
+            Text(_l10n.bindingDevice),
           ],
         ),
         duration: Duration(seconds: 30),
@@ -146,7 +126,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
           // Show error dialog
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('绑定失败，请检查设备ID是否正确', style: TextStyle(fontSize: 12),),
+              content: Text(_l10n.bindFailed, style: const TextStyle(fontSize: 12)),
               backgroundColor: Colors.orange,
             ),
           );
@@ -157,7 +137,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
          ScaffoldMessenger.of(context).hideCurrentSnackBar();
          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('绑定操作异常，请重试', style: TextStyle(fontSize: 12),),
+              content: Text(_l10n.bindOperationFailed, style: const TextStyle(fontSize: 12)),
               backgroundColor: Colors.red,
             ),
           );
@@ -184,9 +164,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text(
-          '扫描设备二维码',
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          _l10n.scanDeviceQRCode,
+          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -229,7 +209,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
                 if (_isProcessing)
                   Container(
                     color: Colors.black54,
-                    child: const Center(
+                    child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -238,8 +218,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
                           ),
                           SizedBox(height: 16),
                           Text(
-                            '处理中...',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                            _l10n.processing,
+                            style: const TextStyle(color: Colors.white, fontSize: 16),
                           ),
                         ],
                       ),
@@ -252,23 +232,23 @@ class _QRScannerPageState extends State<QRScannerPage> {
             flex: 1,
             child: Container(
               padding: const EdgeInsets.all(20),
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '将设备二维码放入扫描框内',
-                    style: TextStyle(
+                    _l10n.scanInstructions,
+                    style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
-                    '扫描成功后将自动绑定设备',
-                    style: TextStyle(
+                    _l10n.scanHint,
+                    style: const TextStyle(
                       color: Colors.white70,
-                      fontSize: 14,
+                      fontSize: 12,
                     ),
                   ),
                 ],

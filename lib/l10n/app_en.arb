@@ -130,5 +130,138 @@
   "propertyReport": "Report",
   "platformDispatch": "Dispatch",
   "noLogData": "No log data",
-  "noLogInfo": "No log information"
+  "noLogInfo": "No log information",
+  "deviceManagement": "Device Management",
+  "feedbackSuggestions": "Feedback",
+  "settings": "Settings",
+  "deviceUnbind": "Device Unbind",
+  "confirmDeviceUnbind": "Are you sure you want to unbind the current device?",
+  "unbind": "Unbind",
+  "addDevice": "Add Device",
+  "scanQROrEnterID": "Scan QR code or enter device ID manually",
+  "unbindDevices": "Unbind Devices",
+  "batchUnbindDevices": "Batch unbind devices",
+  "deviceAddedSuccessfully": "Device added successfully",
+  "enterDeviceIDManually": "Enter Device ID Manually",
+  "pleaseEnterDeviceID": "Please enter device ID",
+  "bindDevice": "Bind Device",
+  "scanQRCode": "Scan QR Code",
+  "scanDeviceQRCode": "Scan Device QR Code",
+  "bindFailed": "Binding failed, please check if device ID is correct",
+  "bindOperationFailed": "Binding operation failed, please try again",
+  "loadDeviceListFailed": "Failed to load device list",
+  "pleaseSelectAtLeastOneDevice": "Please select at least one device",
+  "confirmUnbindDevices": "Confirm Unbind Devices",
+  "confirmUnbindMessage": "Are you sure you want to unbind the selected {count} devices? This action cannot be undone.",
+  "@confirmUnbindMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unbindingDevices": "Unbinding devices...",
+  "pleaseWaitProcessingDevices": "Please wait, processing {count} devices",
+  "@pleaseWaitProcessingDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noDevicesToUnbind": "No devices to unbind",
+  "unbindWarning": "After unbinding, you will no longer be able to control the device",
+  "selectedDevicesCount": "Selected {count} devices",
+  "@selectedDevicesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectAll": "Select All",
+  "clear": "Clear",
+  "loadingMoreDevices": "Loading more devices...",
+  "allDevicesLoadedCount": "Loaded all {count} devices",
+  "@allDevicesLoadedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unbindCount": "Unbind ({count})",
+  "@unbindCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "successfullyUnbound": "Successfully unbound {count} devices",
+  "@successfullyUnbound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unbindFailedRetry": "Unbind failed, please try again",
+  "unbindMixed": "Successfully unbound {success} devices, {failed} failed",
+  "@unbindMixed": {
+    "placeholders": {
+      "success": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "unbindOperationError": "Unbind operation error, please try again",
+  "selectLanguage": "Select Language",
+  "languageSettings": "Language Settings",
+  "currentLanguage": "Current Language: {language}",
+  "@currentLanguage": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationSettings": "Notification Settings",
+  "notificationSettingsSubtitle": "Manage push notification settings",
+  "notificationFeatureTodo": "Notification settings feature to be developed",
+  "privacySecurity": "Privacy & Security",
+  "privacySecuritySubtitle": "Changing login password",
+  "securityFeatureTodo": "Security settings feature to be developed",
+  "storageManagement": "Storage Management",
+  "storageManagementSubtitle": "Clear cache and local data",
+  "clearCache": "Clear Cache",
+  "clearCacheConfirm": "Are you sure you want to clear the application cache? This will delete temporary files but will not affect your personal data.",
+  "cacheCleared": "Cache cleared successfully",
+  "saveLanguageSettingsFailed": "Failed to save language settings, please try again",
+  "feedbackType": "Feedback Type",
+  "feedbackContent": "Feedback Content",
+  "contactInfo": "Contact Info (Optional)",
+  "feedbackHint": "Please describe your issue or suggestion in detail...",
+  "contactHint": "Please enter your email or phone number",
+  "contactHelpText": "Providing contact information helps us respond to you better",
+  "submitFeedback": "Submit Feedback",
+  "pleaseFillFeedback": "Please enter feedback content",
+  "feedbackSubmitFailed": "Submission failed, please try again",
+  "featureSuggestion": "Feature Suggestion",
+  "bugReport": "Bug Report",
+  "usageQuestion": "Usage Question",
+  "other": "Other",
+  "scanDeviceQRCode": "Scan Device QR Code",
+  "permissionInsufficient": "Permission Insufficient",
+  "cameraPermissionRequired": "Camera permission is required to scan QR codes. Please enable camera permission in settings.",
+  "processing": "Processing...",
+  "bindingDevice": "Binding device...",
+  "bindSuccess": "Binding success",
+  "bindFailed": "Binding failed, please check if device ID is correct",
+  "bindOperationFailed": "Binding operation failed, please try again",
+  "scanInstructions": "Place the device QR code within the scan frame",
+  "scanHint": "Device will be automatically bound after successful scan"
 }

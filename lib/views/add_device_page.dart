@@ -35,7 +35,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
 
     if (deviceId.isEmpty) {
       setState(() {
-        _errorText = '请输入设备ID';
+        _errorText = _l10n.pleaseEnterDeviceID;
       });
       return;
     }
@@ -54,17 +54,18 @@ class _AddDevicePageState extends State<AddDevicePage> {
         });
 
         if (success) {
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text('绑定成功'),
-          //     backgroundColor: Colors.grey,
-          //   ),
-          // );
-          Navigator.of(context).pop(true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_l10n.bindSuccess),
+              //backgroundColor: Colors.grey,
+            ),
+          );
+          _deviceIdController.clear();
+          //Navigator.of(context).pop(true);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('绑定失败，请检查设备ID是否正确', style: TextStyle(fontSize: 12),),
+              content: Text(_l10n.bindFailed, style: TextStyle(fontSize: 12),),
               backgroundColor: Colors.orange,
             ),
           );
@@ -77,7 +78,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('绑定操作异常，请重试', style: TextStyle(fontSize: 12),),
+            content: Text(_l10n.bindOperationFailed, style: TextStyle(fontSize: 12),),
             backgroundColor: Colors.red,
           ),
         );
@@ -104,9 +105,9 @@ class _AddDevicePageState extends State<AddDevicePage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          '添加设备',
-          style: TextStyle(
+        title: Text(
+          _l10n.addDevice,
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -123,9 +124,9 @@ class _AddDevicePageState extends State<AddDevicePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            const Text(
-              '手动输入设备ID',
-              style: TextStyle(
+            Text(
+              _l10n.enterDeviceIDManually,
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.black,
               ),
@@ -134,18 +135,29 @@ class _AddDevicePageState extends State<AddDevicePage> {
             TextField(
               controller: _deviceIdController,
               onChanged: (value) {
-                if (_errorText != null && value.trim().isNotEmpty) {
-                  setState(() {
+                setState(() {
+                  if (_errorText != null && value.trim().isNotEmpty) {
                     _errorText = null;
-                  });
-                }
+                  }
+                });
               },
               decoration: InputDecoration(
-                hintText: '请输入设备ID',
-                hintStyle: TextStyle(fontSize: 12),
+                hintText: _l10n.pleaseEnterDeviceID,
+                hintStyle: const TextStyle(fontSize: 14),
                 errorText: _errorText,
                 filled: true,
                 fillColor: Colors.white,
+                suffixIcon: _deviceIdController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 20),
+                        onPressed: () {
+                          setState(() {
+                            _deviceIdController.clear();
+                            _errorText = null;
+                          });
+                        },
+                      )
+                    : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: Colors.grey[300]!),
@@ -189,11 +201,11 @@ class _AddDevicePageState extends State<AddDevicePage> {
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
-                    : const Text(
-                        '绑定设备',
-                        style: TextStyle(
+                    : Text(
+                        _l10n.bindDevice,
+                        style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 14,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -202,9 +214,9 @@ class _AddDevicePageState extends State<AddDevicePage> {
             const SizedBox(height: 32),
             const Divider(),
             const SizedBox(height: 32),
-            const Text(
-              '扫描二维码',
-              style: TextStyle(
+            Text(
+              _l10n.scanQRCode,
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.black,
               ),
@@ -215,7 +227,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
               child: OutlinedButton.icon(
                 onPressed: _onScanQR,
                 icon: const Icon(Icons.qr_code_scanner),
-                label: Text('扫描设备二维码', style: TextStyle(fontSize: 12),),
+                label: Text(_l10n.scanDeviceQRCode, style: const TextStyle(fontSize: 14),),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primaryColor,
                   side: BorderSide(color: AppColors.primaryColor),

@@ -37,16 +37,10 @@ class _FunctionPageState extends State<FunctionPage> {
 
   AppLocalizations get _l10n {
     try {
-      final localizations = AppLocalizations.of(context);
-      if (localizations != null) {
-        return localizations;
-      }
+      return AppLocalizations.of(context)!;
     } catch (e) {
-      // Context not ready or MaterialLocalizations not available
+      return lookupAppLocalizations(const Locale('zh'));
     }
-
-    // Fallback when context is not ready or MaterialLocalizations not found
-    return lookupAppLocalizations(const Locale('zh'));
   }
 
   @override
@@ -247,40 +241,40 @@ class _FunctionPageState extends State<FunctionPage> {
                   const SizedBox(height: 24),
 
                   // Password input field
-                  TextField(
-                    controller: passwordController,
-                    obscureText: !isPasswordVisible,
-                    decoration: InputDecoration(
-                      hintText: _l10n.pleaseEnterAdminPassword,
-                      hintStyle: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 14,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      errorText: passwordError,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          color: Colors.grey[600],
-                          size: 20,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            isPasswordVisible = !isPasswordVisible;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
+                  // TextField(
+                  //   controller: passwordController,
+                  //   obscureText: !isPasswordVisible,
+                  //   decoration: InputDecoration(
+                  //     hintText: _l10n.pleaseEnterAdminPassword,
+                  //     hintStyle: TextStyle(
+                  //       color: Colors.grey[400],
+                  //       fontSize: 14,
+                  //     ),
+                  //     filled: true,
+                  //     fillColor: Colors.grey[100],
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(8),
+                  //       borderSide: BorderSide.none,
+                  //     ),
+                  //     contentPadding: const EdgeInsets.symmetric(
+                  //       horizontal: 16,
+                  //       vertical: 12,
+                  //     ),
+                  //     errorText: passwordError,
+                  //     suffixIcon: IconButton(
+                  //       icon: Icon(
+                  //         isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  //         color: Colors.grey[600],
+                  //         size: 20,
+                  //       ),
+                  //       onPressed: () {
+                  //         setState(() {
+                  //           isPasswordVisible = !isPasswordVisible;
+                  //         });
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
               const SizedBox(height: 24),
 
               // Buttons
@@ -314,13 +308,13 @@ class _FunctionPageState extends State<FunctionPage> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        if (passwordController.text.isEmpty) {
-                          setState(() {
-                            passwordError = _l10n.pleaseEnterAdminPassword;
-                          });
-                          return;
-                        }
-                        _handleLockControl(slotId, isUnlocking, passwordController.text);
+                        // if (passwordController.text.isEmpty) {
+                        //   setState(() {
+                        //     passwordError = _l10n.pleaseEnterAdminPassword;
+                        //   });
+                        //   return;
+                        // }
+                        _handleLockControl(slotId, isUnlocking);
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
@@ -352,9 +346,7 @@ class _FunctionPageState extends State<FunctionPage> {
     );
   }
 
-  Future<void> _handleLockControl(String slotId, bool isUnlocking, String password) async {
-    // TODO: Add password validation with backend
-    // For now, proceed if password is provided
+  Future<void> _handleLockControl(String slotId, bool isUnlocking) async {
 
     _showMessage(_l10n.cabinetDoorOpening(slotId));
 

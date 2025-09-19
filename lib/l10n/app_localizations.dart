@@ -619,6 +619,426 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No log information'**
   String get noLogInfo;
+
+  /// No description provided for @deviceManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Management'**
+  String get deviceManagement;
+
+  /// No description provided for @feedbackSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedbackSuggestions;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @deviceUnbind.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Unbind'**
+  String get deviceUnbind;
+
+  /// No description provided for @confirmDeviceUnbind.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unbind the current device?'**
+  String get confirmDeviceUnbind;
+
+  /// No description provided for @unbind.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind'**
+  String get unbind;
+
+  /// No description provided for @addDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Device'**
+  String get addDevice;
+
+  /// No description provided for @scanQROrEnterID.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR code or enter device ID manually'**
+  String get scanQROrEnterID;
+
+  /// No description provided for @unbindDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind Devices'**
+  String get unbindDevices;
+
+  /// No description provided for @batchUnbindDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch unbind devices'**
+  String get batchUnbindDevices;
+
+  /// No description provided for @deviceAddedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Device added successfully'**
+  String get deviceAddedSuccessfully;
+
+  /// No description provided for @enterDeviceIDManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Device ID Manually'**
+  String get enterDeviceIDManually;
+
+  /// No description provided for @pleaseEnterDeviceID.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter device ID'**
+  String get pleaseEnterDeviceID;
+
+  /// No description provided for @bindDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Bind Device'**
+  String get bindDevice;
+
+  /// No description provided for @scanQRCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR Code'**
+  String get scanQRCode;
+
+  /// No description provided for @scanDeviceQRCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Device QR Code'**
+  String get scanDeviceQRCode;
+
+  /// No description provided for @bindFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Binding failed, please check if device ID is correct'**
+  String get bindFailed;
+
+  /// No description provided for @bindOperationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Binding operation failed, please try again'**
+  String get bindOperationFailed;
+
+  /// No description provided for @loadDeviceListFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load device list'**
+  String get loadDeviceListFailed;
+
+  /// No description provided for @pleaseSelectAtLeastOneDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one device'**
+  String get pleaseSelectAtLeastOneDevice;
+
+  /// No description provided for @confirmUnbindDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Unbind Devices'**
+  String get confirmUnbindDevices;
+
+  /// No description provided for @confirmUnbindMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unbind the selected {count} devices? This action cannot be undone.'**
+  String confirmUnbindMessage(int count);
+
+  /// No description provided for @unbindingDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbinding devices...'**
+  String get unbindingDevices;
+
+  /// No description provided for @pleaseWaitProcessingDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait, processing {count} devices'**
+  String pleaseWaitProcessingDevices(int count);
+
+  /// No description provided for @noDevicesToUnbind.
+  ///
+  /// In en, this message translates to:
+  /// **'No devices to unbind'**
+  String get noDevicesToUnbind;
+
+  /// No description provided for @unbindWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'After unbinding, you will no longer be able to control the device'**
+  String get unbindWarning;
+
+  /// No description provided for @selectedDevicesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected {count} devices'**
+  String selectedDevicesCount(int count);
+
+  /// No description provided for @selectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select All'**
+  String get selectAll;
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
+  /// No description provided for @allDevicesLoadedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Loaded all {count} devices'**
+  String allDevicesLoadedCount(int count);
+
+  /// No description provided for @unbindCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind ({count})'**
+  String unbindCount(int count);
+
+  /// No description provided for @successfullyUnbound.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully unbound {count} devices'**
+  String successfullyUnbound(int count);
+
+  /// No description provided for @unbindFailedRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind failed, please try again'**
+  String get unbindFailedRetry;
+
+  /// No description provided for @unbindMixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully unbound {success} devices, {failed} failed'**
+  String unbindMixed(int success, int failed);
+
+  /// No description provided for @unbindOperationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind operation error, please try again'**
+  String get unbindOperationError;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get selectLanguage;
+
+  /// No description provided for @languageSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Language Settings'**
+  String get languageSettings;
+
+  /// No description provided for @currentLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Language: {language}'**
+  String currentLanguage(String language);
+
+  /// No description provided for @notificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notificationSettings;
+
+  /// No description provided for @notificationSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage push notification settings'**
+  String get notificationSettingsSubtitle;
+
+  /// No description provided for @notificationFeatureTodo.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification settings feature to be developed'**
+  String get notificationFeatureTodo;
+
+  /// No description provided for @privacySecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Security'**
+  String get privacySecurity;
+
+  /// No description provided for @privacySecuritySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing login password'**
+  String get privacySecuritySubtitle;
+
+  /// No description provided for @securityFeatureTodo.
+  ///
+  /// In en, this message translates to:
+  /// **'Security settings feature to be developed'**
+  String get securityFeatureTodo;
+
+  /// No description provided for @storageManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage Management'**
+  String get storageManagement;
+
+  /// No description provided for @storageManagementSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache and local data'**
+  String get storageManagementSubtitle;
+
+  /// No description provided for @clearCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Cache'**
+  String get clearCache;
+
+  /// No description provided for @clearCacheConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear the application cache? This will delete temporary files but will not affect your personal data.'**
+  String get clearCacheConfirm;
+
+  /// No description provided for @cacheCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache cleared successfully'**
+  String get cacheCleared;
+
+  /// No description provided for @saveLanguageSettingsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save language settings, please try again'**
+  String get saveLanguageSettingsFailed;
+
+  /// No description provided for @feedbackType.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback Type'**
+  String get feedbackType;
+
+  /// No description provided for @feedbackContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback Content'**
+  String get feedbackContent;
+
+  /// No description provided for @contactInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Info (Optional)'**
+  String get contactInfo;
+
+  /// No description provided for @feedbackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please describe your issue or suggestion in detail...'**
+  String get feedbackHint;
+
+  /// No description provided for @contactHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email or phone number'**
+  String get contactHint;
+
+  /// No description provided for @contactHelpText.
+  ///
+  /// In en, this message translates to:
+  /// **'Providing contact information helps us respond to you better'**
+  String get contactHelpText;
+
+  /// No description provided for @submitFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Feedback'**
+  String get submitFeedback;
+
+  /// No description provided for @pleaseFillFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter feedback content'**
+  String get pleaseFillFeedback;
+
+  /// No description provided for @feedbackSubmitFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Submission failed, please try again'**
+  String get feedbackSubmitFailed;
+
+  /// No description provided for @featureSuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature Suggestion'**
+  String get featureSuggestion;
+
+  /// No description provided for @bugReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug Report'**
+  String get bugReport;
+
+  /// No description provided for @usageQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage Question'**
+  String get usageQuestion;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
+
+  /// No description provided for @permissionInsufficient.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Insufficient'**
+  String get permissionInsufficient;
+
+  /// No description provided for @cameraPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required to scan QR codes. Please enable camera permission in settings.'**
+  String get cameraPermissionRequired;
+
+  /// No description provided for @processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing...'**
+  String get processing;
+
+  /// No description provided for @bindingDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Binding device...'**
+  String get bindingDevice;
+
+  /// No description provided for @bindSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Binding success'**
+  String get bindSuccess;
+
+  /// No description provided for @scanInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Place the device QR code within the scan frame'**
+  String get scanInstructions;
+
+  /// No description provided for @scanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Device will be automatically bound after successful scan'**
+  String get scanHint;
 }
 
 class _AppLocalizationsDelegate

@@ -33,7 +33,6 @@ class _RouteComponentState extends State<RouteComponent> {
         });
       }
     } catch (e) {
-      print('Error loading saved locale in RouteComponent: $e');
       // Fallback to default locale on error
       if (mounted) {
         setState(() {

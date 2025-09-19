@@ -24,21 +24,21 @@ class ApiInterceptor extends Interceptor {
     // Add default content type
     options.headers['Content-Type'] = 'application/json';
     
-    print('API Request: ${options.method} ${options.uri}');
-    print('Headers: ${options.headers}');
+    //print('API Request: ${options.method} ${options.uri}');
+    //print('Headers: ${options.headers}');
     
     super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print('API Response: ${response.statusCode} ${response.requestOptions.uri}');
+    //print('API Response: ${response.statusCode} ${response.requestOptions.uri}');
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    print('API Error: ${err.response?.statusCode} ${err.requestOptions.uri}');
+    //print('API Error: ${err.response?.statusCode} ${err.requestOptions.uri}');
     
     int? code = err.response?.statusCode;
     // Handle 401 Unauthorized

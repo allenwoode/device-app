@@ -1,3 +1,4 @@
+import 'package:device/config/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:device/models/device_models.dart';
@@ -26,7 +27,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   bool _isLoadingMore = false;
   bool _hasMoreData = true;
   int _currentPage = 0;
-  final int _pageSize = 5;
+  final int _pageSize = 10;
   int? _totalDevices;
   String? _errorMessage;
 
@@ -163,7 +164,6 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         }
       }
     } catch (e) {
-      print('device page error: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -250,16 +250,13 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          _currentUser?.orgList.isNotEmpty == true
-                ? _currentUser?.orgList.first.name ?? _l10n.organizationUnitEmpty
-                : _l10n.organizationUnitEmpty,
+          _currentUser?.orgName ?? '',
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
@@ -272,10 +269,9 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             onPressed: _onScanDevice,
             icon: const FaIcon(
               FontAwesomeIcons.circlePlus,
-              color: Colors.black,
+              color: AppColors.primaryColor,
               size: 20,
             ),
-            tooltip: 'Scan QR code',
           ),
         ],
       ),
@@ -292,15 +288,23 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
               ),
               child: TextField(
                 controller: _searchController,
+                onChanged: (value) {
+                  setState(() {
+                    // This triggers rebuild to update the suffixIcon
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: _l10n.searchDeviceIdName,
                   hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.circleXmark, color: Colors.grey, size: 20),
+                          icon: const Icon(Icons.clear, size: 20),
                           onPressed: () {
                             _searchController.clear();
+                            setState(() {
+                              // Trigger rebuild to hide clear button and update results
+                            });
                           },
                         )
                       : null,

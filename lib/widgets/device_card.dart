@@ -94,13 +94,11 @@ class DeviceCard extends StatelessWidget {
   }
 
   Widget _buildServerIcon() {
-    final int spec = device.extraData.gateNum;
-
     return SizedBox(
       width: 68,
       height: 68,
       child: Image.asset(
-        'lib/assets/images/ELLTE-MAX-$spec.png',
+        'lib/assets/images/ELLTE-MAX-${device.spec}.png',
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           // Fallback to default image if specific device image not found

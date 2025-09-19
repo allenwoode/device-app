@@ -88,5 +88,138 @@
   "propertyReport": "属性上报",
   "platformDispatch": "平台下发",
   "noLogData": "暂无日志数据",
-  "noLogInfo": "暂无日志信息"
+  "noLogInfo": "暂无日志信息",
+  "deviceManagement": "设备管理",
+  "feedbackSuggestions": "反馈建议",
+  "settings": "设置",
+  "deviceUnbind": "设备解绑",
+  "confirmDeviceUnbind": "确定对当前设备解绑吗？",
+  "unbind": "解绑",
+  "addDevice": "添加设备",
+  "scanQROrEnterID": "扫描二维码或手动输入设备ID",
+  "unbindDevices": "解绑设备",
+  "batchUnbindDevices": "将批量对设备进行解绑",
+  "deviceAddedSuccessfully": "设备添加成功",
+  "enterDeviceIDManually": "手动输入设备ID",
+  "pleaseEnterDeviceID": "请输入设备ID",
+  "bindDevice": "绑定设备",
+  "scanQRCode": "扫描二维码",
+  "scanDeviceQRCode": "扫描设备二维码",
+  "bindFailed": "绑定失败，请检查设备ID是否正确",
+  "bindOperationFailed": "绑定操作异常，请重试",
+  "loadDeviceListFailed": "加载设备列表失败",
+  "pleaseSelectAtLeastOneDevice": "请至少选择一个设备",
+  "confirmUnbindDevices": "确认解绑设备",
+  "confirmUnbindMessage": "确定要解绑选中的 {count} 个设备吗？此操作不可撤销。",
+  "@confirmUnbindMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unbindingDevices": "正在解绑设备...",
+  "pleaseWaitProcessingDevices": "请稍候，正在处理 {count} 个设备",
+  "@pleaseWaitProcessingDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noDevicesToUnbind": "暂无设备可解绑",
+  "unbindWarning": "解绑设备后将无法再控制该设备",
+  "selectedDevicesCount": "已选择 {count} 个设备",
+  "@selectedDevicesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectAll": "全选",
+  "clear": "清空",
+  "loadingMoreDevices": "加载更多设备...",
+  "allDevicesLoadedCount": "已加载全部 {count} 个设备",
+  "@allDevicesLoadedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unbindCount": "解绑({count})",
+  "@unbindCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "successfullyUnbound": "成功解绑 {count} 个设备",
+  "@successfullyUnbound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unbindFailedRetry": "解绑失败，请重试",
+  "unbindMixed": "成功解绑 {success} 个设备，{failed} 个失败",
+  "@unbindMixed": {
+    "placeholders": {
+      "success": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "unbindOperationError": "解绑操作异常，请重试",
+  "selectLanguage": "选择语言",
+  "languageSettings": "语言设置",
+  "currentLanguage": "当前语言：{language}",
+  "@currentLanguage": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationSettings": "消息通知",
+  "notificationSettingsSubtitle": "管理推送通知设置",
+  "notificationFeatureTodo": "通知设置功能待开发",
+  "privacySecurity": "隐私与安全",
+  "privacySecuritySubtitle": "修改登录密码",
+  "securityFeatureTodo": "安全设置功能待开发",
+  "storageManagement": "存储管理",
+  "storageManagementSubtitle": "清理缓存和本地数据",
+  "clearCache": "清理缓存",
+  "clearCacheConfirm": "确定要清理应用缓存吗？这将删除临时文件，但不会影响您的个人数据。",
+  "cacheCleared": "缓存清理完成",
+  "saveLanguageSettingsFailed": "保存语言设置失败，请重试",
+  "feedbackType": "反馈类型",
+  "feedbackContent": "反馈内容",
+  "contactInfo": "联系方式（可选）",
+  "feedbackHint": "请详细描述您的问题或建议...",
+  "contactHint": "请输入您的邮箱或手机号",
+  "contactHelpText": "提供联系方式有助于我们更好地回复您",
+  "submitFeedback": "提交反馈",
+  "pleaseFillFeedback": "请输入反馈内容",
+  "feedbackSubmitFailed": "提交失败，请重试",
+  "featureSuggestion": "功能建议",
+  "bugReport": "问题反馈",
+  "usageQuestion": "使用咨询",
+  "other": "其他",
+  "scanDeviceQRCode": "扫描设备二维码",
+  "permissionInsufficient": "权限不足",
+  "cameraPermissionRequired": "需要相机权限才能扫描二维码，请在设置中开启相机权限。",
+  "processing": "正在处理中...",
+  "bindingDevice": "正在绑定设备...",
+  "bindSuccess": "绑定成功",
+  "bindFailed": "绑定失败，请检查设备ID是否正确",
+  "bindOperationFailed": "绑定操作异常，请重试",
+  "scanInstructions": "将设备二维码放入扫描框内",
+  "scanHint": "扫描成功后将自动绑定设备"
 }

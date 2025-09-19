@@ -70,12 +70,12 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   Future<void> _loadDeviceData() async {
     try {
-      final deviceDetailData = await DeviceService.getDeviceDetail(
+      final device = await DeviceService.getDeviceDetail(
         widget.deviceId,
       );
-      _deviceName = deviceDetailData.name;
-      _state = deviceDetailData.state;
-      _num = deviceDetailData.extraData.gateNum;
+      _deviceName = device.name;
+      _state = device.state;
+      _num = device.spec;
 
       final deviceStateData = await DeviceService.getDeviceState(
         widget.deviceId,
@@ -166,10 +166,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   void _showConfirmDialog() {
     ConfirmDialog.show(
       context: context,
-      title: '设备解绑',
-      message: '确定对当前设备解绑吗？',
-      confirmText: '解绑',
-      confirmButtonColor: AppColors.primaryColor,
+      title: _l10n.unbindDevices,
+      message: _l10n.confirmDeviceUnbind,
+      confirmText: _l10n.unbind,
+      confirmButtonColor: AppColors.dangerColor,
       onConfirm: () async {
         await _performUnbindDevice();
       },
@@ -193,10 +193,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
               const SizedBox(width: 16),
-              Text('正在处理...'),
+              Text(_l10n.processing),
             ],
           ),
-          duration: const Duration(seconds: 10),
+          duration: const Duration(seconds: 30),
         ),
       );
 
@@ -252,10 +252,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             onPressed: _showConfirmDialog,
             icon: const FaIcon(
               FontAwesomeIcons.circleMinus,
-              color: Colors.black,
+              color: Colors.red,
               size: 18,
             ),
-            tooltip: '解绑设备',
           ),
         ],
       ),
@@ -465,10 +464,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: () {
-              // Handle lock slot tap - could open a dialog or perform action
-              _showLockSlotDialog(slot);
-            },
+            // onTap: () {
+            //   _showLockSlotDialog(slot);
+            // },
             borderRadius: BorderRadius.circular(32),
             splashColor: Colors.blue.withOpacity(0.3),
             highlightColor: Colors.blue.withOpacity(0.15),
@@ -769,27 +767,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
             ),
-            // if (slot.lockState == LockState.locked && _state == 1)
-            //   Material(
-            //     color: Colors.transparent,
-            //     child: InkWell(
-            //       onTap: () {
-            //         Navigator.of(context).pop();
-            //         _performLockAction(slot);
-            //       },
-            //       borderRadius: BorderRadius.circular(8),
-            //       splashColor: Colors.blue.withOpacity(0.3),
-            //       highlightColor: Colors.blue.withOpacity(0.15),
-            //       splashFactory: InkRipple.splashFactory,
-            //       child: Container(
-            //         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            //         child: const Text(
-            //           '开锁',
-            //           style: TextStyle(color: Colors.blue),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
           ],
         );
       },
@@ -808,39 +785,4 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         return 'Unknown';
     }
   }
-
-  // void _performLockAction(LockSlot slot) async {
-  //   try {
-  //     final portNumber = int.parse(slot.id.substring(1));
-
-  //     final success = await DeviceService.invokeDeviceLockOpen(
-  //       deviceId: widget.deviceId,
-  //       port: portNumber,
-  //     );
-
-  //     if (success) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text('${slot.id} 开锁成功'),
-  //           backgroundColor: Colors.green,
-  //         ),
-  //       );
-  //       _loadDeviceData();
-  //     } else {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text('${slot.id} 开锁失败'),
-  //           backgroundColor: Colors.red,
-  //         ),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('${slot.id} 开锁操作异常: $e'),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //   }
-  // }
 }

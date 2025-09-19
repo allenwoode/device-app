@@ -98,7 +98,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noDeviceData => '暂无设备数据';
 
   @override
-  String get loadingMoreDevices => '正在加载更多设备...';
+  String get loadingMoreDevices => '加载更多设备...';
 
   @override
   String allDevicesLoaded(int count) {
@@ -282,4 +282,230 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noLogInfo => '暂无日志信息';
+
+  @override
+  String get deviceManagement => '设备管理';
+
+  @override
+  String get feedbackSuggestions => '反馈建议';
+
+  @override
+  String get settings => '设置';
+
+  @override
+  String get deviceUnbind => '设备解绑';
+
+  @override
+  String get confirmDeviceUnbind => '确定对当前设备解绑吗？';
+
+  @override
+  String get unbind => '解绑';
+
+  @override
+  String get addDevice => '添加设备';
+
+  @override
+  String get scanQROrEnterID => '扫描二维码或手动输入设备ID';
+
+  @override
+  String get unbindDevices => '解绑设备';
+
+  @override
+  String get batchUnbindDevices => '将批量对设备进行解绑';
+
+  @override
+  String get deviceAddedSuccessfully => '设备添加成功';
+
+  @override
+  String get enterDeviceIDManually => '手动输入设备ID';
+
+  @override
+  String get pleaseEnterDeviceID => '请输入设备ID';
+
+  @override
+  String get bindDevice => '绑定设备';
+
+  @override
+  String get scanQRCode => '扫描二维码';
+
+  @override
+  String get scanDeviceQRCode => '扫描设备二维码';
+
+  @override
+  String get bindFailed => '绑定失败，请检查设备ID是否正确';
+
+  @override
+  String get bindOperationFailed => '绑定操作异常，请重试';
+
+  @override
+  String get loadDeviceListFailed => '加载设备列表失败';
+
+  @override
+  String get pleaseSelectAtLeastOneDevice => '请至少选择一个设备';
+
+  @override
+  String get confirmUnbindDevices => '确认解绑设备';
+
+  @override
+  String confirmUnbindMessage(int count) {
+    return '确定要解绑选中的 $count 个设备吗？此操作不可撤销。';
+  }
+
+  @override
+  String get unbindingDevices => '正在解绑设备...';
+
+  @override
+  String pleaseWaitProcessingDevices(int count) {
+    return '请稍候，正在处理 $count 个设备';
+  }
+
+  @override
+  String get noDevicesToUnbind => '暂无设备可解绑';
+
+  @override
+  String get unbindWarning => '解绑设备后将无法再控制该设备';
+
+  @override
+  String selectedDevicesCount(int count) {
+    return '已选择 $count 个设备';
+  }
+
+  @override
+  String get selectAll => '全选';
+
+  @override
+  String get clear => '清空';
+
+  @override
+  String allDevicesLoadedCount(int count) {
+    return '已加载全部 $count 个设备';
+  }
+
+  @override
+  String unbindCount(int count) {
+    return '解绑($count)';
+  }
+
+  @override
+  String successfullyUnbound(int count) {
+    return '成功解绑 $count 个设备';
+  }
+
+  @override
+  String get unbindFailedRetry => '解绑失败，请重试';
+
+  @override
+  String unbindMixed(int success, int failed) {
+    return '成功解绑 $success 个设备，$failed 个失败';
+  }
+
+  @override
+  String get unbindOperationError => '解绑操作异常，请重试';
+
+  @override
+  String get selectLanguage => '选择语言';
+
+  @override
+  String get languageSettings => '语言设置';
+
+  @override
+  String currentLanguage(String language) {
+    return '当前语言：$language';
+  }
+
+  @override
+  String get notificationSettings => '消息通知';
+
+  @override
+  String get notificationSettingsSubtitle => '管理推送通知设置';
+
+  @override
+  String get notificationFeatureTodo => '通知设置功能待开发';
+
+  @override
+  String get privacySecurity => '隐私与安全';
+
+  @override
+  String get privacySecuritySubtitle => '修改登录密码';
+
+  @override
+  String get securityFeatureTodo => '安全设置功能待开发';
+
+  @override
+  String get storageManagement => '存储管理';
+
+  @override
+  String get storageManagementSubtitle => '清理缓存和本地数据';
+
+  @override
+  String get clearCache => '清理缓存';
+
+  @override
+  String get clearCacheConfirm => '确定要清理应用缓存吗？这将删除临时文件，但不会影响您的个人数据。';
+
+  @override
+  String get cacheCleared => '缓存清理完成';
+
+  @override
+  String get saveLanguageSettingsFailed => '保存语言设置失败，请重试';
+
+  @override
+  String get feedbackType => '反馈类型';
+
+  @override
+  String get feedbackContent => '反馈内容';
+
+  @override
+  String get contactInfo => '联系方式（可选）';
+
+  @override
+  String get feedbackHint => '请详细描述您的问题或建议...';
+
+  @override
+  String get contactHint => '请输入您的邮箱或手机号';
+
+  @override
+  String get contactHelpText => '提供联系方式有助于我们更好地回复您';
+
+  @override
+  String get submitFeedback => '提交反馈';
+
+  @override
+  String get pleaseFillFeedback => '请输入反馈内容';
+
+  @override
+  String get feedbackSubmitFailed => '提交失败，请重试';
+
+  @override
+  String get featureSuggestion => '功能建议';
+
+  @override
+  String get bugReport => '问题反馈';
+
+  @override
+  String get usageQuestion => '使用咨询';
+
+  @override
+  String get other => '其他';
+
+  @override
+  String get permissionInsufficient => '权限不足';
+
+  @override
+  String get cameraPermissionRequired => '需要相机权限才能扫描二维码，请在设置中开启相机权限。';
+
+  @override
+  String get processing => '正在处理中...';
+
+  @override
+  String get bindingDevice => '正在绑定设备...';
+
+  @override
+  String get bindSuccess => '绑定成功';
+
+  @override
+  String get scanInstructions => '将设备二维码放入扫描框内';
+
+  @override
+  String get scanHint => '扫描成功后将自动绑定设备';
 }

@@ -284,4 +284,244 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noLogInfo => 'No log information';
+
+  @override
+  String get deviceManagement => 'Device Management';
+
+  @override
+  String get feedbackSuggestions => 'Feedback';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get deviceUnbind => 'Device Unbind';
+
+  @override
+  String get confirmDeviceUnbind =>
+      'Are you sure you want to unbind the current device?';
+
+  @override
+  String get unbind => 'Unbind';
+
+  @override
+  String get addDevice => 'Add Device';
+
+  @override
+  String get scanQROrEnterID => 'Scan QR code or enter device ID manually';
+
+  @override
+  String get unbindDevices => 'Unbind Devices';
+
+  @override
+  String get batchUnbindDevices => 'Batch unbind devices';
+
+  @override
+  String get deviceAddedSuccessfully => 'Device added successfully';
+
+  @override
+  String get enterDeviceIDManually => 'Enter Device ID Manually';
+
+  @override
+  String get pleaseEnterDeviceID => 'Please enter device ID';
+
+  @override
+  String get bindDevice => 'Bind Device';
+
+  @override
+  String get scanQRCode => 'Scan QR Code';
+
+  @override
+  String get scanDeviceQRCode => 'Scan Device QR Code';
+
+  @override
+  String get bindFailed =>
+      'Binding failed, please check if device ID is correct';
+
+  @override
+  String get bindOperationFailed =>
+      'Binding operation failed, please try again';
+
+  @override
+  String get loadDeviceListFailed => 'Failed to load device list';
+
+  @override
+  String get pleaseSelectAtLeastOneDevice =>
+      'Please select at least one device';
+
+  @override
+  String get confirmUnbindDevices => 'Confirm Unbind Devices';
+
+  @override
+  String confirmUnbindMessage(int count) {
+    return 'Are you sure you want to unbind the selected $count devices? This action cannot be undone.';
+  }
+
+  @override
+  String get unbindingDevices => 'Unbinding devices...';
+
+  @override
+  String pleaseWaitProcessingDevices(int count) {
+    return 'Please wait, processing $count devices';
+  }
+
+  @override
+  String get noDevicesToUnbind => 'No devices to unbind';
+
+  @override
+  String get unbindWarning =>
+      'After unbinding, you will no longer be able to control the device';
+
+  @override
+  String selectedDevicesCount(int count) {
+    return 'Selected $count devices';
+  }
+
+  @override
+  String get selectAll => 'Select All';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String allDevicesLoadedCount(int count) {
+    return 'Loaded all $count devices';
+  }
+
+  @override
+  String unbindCount(int count) {
+    return 'Unbind ($count)';
+  }
+
+  @override
+  String successfullyUnbound(int count) {
+    return 'Successfully unbound $count devices';
+  }
+
+  @override
+  String get unbindFailedRetry => 'Unbind failed, please try again';
+
+  @override
+  String unbindMixed(int success, int failed) {
+    return 'Successfully unbound $success devices, $failed failed';
+  }
+
+  @override
+  String get unbindOperationError => 'Unbind operation error, please try again';
+
+  @override
+  String get selectLanguage => 'Select Language';
+
+  @override
+  String get languageSettings => 'Language Settings';
+
+  @override
+  String currentLanguage(String language) {
+    return 'Current Language: $language';
+  }
+
+  @override
+  String get notificationSettings => 'Notification Settings';
+
+  @override
+  String get notificationSettingsSubtitle =>
+      'Manage push notification settings';
+
+  @override
+  String get notificationFeatureTodo =>
+      'Notification settings feature to be developed';
+
+  @override
+  String get privacySecurity => 'Privacy & Security';
+
+  @override
+  String get privacySecuritySubtitle => 'Changing login password';
+
+  @override
+  String get securityFeatureTodo => 'Security settings feature to be developed';
+
+  @override
+  String get storageManagement => 'Storage Management';
+
+  @override
+  String get storageManagementSubtitle => 'Clear cache and local data';
+
+  @override
+  String get clearCache => 'Clear Cache';
+
+  @override
+  String get clearCacheConfirm =>
+      'Are you sure you want to clear the application cache? This will delete temporary files but will not affect your personal data.';
+
+  @override
+  String get cacheCleared => 'Cache cleared successfully';
+
+  @override
+  String get saveLanguageSettingsFailed =>
+      'Failed to save language settings, please try again';
+
+  @override
+  String get feedbackType => 'Feedback Type';
+
+  @override
+  String get feedbackContent => 'Feedback Content';
+
+  @override
+  String get contactInfo => 'Contact Info (Optional)';
+
+  @override
+  String get feedbackHint =>
+      'Please describe your issue or suggestion in detail...';
+
+  @override
+  String get contactHint => 'Please enter your email or phone number';
+
+  @override
+  String get contactHelpText =>
+      'Providing contact information helps us respond to you better';
+
+  @override
+  String get submitFeedback => 'Submit Feedback';
+
+  @override
+  String get pleaseFillFeedback => 'Please enter feedback content';
+
+  @override
+  String get feedbackSubmitFailed => 'Submission failed, please try again';
+
+  @override
+  String get featureSuggestion => 'Feature Suggestion';
+
+  @override
+  String get bugReport => 'Bug Report';
+
+  @override
+  String get usageQuestion => 'Usage Question';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get permissionInsufficient => 'Permission Insufficient';
+
+  @override
+  String get cameraPermissionRequired =>
+      'Camera permission is required to scan QR codes. Please enable camera permission in settings.';
+
+  @override
+  String get processing => 'Processing...';
+
+  @override
+  String get bindingDevice => 'Binding device...';
+
+  @override
+  String get bindSuccess => 'Binding success';
+
+  @override
+  String get scanInstructions =>
+      'Place the device QR code within the scan frame';
+
+  @override
+  String get scanHint =>
+      'Device will be automatically bound after successful scan';
 }

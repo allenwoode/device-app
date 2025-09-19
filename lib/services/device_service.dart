@@ -36,16 +36,7 @@ class DeviceService {
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
-      if (ApiConfig.enableLogging) {
-        print('API Response Status: ${response.statusCode}');
-        print('API Response Body: ${response.data}');
-      }
-
       if (response.statusCode == 200) {
-        if (ApiConfig.enableLogging) {
-          print('Successfully fetched devices from API');
-        }
-
         final responseData = response.data;
 
         // API returns: { "result": { "data": [...], "total": 10 } }
@@ -93,16 +84,8 @@ class DeviceService {
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
-      if (ApiConfig.enableLogging) {
-        print('Dashboard Devices API Response Status: ${response.statusCode}');
-        print('Dashboard Devices API Response Body: ${response.data}');
-      }
 
       if (response.statusCode == 200) {
-        if (ApiConfig.enableLogging) {
-          print('Successfully fetched dashboard devices from API');
-        }
-
         final responseData = response.data;
         if (responseData is Map<String, dynamic>) {
           if (responseData.containsKey('result') &&
@@ -117,9 +100,7 @@ class DeviceService {
       }
     } catch (e) {
       if (ApiConfig.enableLogging) {
-        print(
-          'Dashboard devices API request failed: $e, falling back to local data',
-        );
+        print('Dashboard devices API request failed: $e, falling back to local data');
       }
 
       if (ApiConfig.useLocalFallback) {
@@ -147,11 +128,6 @@ class DeviceService {
       final response = await ApiInterceptor.get(
         '${ApiConfig.baseUrl}/device-instance/$deviceId/info',
       ).timeout(ApiConfig.timeout);
-
-      if (ApiConfig.enableLogging) {
-        print('Device Detail API Response Status: ${response.statusCode}');
-        print('Device Detail API Response Body: ${response.data}');
-      }
 
       if (response.statusCode == 200) {
         return DeviceData.fromJson(response.data['result']);
@@ -197,11 +173,6 @@ class DeviceService {
         '${ApiConfig.baseUrl}/dashboard/_multi',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
-
-      if (ApiConfig.enableLogging) {
-        print('Device State API Response Status: ${response.statusCode}');
-        print('Device State API Response Body: ${response.data}');
-      }
 
       if (response.statusCode == 200) {
         return response.data;
