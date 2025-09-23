@@ -1,0 +1,56 @@
+{
+    "message": "success",
+    "result": [
+        {
+            "id": "11110001",
+            "label": "1001 Classroom",
+            "total": 9,
+            "depo": [7, 2],
+            "text": ""
+        },
+        {
+            "id": "11110002",
+            "label": "1002 Classroom",
+            "total": 7,
+            "depo": [6, 1],
+            "text": ""
+        },
+        {
+            "id": "11110003",
+            "label": "1003 Classroom",
+            "total": 6,
+            "depo": [5, 1],
+            "text": ""
+        },
+        {
+            "id": "11110004",
+            "label": "1004 Classroom",
+            "total": 5,
+            "depo": [3, 2],
+            "text": ""
+        },
+        {
+            "id": "11110005",
+            "label": "1005 Classroom",
+            "total": 5,
+            "depo": [4, 1],
+            "text": ""
+        },
+        {
+            "id": "11110006",
+            "label": "1006 Classroom",
+            "total": 4,
+            "depo": [4, 0],
+            "text": ""
+        },
+        {
+            "id": "11110007",
+            "label": "1007 Classroom",
+            "total": 3,
+            "depo": [2, 1],
+            "text": ""
+        }
+    ],
+    "status": 200,
+    "timestamp": 1757993072336
+}

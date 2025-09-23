@@ -1,9 +1,9 @@
 {
     "message": "success",
     "result": {
-        "total": 30,
-        "reportCount": 25,
-        "functionCount": 5
+        "total": 72,
+        "reportCount": 62,
+        "functionCount": 10
     },
     "status": 200,
     "timestamp": 1757993072336

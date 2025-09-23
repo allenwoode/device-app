@@ -6,6 +6,7 @@ class BarChartCard extends StatefulWidget {
   final List<ChartBarData> data;
   final bool shouldAnimate;
   final double? maxY;
+  final VoidCallback? onTap;
 
   const BarChartCard({
     super.key,
@@ -13,6 +14,7 @@ class BarChartCard extends StatefulWidget {
     required this.data,
     this.shouldAnimate = true,
     this.maxY,
+    this.onTap,
   });
 
   @override
@@ -60,7 +62,9 @@ class _BarChartCardState extends State<BarChartCard>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
         color: Colors.white,
@@ -202,7 +206,8 @@ class _BarChartCardState extends State<BarChartCard>
             ),
           ],
         ),
-      );
+      ),
+    );
   }
 }
 

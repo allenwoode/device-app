@@ -243,6 +243,75 @@ class DeviceService {
     }
   }
 
+  static Future<List<DashboardUsageDevice>> getDashboardUsageDevice() async {
+    try {
+      // For now, load from local JSON file (can be extended to API call)
+      final String response = await rootBundle.loadString(
+        'lib/assets/dashboard_device_usage.json',
+      );
+      final Map<String, dynamic> data = json.decode(response);
+
+      if (data['result'] is List) {
+        final List<dynamic> resultList = data['result'];
+        return resultList.map((item) => DashboardUsageDevice.fromJson(item)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Failed to load dashboard usage device data: $e');
+      }
+      // Return fallback data
+      return [];
+    }
+  }
+
+  static Future<List<DashboardUsageDevice>> getDashboardAlertDevice() async {
+    try {
+      // For now, load from local JSON file (can be extended to API call)
+      final String response = await rootBundle.loadString(
+        'lib/assets/dashboard_device_alert.json',
+      );
+      final Map<String, dynamic> data = json.decode(response);
+
+      if (data['result'] is List) {
+        final List<dynamic> resultList = data['result'];
+        return resultList.map((item) => DashboardUsageDevice.fromJson(item)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Failed to load dashboard alert device data: $e');
+      }
+      // Return fallback data
+      return [];
+    }
+  }
+
+  static Future<List<DashboardUsageDevice>> getDashboardDeviceLog() async {
+    try {
+      // For now, load from local JSON file (can be extended to API call)
+      final String response = await rootBundle.loadString(
+        'lib/assets/dashboard_device_log.json',
+      );
+      final Map<String, dynamic> data = json.decode(response);
+
+      if (data['result'] is List) {
+        final List<dynamic> resultList = data['result'];
+        return resultList.map((item) => DashboardUsageDevice.fromJson(item)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Failed to load dashboard device log data: $e');
+      }
+      // Return fallback data
+      return [];
+    }
+  }
+
   static Future<DashboardAlerts> getDashboardAlerts() async {
     try {
       // For now, load from local JSON file (can be extended to API call)

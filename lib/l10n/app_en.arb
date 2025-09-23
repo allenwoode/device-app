@@ -253,6 +253,8 @@
   "featureSuggestion": "Feature Suggestion",
   "bugReport": "Bug Report",
   "usageQuestion": "Usage Question",
+  "primary": "Deposit",
+  "secondary": "Withdraw",
   "other": "Other",
   "scanDeviceQRCode": "Scan Device QR Code",
   "permissionInsufficient": "Permission Insufficient",

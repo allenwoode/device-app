@@ -332,16 +332,19 @@ class Register {
 class LoginRequest {
   final String username;
   final String password;
+  final int expires;
 
   LoginRequest({
     required this.username,
     required this.password,
+    required this.expires,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'username': username,
       'password': password,
+      'expires': expires,
     };
   }
 }

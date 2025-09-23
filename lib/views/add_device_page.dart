@@ -3,6 +3,7 @@ import 'package:device/services/device_service.dart';
 import 'package:device/config/app_colors.dart';
 import '../l10n/app_localizations.dart';
 import 'qr_scanner_page.dart';
+import '../routes/app_routes.dart';
 
 class AddDevicePage extends StatefulWidget {
   const AddDevicePage({super.key});
@@ -87,11 +88,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
   }
 
   void _onScanQR() async {
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const QRScannerPage(),
-      ),
-    );
+    final result = await AppRoutes.goToQRScanner(context);
 
     if (result == true) {
       Navigator.of(context).pop(true);

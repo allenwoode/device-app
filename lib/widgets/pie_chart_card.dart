@@ -11,6 +11,7 @@ class PieChartCard extends StatefulWidget {
   final int secondaryValue;
   final Color secondaryColor;
   final bool shouldAnimate;
+  final VoidCallback? onTap;
 
   const PieChartCard({
     super.key,
@@ -23,6 +24,7 @@ class PieChartCard extends StatefulWidget {
     required this.secondaryValue,
     required this.secondaryColor,
     this.shouldAnimate = true,
+    this.onTap,
   });
 
   @override
@@ -75,7 +77,9 @@ class _PieChartCardState extends State<PieChartCard>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
       padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -200,6 +204,7 @@ class _PieChartCardState extends State<PieChartCard>
           ),
         ],
       ),
+    ),
     );
   }
 

@@ -486,6 +486,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get usageQuestion => '使用咨询';
 
   @override
+  String get primary => '存';
+
+  @override
+  String get secondary => '取';
+
+  @override
   String get other => '其他';
 
   @override

@@ -7,13 +7,14 @@ import 'api_interceptor.dart';
 
 class AuthService {
   static const String _loginEndpoint = '/auth/login';
-  static const String _logoutEndpoint = '/aut/logout';
+  static const String _logoutEndpoint = '/auth/logout';
 
   static Future<LoginResponse?> login(String username, String password) async {
     try {
       final loginRequest = LoginRequest(
         username: username,
         password: password,
+        expires: 7200000,
       );
 
       final response = await ApiInterceptor.post(

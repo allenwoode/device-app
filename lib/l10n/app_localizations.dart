@@ -992,6 +992,18 @@ abstract class AppLocalizations {
   /// **'Usage Question'**
   String get usageQuestion;
 
+  /// No description provided for @primary.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get primary;
+
+  /// No description provided for @secondary.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get secondary;
+
   /// No description provided for @other.
   ///
   /// In en, this message translates to:

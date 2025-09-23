@@ -96,6 +96,32 @@ class DashboardUsage {
   }
 }
 
+class DashboardUsageDevice {
+  final String id;
+  final String label;
+  final int total;
+  final List<int> depo;
+  final String text;
+
+  DashboardUsageDevice({
+    required this.id,
+    required this.label,
+    required this.total,
+    required this.depo,
+    required this.text,
+  });
+
+  factory DashboardUsageDevice.fromJson(Map<String, dynamic> json) {
+    return DashboardUsageDevice(
+      id: json['id'] ?? '',
+      label: json['label'] ?? '',
+      total: json['total'] ?? 0,
+      depo: List<int>.from(json['depo'] ?? []),
+      text: json['text'] ?? '',
+    );
+  }
+}
+
 class DashboardAlerts {
   final int total;
   final int alarmCount;

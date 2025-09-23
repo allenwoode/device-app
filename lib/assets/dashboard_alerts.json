@@ -1,9 +1,9 @@
 {
     "message": "success",
     "result": {
-        "total": 16,
-        "alarmCount": 11,
-        "severeCount": 5
+        "total": 39,
+        "alarmCount": 30,
+        "severeCount": 9
     },
     "status": 200,
     "timestamp": 1757993072336

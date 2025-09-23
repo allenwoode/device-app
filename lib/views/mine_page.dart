@@ -1,12 +1,10 @@
 import 'package:device/config/app_colors.dart';
+import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../services/storage_service.dart';
 import '../models/login_models.dart';
 import '../l10n/app_localizations.dart';
-import 'device_manager.dart';
-import 'feedback_page.dart';
-import 'setting_page.dart';
 
 class MinePage extends StatefulWidget {
   const MinePage({super.key});
@@ -244,11 +242,12 @@ class _MinePageState extends State<MinePage> {
             title: _l10n.deviceManagement,
             showArrow: true,
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const DeviceManagerPage(),
-                ),
-              );
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => const DeviceManagerPage(),
+              //   ),
+              // );
+              AppRoutes.goToDeviceManager(context);
             },
           ),
           _buildDivider(),
@@ -259,11 +258,7 @@ class _MinePageState extends State<MinePage> {
             title: _l10n.feedbackSuggestions,
             showArrow: true,
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const FeedbackPage(),
-                ),
-              );
+              AppRoutes.goToFeedback(context);
             },
           ),
           _buildDivider(),
@@ -292,11 +287,7 @@ class _MinePageState extends State<MinePage> {
             title: _l10n.settings,
             showArrow: true,
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const SettingPage(),
-                ),
-              );
+              AppRoutes.goToSettings(context);
             },
           ),
         ],

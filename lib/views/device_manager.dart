@@ -1,8 +1,7 @@
+import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:device/config/app_colors.dart';
 import '../l10n/app_localizations.dart';
-import 'add_device_page.dart';
-import 'unbind_device_page.dart';
 
 class DeviceManagerPage extends StatefulWidget {
   const DeviceManagerPage({super.key});
@@ -21,11 +20,7 @@ class _DeviceManagerPageState extends State<DeviceManagerPage> {
   }
 
   void _navigateToAddDevice() async {
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AddDevicePage(),
-      ),
-    );
+    final result = await AppRoutes.goToDeviceBind(context);
 
     if (result == true) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,11 +79,12 @@ class _DeviceManagerPageState extends State<DeviceManagerPage> {
             title: _l10n.unbindDevices,
             subtitle: _l10n.batchUnbindDevices,
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const UnbindDevicePage(),
-                ),
-              );
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => const UnbindDevicePage(),
+              //   ),
+              // );
+              AppRoutes.goToDeviceUnbind(context);
             },
           ),
         ],

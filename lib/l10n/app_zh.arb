@@ -211,6 +211,8 @@
   "featureSuggestion": "功能建议",
   "bugReport": "问题反馈",
   "usageQuestion": "使用咨询",
+  "primary": "存",
+  "secondary": "取",
   "other": "其他",
   "scanDeviceQRCode": "扫描设备二维码",
   "permissionInsufficient": "权限不足",

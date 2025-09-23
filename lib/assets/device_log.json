@@ -53,8 +53,91 @@
                 "createTime": "2025-10-05 13:10:20",
                 "deviceId": "11110001",
                 "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "锁状态上报",
+                "createTime": "2025-10-05 09:20:20",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "充电状态上报",
+                "createTime": "2025-10-05 09:20:30",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "充电状态上报",
+                "createTime": "2025-10-05 10:30:20",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "充电状态上报",
+                "createTime": "2025-10-05 10:39:20",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "锁状态上报",
+                "createTime": "2025-10-05 10:50:20",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "锁状态上报",
+                "createTime": "2025-10-05 11:05:30",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "锁状态上报",
+                "createTime": "2025-10-05 09:20:20",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "充电状态上报",
+                "createTime": "2025-10-05 09:20:30",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "充电状态上报",
+                "createTime": "2025-10-05 10:30:20",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "充电状态上报",
+                "createTime": "2025-10-05 10:39:20",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "锁状态上报",
+                "createTime": "2025-10-05 10:50:20",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
+            },
+            {
+                "category": "属性上报",
+                "text": "锁状态上报",
+                "createTime": "2025-10-05 11:05:30",
+                "deviceId": "11110001",
+                "timestamp": 1757396628209
             }
-            
         ]
     },
     "status": 200,

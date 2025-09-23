@@ -226,7 +226,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
           ),
           _buildLogoutButton(),
-          const SizedBox(height: 30),
+          const SizedBox(height: 60),
         ],
       ),
     );
@@ -364,7 +364,7 @@ class _SettingPageState extends State<SettingPage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 40),
       width: double.infinity,
-      height: 45,
+      //height: 45,
       child: OutlinedButton(
         onPressed: _handleLogout,
         style: OutlinedButton.styleFrom(

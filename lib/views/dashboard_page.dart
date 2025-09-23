@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../widgets/pie_chart_card.dart';
 import '../widgets/bar_chart_card.dart';
 import '../l10n/app_localizations.dart';
+import '../routes/app_routes.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -146,6 +147,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 title: _l10n.todayUsageTop5,
                 shouldAnimate: _shouldAnimateCards,
                 data: _convertUsageToChartData(_dashboardUsage),
+                onTap: () {
+                  AppRoutes.goToDashboardUsage(context);
+                },
               ),
               const SizedBox(height: 16),
               PieChartCard(
@@ -158,6 +162,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 secondaryValue: _dashboardDevices?.offlineCount ?? 0,
                 secondaryColor: Colors.grey,
                 shouldAnimate: _shouldAnimateCards,
+                onTap: () {
+                  AppRoutes.goToMain(context);
+                },
               ),
               // const SizedBox(height: 16),
               // DashboardCard(
@@ -182,6 +189,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 secondaryValue: _dashboardAlerts?.severeCount ?? 0,
                 secondaryColor: Colors.red,
                 shouldAnimate: _shouldAnimateCards,
+                onTap: () {
+                  AppRoutes.goToDashboardAlert(context);
+                },
               ),
               const SizedBox(height: 16),
               PieChartCard(
@@ -194,6 +204,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 secondaryValue: _dashboardMessage?.functionCount ?? 0,
                 secondaryColor: Colors.red,
                 shouldAnimate: _shouldAnimateCards,
+                onTap: () {
+                  AppRoutes.goToDashboardDeviceLog(context);
+                },
               ),
                   ],
                 ),

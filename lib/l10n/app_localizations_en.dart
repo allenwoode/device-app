@@ -499,6 +499,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usageQuestion => 'Usage Question';
 
   @override
+  String get primary => 'Deposit';
+
+  @override
+  String get secondary => 'Withdraw';
+
+  @override
   String get other => 'Other';
 
   @override

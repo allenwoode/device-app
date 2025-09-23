@@ -25,7 +25,7 @@ class ApiInterceptor extends Interceptor {
     options.headers['Content-Type'] = 'application/json';
     
     //print('API Request: ${options.method} ${options.uri}');
-    //print('Headers: ${options.headers}');
+    print('Headers: ${options.headers}');
     
     super.onRequest(options, handler);
   }
@@ -43,7 +43,7 @@ class ApiInterceptor extends Interceptor {
     int? code = err.response?.statusCode;
     // Handle 401 Unauthorized
     if (code == 401) {
-      print('===========> API Interceptor: 401 Unauthorized - clearing storage and firing event');
+      print('===> API Interceptor: 401 Unauthorized - clearing storage and firing event');
       
       // Clear local storage
       await StorageService.clearAll();
@@ -51,11 +51,10 @@ class ApiInterceptor extends Interceptor {
       // Fire unauthorized event
       EventBus.instance.commit(EventKeys.logout);
     } else if (code == 403) {
-      print('===========> API Interceptor: 403 Unauthorized - no auth');
+      print('===> API Interceptor: 403 Unauthorized - no auth');
       throw Exception(err.response?.statusMessage);
     }
 
-    
     super.onError(err, handler);
   }
   
