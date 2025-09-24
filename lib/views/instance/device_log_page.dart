@@ -77,20 +77,20 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
       levelCounts[levelKey] = (levelCounts[levelKey] ?? 0) + 1;
     }
 
-    int dispatchCount = levelCounts['平台下发'] ?? 0;
+    int dispatchCount = levelCounts['下发'] ?? 0;
     int normalCount = _logData.length - dispatchCount;
     int totalCount = _logData.length;
 
     return Container(
-      margin: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
+      margin: const EdgeInsets.only(left: 8, top: 16, right: 8, bottom: 0),
       child: totalCount > 0
           ? PieChartCard(
               title: _l10n.operationLogs,
               total: totalCount,
-              primaryLabel: _l10n.propertyReport,
+              primaryLabel: _l10n.report,
               primaryValue: normalCount,
               primaryColor: Colors.green,
-              secondaryLabel: _l10n.platformDispatch,
+              secondaryLabel: _l10n.dispatch,
               secondaryValue: dispatchCount,
               secondaryColor: Colors.red[400]!,
               shouldAnimate: true,
@@ -174,7 +174,7 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
     }
 
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -202,7 +202,7 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
             child: Row(
               children: [
                 Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: Text(
                     _l10n.operationLogs,
                     style: TextStyle(
@@ -246,7 +246,7 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 3,
+                      flex: 2,
                       child: Row(
                         children: [
                           Container(
@@ -302,11 +302,11 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
 
   Color _getCategoryColor(String category) {
     switch (category) {
-      case '属性上报':
+      case '上报':
         return Colors.green;
-      case '平台下发':
+      case '下发':
         return Colors.red;
-      case '事件上报':
+      case '事件':
         return Colors.orange;
       default:
         return Colors.grey;

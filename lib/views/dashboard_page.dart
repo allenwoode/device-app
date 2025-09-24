@@ -166,18 +166,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   AppRoutes.goToMain(context);
                 },
               ),
-              // const SizedBox(height: 16),
-              // DashboardCard(
-              //   title: _l10n.usageDistribution,
-              //   total: null,
-              //   primaryLabel: '>60%',
-              //   primaryValue: 30,
-              //   primaryColor: Colors.green,
-              //   secondaryLabel: '<10%',
-              //   secondaryValue: 10,
-              //   secondaryColor: Colors.red,
-              //   shouldAnimate: _shouldAnimateCards,
-              // ),
               const SizedBox(height: 16),
               PieChartCard(
                 title: _l10n.todayAlerts,
@@ -197,10 +185,10 @@ class _DashboardPageState extends State<DashboardPage> {
               PieChartCard(
                 title: _l10n.operationLogs,
                 total: _dashboardMessage?.total,
-                primaryLabel: _l10n.deviceReport,
+                primaryLabel: _l10n.report,
                 primaryValue: _dashboardMessage?.reportCount ?? 0,
                 primaryColor: Colors.green,
-                secondaryLabel: _l10n.platformDispatch,
+                secondaryLabel: _l10n.dispatch,
                 secondaryValue: _dashboardMessage?.functionCount ?? 0,
                 secondaryColor: Colors.red,
                 shouldAnimate: _shouldAnimateCards,

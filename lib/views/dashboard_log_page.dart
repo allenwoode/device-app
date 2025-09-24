@@ -94,10 +94,10 @@ class _DashboardLogPageState extends State<DashboardLogPage> {
         child: PieChartCard(
           title: log.label,
           total: log.total,
-          primaryLabel: _l10n.deviceReport,
+          primaryLabel: _l10n.report,
           primaryValue: log.depo.isNotEmpty ? log.depo[0] : 0,
           primaryColor: Colors.green,
-          secondaryLabel: _l10n.platformDispatch,
+          secondaryLabel: _l10n.dispatch,
           secondaryValue: log.depo.length > 1 ? log.depo[1] : 0,
           secondaryColor: Colors.red,
           shouldAnimate: true,

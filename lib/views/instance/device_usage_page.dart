@@ -10,13 +10,11 @@ import '../../widgets/bar_chart_card.dart';
 class DeviceUsagePage extends StatefulWidget {
   final String deviceId;
   final String productId;
-  final int? num;
 
   const DeviceUsagePage({
     super.key,
     required this.deviceId,
     required this.productId,
-    required this.num,
   });
 
   @override
@@ -26,7 +24,7 @@ class DeviceUsagePage extends StatefulWidget {
 class _DeviceUsagePageState extends State<DeviceUsagePage> {
   bool _isLoading = true;
   String? _errorMessage;
-  int? _num;
+
   List<DeviceUsage> _usageData = [];
 
   AppLocalizations get _l10n {
@@ -49,7 +47,6 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
   @override
   void initState() {
     super.initState();
-    _num = widget.num;
     _loadDeviceData();
   }
 
@@ -94,11 +91,11 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
           );
 
     return Container(
-      margin: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
+      margin: const EdgeInsets.only(left: 8, top: 16, right: 8, bottom: 0),
       child: chartData.isNotEmpty
           ? BarChartCard(title: _l10n.todayUsage, data: chartData, shouldAnimate: true)
           : Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
@@ -191,7 +188,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
     }
 
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -218,17 +215,6 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
             ),
             child: Row(
               children: [
-                // Expanded(
-                //   flex: 1,
-                //   child: Text(
-                //     '编号',
-                //     style: TextStyle(
-                //       fontWeight: FontWeight.w600,
-                //       color: Colors.grey[800],
-                //       fontSize: 14,
-                //     ),
-                //   ),
-                // ),
                 Expanded(
                   flex: 2,
                   child: Text(
@@ -318,11 +304,6 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
       ),
     );
   }
-
-  // String _formatTimestamp(int timestamp) {
-  //   final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-  //   return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}:${date.second.toString().padLeft(2, '0')}';
-  // }
 
   @override
   Widget build(BuildContext context) {

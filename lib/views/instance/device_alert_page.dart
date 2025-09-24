@@ -83,7 +83,7 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
     int totalCount = _alertData.length;
 
     return Container(
-      margin: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
+      margin: const EdgeInsets.only(left: 8, top: 16, right: 8, bottom: 0),
       child: totalCount > 0
           ? PieChartCard(
               title: _l10n.todayAlerts,
@@ -175,7 +175,7 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
     }
 
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),

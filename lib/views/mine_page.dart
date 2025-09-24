@@ -255,7 +255,7 @@ class _MinePageState extends State<MinePage> {
             icon: Icons.feedback_outlined,
             //iconColor: Colors.orange,
             //backgroundColor: Colors.orange.withOpacity(0.1),
-            title: _l10n.feedbackSuggestions,
+            title: _l10n.feedback,
             showArrow: true,
             onTap: () {
               AppRoutes.goToFeedback(context);

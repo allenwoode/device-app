@@ -1,6 +1,7 @@
 import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:device/config/app_colors.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
 
 class DeviceManagerPage extends StatefulWidget {
@@ -39,18 +40,23 @@ class _DeviceManagerPageState extends State<DeviceManagerPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          icon: const FaIcon(
+            FontAwesomeIcons.chevronLeft,
+            color: Colors.black,
+            size: 18,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(
           _l10n.deviceManagement,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        centerTitle: true,
       ),
       body: Column(
         children: [

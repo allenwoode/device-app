@@ -458,17 +458,17 @@ abstract class AppLocalizations {
   /// **'Severe'**
   String get severe;
 
-  /// No description provided for @deviceReport.
+  /// No description provided for @report.
   ///
   /// In en, this message translates to:
   /// **'Report'**
-  String get deviceReport;
+  String get report;
 
-  /// No description provided for @platformDispatch.
+  /// No description provided for @dispatch.
   ///
   /// In en, this message translates to:
   /// **'Dispatch'**
-  String get platformDispatch;
+  String get dispatch;
 
   /// No description provided for @todayUsageTop5.
   ///
@@ -602,12 +602,6 @@ abstract class AppLocalizations {
   /// **'Alert Time'**
   String get alertTime;
 
-  /// No description provided for @propertyReport.
-  ///
-  /// In en, this message translates to:
-  /// **'Report'**
-  String get propertyReport;
-
   /// No description provided for @noLogData.
   ///
   /// In en, this message translates to:
@@ -626,11 +620,11 @@ abstract class AppLocalizations {
   /// **'Device Management'**
   String get deviceManagement;
 
-  /// No description provided for @feedbackSuggestions.
+  /// No description provided for @feedback.
   ///
   /// In en, this message translates to:
   /// **'Feedback'**
-  String get feedbackSuggestions;
+  String get feedback;
 
   /// No description provided for @settings.
   ///

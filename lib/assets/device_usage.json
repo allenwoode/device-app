@@ -183,7 +183,7 @@
                 "port": 6,
                 "type": "0",
                 "deviceId": "11110001",
-                "depo": "1",
+                "depo": "2",
                 "deviceId_format": "11110001",
                 "timestamp": 1756717833570
             },
@@ -223,9 +223,9 @@
                 "depo_format": "取",
                 "createTime": "2025-10-05 13:10:30",
                 "port": 1,
-                "type": "0",
+                "type": "1",
                 "deviceId": "11110001",
-                "depo": "1",
+                "depo": "2",
                 "deviceId_format": "11110001",
                 "timestamp": 1756717833570
             },

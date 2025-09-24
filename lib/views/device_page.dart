@@ -1,4 +1,5 @@
 import 'package:device/config/app_colors.dart';
+import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:device/models/device_models.dart';
@@ -8,7 +9,6 @@ import 'package:device/services/storage_service.dart';
 import 'package:device/models/login_models.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
-import 'add_device_page.dart';
 
 class DevicePage extends StatefulWidget {
   const DevicePage({super.key});
@@ -236,11 +236,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
   void _onScanDevice() async {
     // Navigate to Add Device page
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AddDevicePage(),
-      ),
-    );
+    final result = await AppRoutes.goToDeviceBind(context);
 
     // Refresh device list if a device was successfully bound
     if (result == true) {
@@ -256,7 +252,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          _currentUser?.orgName ?? '',
+          _currentUser?.orgName ?? _l10n.organizationUnitEmpty,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,

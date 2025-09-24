@@ -1,0 +1,13 @@
+{
+  "payload": {
+    "timeString": "2025-09-23 16:33:56",
+    "timestamp": 1758616436780,
+    "value": {
+      "type": "offline",
+      "deviceId": "11110001"
+    }
+  },
+  "requestId": "instance-editor-info-status-11110001",
+  "topic": "/dashboard/device/status/change/realTime",
+  "type": "result"
+}

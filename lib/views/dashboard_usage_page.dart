@@ -107,7 +107,6 @@ class _DashboardUsagePageState extends State<DashboardUsagePage> {
               context,
               usage.id,
               'default-product-id',
-              0,
             );
           },
         ),

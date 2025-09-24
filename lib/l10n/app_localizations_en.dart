@@ -195,10 +195,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get severe => 'Severe';
 
   @override
-  String get deviceReport => 'Report';
+  String get report => 'Report';
 
   @override
-  String get platformDispatch => 'Dispatch';
+  String get dispatch => 'Dispatch';
 
   @override
   String get todayUsageTop5 => 'Today\'s Usage TOP5';
@@ -277,9 +277,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alertTime => 'Alert Time';
 
   @override
-  String get propertyReport => 'Report';
-
-  @override
   String get noLogData => 'No log data';
 
   @override
@@ -289,7 +286,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceManagement => 'Device Management';
 
   @override
-  String get feedbackSuggestions => 'Feedback';
+  String get feedback => 'Feedback';
 
   @override
   String get settings => 'Settings';

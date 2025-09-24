@@ -193,10 +193,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get severe => '严重';
 
   @override
-  String get deviceReport => '设备上报';
+  String get report => '上报';
 
   @override
-  String get platformDispatch => '平台下发';
+  String get dispatch => '下发';
 
   @override
   String get todayUsageTop5 => '今日使用量TOP5';
@@ -275,9 +275,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get alertTime => '告警时间';
 
   @override
-  String get propertyReport => '属性上报';
-
-  @override
   String get noLogData => '暂无日志数据';
 
   @override
@@ -287,7 +284,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deviceManagement => '设备管理';
 
   @override
-  String get feedbackSuggestions => '反馈建议';
+  String get feedback => '反馈建议';
 
   @override
   String get settings => '设置';

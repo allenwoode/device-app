@@ -1,5 +1,6 @@
 import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../services/device_service.dart';
@@ -164,14 +165,23 @@ class _QRScannerPageState extends State<QRScannerPage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const FaIcon(
+            FontAwesomeIcons.chevronLeft,
+            color: Colors.white,
+            size: 18,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(
           _l10n.scanDeviceQRCode,
-          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.flash_on, color: Colors.white),

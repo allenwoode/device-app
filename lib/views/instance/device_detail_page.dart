@@ -6,6 +6,8 @@ import 'package:device/routes/app_routes.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/confirm_dialog.dart';
+import '../../services/websocket_service.dart';
+import 'dart:async';
 
 enum LockState { locked, unlocked, charging, charged, empty }
 
@@ -45,6 +47,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   int _state = 0;
   int? _num;
 
+  StreamSubscription<Map<String, dynamic>>? _deviceStatusSubscription;
+  StreamSubscription<Map<String, dynamic>>? _deviceStateSubscription;
+
   AppLocalizations get _l10n {
     try {
       return AppLocalizations.of(context)!;
@@ -66,13 +71,25 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   void initState() {
     super.initState();
     _loadDeviceData();
+
+    _subscribeDeviceStatusUpdates();
+    _subscribeToDeviceStateUpdates();
+  }
+
+  @override
+  void dispose() {
+    _deviceStatusSubscription?.cancel();
+    _unsubscribeDeviceStatusUpdates();
+
+    _deviceStateSubscription?.cancel();
+    _unsubscribeDeviceStateUpdates();
+
+    super.dispose();
   }
 
   Future<void> _loadDeviceData() async {
     try {
-      final device = await DeviceService.getDeviceDetail(
-        widget.deviceId,
-      );
+      final device = await DeviceService.getDeviceDetail(widget.deviceId);
       _deviceName = device.name;
       _state = device.state;
       _num = device.spec;
@@ -91,6 +108,245 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       setState(() {
         _isLoading = false;
         _errorMessage = _getErrorMessage(e.toString());
+      });
+    }
+  }
+
+  void _unsubscribeDeviceStatusUpdates() {
+    final deviceId = widget.deviceId;
+    final id = 'instance-editor-info-status-$deviceId';
+    final topic = '/dashboard/device/status/change/realTime';
+    WebSocketService.unsubscribe(id, topic);
+  }
+
+  void _subscribeDeviceStatusUpdates() {
+    final deviceId = widget.deviceId;
+    final id = 'instance-editor-info-status-$deviceId';
+    final topic = '/dashboard/device/status/change/realTime';
+    final parameter = {'deviceId': deviceId};
+
+    _deviceStatusSubscription =
+        WebSocketService.subscribe(id, topic, parameter: parameter).listen(
+          (message) {
+            if (mounted) {
+              _handleDeviceStatusUpdate(message);
+            }
+          },
+          onError: (error) {
+            if (ApiConfig.enableLogging) {
+              print('WebSocket device status error: $error');
+            }
+          },
+        );
+  }
+
+  void _unsubscribeDeviceStateUpdates() {
+    final deviceId = widget.deviceId;
+    final productId = widget.productId;
+    final id =
+        'instance-info-property-$deviceId-$productId-CHARGE_STATE-LOCK_STATE-USED_STATE';
+    final topic = '/dashboard/device/$productId/properties/realTime';
+
+    WebSocketService.unsubscribe(id, topic);
+  }
+
+  void _subscribeToDeviceStateUpdates() {
+    final deviceId = widget.deviceId;
+    final productId = widget.productId;
+    final id =
+        'instance-info-property-$deviceId-$productId-CHARGE_STATE-LOCK_STATE-USED_STATE';
+    final topic = '/dashboard/device/$productId/properties/realTime';
+    final parameter = {
+      'deviceId': deviceId,
+      'properties': ['CHARGE_STATE', 'LOCK_STATE', 'USED_STATE'],
+      'history': 1,
+    };
+
+    _deviceStateSubscription =
+        WebSocketService.subscribe(id, topic, parameter: parameter).listen(
+          (message) {
+            if (mounted) {
+              _handleDeviceStateUpdate(message);
+            }
+          },
+          onError: (error) {
+            if (ApiConfig.enableLogging) {
+              print('WebSocket device state error: $error');
+            }
+          },
+        );
+  }
+
+  void _handleDeviceStatusUpdate(Map<String, dynamic> message) {
+    try {
+      // Extract payload from WebSocket message based on assets/device_status_message.json structure
+      final payload = message['payload'];
+      if (payload != null && payload['value'] != null) {
+        final value = payload['value'];
+        final type = value['type'] as String?;
+        final deviceId = value['deviceId'] as String?;
+
+        if (type != null && deviceId == widget.deviceId) {
+          setState(() {
+            // Update device state: online = 1, offline = 0
+            _state = type == 'online' ? 1 : 0;
+          });
+
+          if (ApiConfig.enableLogging) {
+            print(
+              'Device status updated via WebSocket: ${widget.deviceId} is now $type',
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Failed to handle device status update: $e');
+      }
+    }
+  }
+
+  void _handleDeviceStateUpdate(Map<String, dynamic> message) {
+    try {
+      // Extract payload from WebSocket message based on assets/device_state_message.json structure
+      final payload = message['payload'];
+      if (payload != null && payload['value'] != null) {
+        final value = payload['value'];
+        final property = value['property'] as String?;
+        final stateValue = value['value'];
+
+        if (property != null && stateValue != null) {
+          setState(() {
+            _updateDevicePropertyState(property, stateValue);
+          });
+
+          if (ApiConfig.enableLogging) {
+            print(
+              'Device property $property updated via WebSocket for device: ${widget.deviceId}',
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Failed to handle device state update: $e');
+      }
+    }
+  }
+
+  void _updateDevicePropertyState(
+    String property,
+    Map<String, dynamic> stateValue,
+  ) {
+    final stateString = stateValue['state'] as String?;
+    if (stateString == null) return;
+
+    // Create a temporary state data structure to reuse existing parsing logic
+    // Map<String, dynamic> tempStateData = {
+    //   'result': [
+    //     {
+    //       'data': {
+    //         'value': {
+    //           'property': property,
+    //           'value': {
+    //             'state': stateString
+    //           }
+    //         }
+    //       }
+    //     }
+    //   ]
+    // };
+
+    // Update the specific property state
+    if (property == 'CHARGE_STATE') {
+      _updateChargeState(stateString);
+    } else if (property == 'LOCK_STATE') {
+      _updateLockState(stateString);
+    } else if (property == 'USED_STATE') {
+      _updateUsedState(stateString);
+    }
+
+    // Regenerate lock slots with updated states
+    _regenerateLockSlots();
+  }
+
+  void _updateChargeState(String chargeStateString) {
+    // Update charge states for all slots
+    for (int index = 0; index < lockSlots.length; index++) {
+      if (index < chargeStateString.length) {
+        final chargeChar = chargeStateString[index];
+        LockState chargingState;
+
+        switch (chargeChar) {
+          case '1':
+            chargingState = LockState.charged;
+            break;
+          case '2':
+            chargingState = LockState.charging;
+            break;
+          default:
+            chargingState = LockState.empty;
+        }
+
+        lockSlots[index] = LockSlot(
+          id: lockSlots[index].id,
+          lockState: lockSlots[index].lockState,
+          chargingState: chargingState,
+          isUsed: lockSlots[index].isUsed,
+        );
+      }
+    }
+  }
+
+  void _updateLockState(String lockStateString) {
+    // Update lock states for all slots
+    for (int index = 0; index < lockSlots.length; index++) {
+      if (index < lockStateString.length) {
+        final lockChar = lockStateString[index];
+        final isUnlocked = lockChar == '1';
+
+        lockSlots[index] = LockSlot(
+          id: lockSlots[index].id,
+          lockState: isUnlocked ? LockState.unlocked : LockState.locked,
+          chargingState: lockSlots[index].chargingState,
+          isUsed: lockSlots[index].isUsed,
+        );
+      }
+    }
+  }
+
+  void _updateUsedState(String usedStateString) {
+    // Update used states for all slots
+    for (int index = 0; index < lockSlots.length; index++) {
+      if (index < usedStateString.length) {
+        final usedChar = usedStateString[index];
+        final isUsed = usedChar == '1';
+
+        lockSlots[index] = LockSlot(
+          id: lockSlots[index].id,
+          lockState: lockSlots[index].lockState,
+          chargingState: lockSlots[index].chargingState,
+          isUsed: isUsed,
+        );
+      }
+    }
+  }
+
+  void _regenerateLockSlots() {
+    // Ensure we have the right number of slots based on device spec
+    final targetSlotCount = _num ?? 16;
+    if (lockSlots.length != targetSlotCount) {
+      // Regenerate slots if count doesn't match
+      lockSlots = List.generate(targetSlotCount, (index) {
+        final slotId = 'C${index + 1}';
+        return index < lockSlots.length
+            ? lockSlots[index]
+            : LockSlot(
+                id: slotId,
+                lockState: LockState.locked,
+                chargingState: LockState.empty,
+                isUsed: false,
+              );
       });
     }
   }
@@ -238,13 +494,49 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          '${widget.deviceId} (${_state == 1 ? _l10n.online : _l10n.offline})',
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.deviceId,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Container(
+              //margin: const EdgeInsets.only(top: 18, bottom: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                color: _state == 1 ? Colors.green : Colors.grey,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    _state == 1 ? _l10n.online : _l10n.offline,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         centerTitle: true,
         actions: [
@@ -328,14 +620,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildMenuIcon(
-            FontAwesomeIcons.chartArea,
+            FontAwesomeIcons.chartColumn,
             _l10n.usageRate,
             onPressed: () {
               AppRoutes.goToDeviceUsage(
                 context,
                 widget.deviceId,
                 widget.productId,
-                _num,
               );
             },
           ),
@@ -401,13 +692,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         onTap: onPressed,
         //borderRadius: BorderRadius.circular(12),
         splashColor: Colors.blue.withOpacity(0.2),
-        //highlightColor: Colors.white.withOpacity(0.2),
+        highlightColor: Colors.white.withOpacity(0.2),
         splashFactory: InkRipple.splashFactory,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
             children: [
-              FaIcon(icon, size: 24, color: Colors.grey[600]),
+              FaIcon(icon, size: 24, color: Colors.black54),
               const SizedBox(height: 8),
               Text(
                 label,

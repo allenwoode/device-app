@@ -105,8 +105,6 @@ class AppRoutes {
     handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
       final deviceId = params['deviceId']?.first ?? '';
       final productId = params['productId']?.first ?? '';
-      final numString = params['num']?.first;
-      final num = numString != null ? int.tryParse(numString) : null;
 
       if (deviceId.isEmpty || productId.isEmpty) {
         return const Scaffold(
@@ -119,7 +117,6 @@ class AppRoutes {
       return DeviceUsagePage(
         deviceId: deviceId, 
         productId: productId, 
-        num: num
       );
     },
   );
@@ -237,7 +234,7 @@ class AppRoutes {
     );
 
     router.define(
-      '$deviceUsage/:deviceId/:productId/:num',
+      '$deviceUsage/:deviceId/:productId',
       handler: _deviceUsageHandler,
       transitionType: TransitionType.cupertino,
     );
@@ -311,7 +308,28 @@ class AppRoutes {
     // Fallback route
     router.notFoundHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
-        return const Scaffold(
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+                size: 18,
+              ),
+              onPressed: () => Navigator.pop(context!),
+            ),
+            title: Text(
+              '路由错误',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            centerTitle: true,
+      ),
           body: Center(
             child: Text('Route not found'),
           ),
@@ -378,7 +396,6 @@ class AppRoutes {
     String productId,
     int? num,
   ) {
-    //final numParam = num?.toString() ?? '0';
     return navigateTo(context, '$function/$deviceId/$productId/$num');
   }
 
@@ -386,9 +403,8 @@ class AppRoutes {
     BuildContext context,
     String deviceId,
     String productId,
-    int? num,
   ) {
-    return navigateTo(context, '$deviceUsage/$deviceId/$productId/$num');
+    return navigateTo(context, '$deviceUsage/$deviceId/$productId');
   }
 
   static Future<dynamic> goToDeviceAlert(
