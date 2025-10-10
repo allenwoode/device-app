@@ -401,7 +401,7 @@ abstract class AppLocalizations {
   /// No description provided for @versionUpdateTodo.
   ///
   /// In en, this message translates to:
-  /// **'Version update feature to be implemented'**
+  /// **'Already the latest version'**
   String get versionUpdateTodo;
 
   /// No description provided for @aboutUsTodo.
@@ -446,10 +446,16 @@ abstract class AppLocalizations {
   /// **'Operation Logs'**
   String get operationLogs;
 
-  /// No description provided for @alarm.
+  /// No description provided for @notice.
   ///
   /// In en, this message translates to:
   /// **'Notice'**
+  String get notice;
+
+  /// No description provided for @alarm.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
   String get alarm;
 
   /// No description provided for @severe.
@@ -469,6 +475,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dispatch'**
   String get dispatch;
+
+  /// No description provided for @event.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Report'**
+  String get event;
 
   /// No description provided for @todayUsageTop5.
   ///
@@ -577,6 +589,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{port} In Use'**
   String inUse(Object port);
+
+  /// No description provided for @inIdel.
+  ///
+  /// In en, this message translates to:
+  /// **'{port} In Idel'**
+  String inIdel(Object port);
 
   /// No description provided for @noAlertData.
   ///
@@ -986,17 +1004,17 @@ abstract class AppLocalizations {
   /// **'Usage Question'**
   String get usageQuestion;
 
-  /// No description provided for @primary.
+  /// No description provided for @deposit.
   ///
   /// In en, this message translates to:
   /// **'Deposit'**
-  String get primary;
+  String get deposit;
 
-  /// No description provided for @secondary.
+  /// No description provided for @withdraw.
   ///
   /// In en, this message translates to:
   /// **'Withdraw'**
-  String get secondary;
+  String get withdraw;
 
   /// No description provided for @other.
   ///

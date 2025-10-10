@@ -170,7 +170,7 @@ class _DashboardPageState extends State<DashboardPage> {
               PieChartCard(
                 title: _l10n.todayAlerts,
                 total: _dashboardAlerts?.total,
-                primaryLabel: _l10n.alarm,
+                primaryLabel: _l10n.notice,
                 primaryValue: _dashboardAlerts?.alarmCount ?? 0,
                 primaryColor: Colors.green,
                 secondaryLabel: _l10n.severe,

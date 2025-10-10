@@ -21,7 +21,6 @@ class WebSocketService {
   static String get _wsUrl {
     final baseUrl = ApiConfig.baseUrl;
     final wsUrl = baseUrl.replaceFirst('http', 'ws');
-    //final token = await StorageService.getToken();
     return '$wsUrl/messaging';
   }
 
@@ -34,13 +33,13 @@ class WebSocketService {
 
       final token = await StorageService.getToken();
       if (token == null) {
-        print('WebSocket: No auth token available');
+        //print('WebSocket: No auth token available');
         return false;
       }
 
-      print('WebSocket: Connecting to $_wsUrl');
+      //print('WebSocket: Connecting to $_wsUrl');
       _channel = WebSocketChannel.connect(
-        Uri.parse('$_wsUrl/$token?::X_Access_Token=$token'),
+        Uri.parse('$_wsUrl/$token'),
       );
 
       _subscription = _channel!.stream.listen(
@@ -51,9 +50,9 @@ class WebSocketService {
 
       _isConnected = true;
       _reconnectAttempts = 0;
-      _startHeartbeat();
+      //_startHeartbeat();
 
-      print('WebSocket: Connected successfully');
+      //print('WebSocket: Connected successfully');
       return true;
     } catch (e) {
       print('WebSocket: Connection failed: $e');
@@ -64,7 +63,7 @@ class WebSocketService {
 
   /// Disconnect from WebSocket server
   static Future<void> disconnect() async {
-    _stopHeartbeat();
+    //_stopHeartbeat();
     _stopReconnectTimer();
 
     await _subscription?.cancel();
@@ -81,7 +80,7 @@ class WebSocketService {
     }
     _topicControllers.clear();
 
-    print('WebSocket: Disconnected');
+    //print('WebSocket: Disconnected');
   }
 
   /// Subscribe to a device state topic
@@ -157,7 +156,7 @@ class WebSocketService {
       final type = message['type'] as String?;
       final topic = message['topic'] as String?;
 
-      //print('===>message: $type $data');
+      //print('===>on message: $data');
       // Handle different message types
       if (type == 'result' && topic != null) {
         // This is a subscription result message with actual data

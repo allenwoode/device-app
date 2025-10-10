@@ -95,10 +95,10 @@ class _DashboardUsagePageState extends State<DashboardUsagePage> {
         child: PieChartCard(
           title: usage.label,
           total: usage.total,
-          primaryLabel: _l10n.primary,
+          primaryLabel: _l10n.deposit,
           primaryValue: usage.depo.isNotEmpty ? usage.depo[0] : 0,
           primaryColor: Colors.green,
-          secondaryLabel: _l10n.secondary,
+          secondaryLabel: _l10n.withdraw,
           secondaryValue: usage.depo.length > 1 ? usage.depo[1] : 0,
           secondaryColor: Colors.orange,
           shouldAnimate: true,

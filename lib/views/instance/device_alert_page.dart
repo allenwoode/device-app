@@ -88,7 +88,7 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
           ? PieChartCard(
               title: _l10n.todayAlerts,
               total: totalCount,
-              primaryLabel: _l10n.alarm,
+              primaryLabel: _l10n.notice,
               primaryValue: normalCount,
               primaryColor: Colors.green,
               secondaryLabel: _l10n.severe,
@@ -260,7 +260,7 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              alert.levelFormat,
+                              _getAlertBlade(alert.level),
                               style: const TextStyle(
                                 fontSize: 10,
                                 color: Colors.white,
@@ -387,5 +387,20 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
                   ),
                 ),
     );
+  }
+  
+  String _getAlertBlade(int level) {
+    String text = '';
+    switch (level) {
+      case 1:
+        text = _l10n.notice;
+      case 2:
+        text = '警告';
+      case 5:
+        text = _l10n.severe;
+      default:
+        text = _l10n.alarm;
+    }
+    return text;
   }
 } 

@@ -14,7 +14,7 @@ class AuthService {
       final loginRequest = LoginRequest(
         username: username,
         password: password,
-        expires: 7200000,
+        expires: -1,
       );
 
       final response = await ApiInterceptor.post(

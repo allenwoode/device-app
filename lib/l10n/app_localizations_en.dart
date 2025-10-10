@@ -165,7 +165,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutUs => 'About Us';
 
   @override
-  String get versionUpdateTodo => 'Version update feature to be implemented';
+  String get versionUpdateTodo => 'Already the latest version';
 
   @override
   String get aboutUsTodo => 'About us feature to be implemented';
@@ -189,7 +189,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get operationLogs => 'Operation Logs';
 
   @override
-  String get alarm => 'Notice';
+  String get notice => 'Notice';
+
+  @override
+  String get alarm => 'Warning';
 
   @override
   String get severe => 'Severe';
@@ -199,6 +202,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dispatch => 'Dispatch';
+
+  @override
+  String get event => 'Event Report';
 
   @override
   String get todayUsageTop5 => 'Today\'s Usage TOP5';
@@ -262,6 +268,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String inUse(Object port) {
     return '$port In Use';
+  }
+
+  @override
+  String inIdel(Object port) {
+    return '$port In Idel';
   }
 
   @override
@@ -496,10 +507,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usageQuestion => 'Usage Question';
 
   @override
-  String get primary => 'Deposit';
+  String get deposit => 'Deposit';
 
   @override
-  String get secondary => 'Withdraw';
+  String get withdraw => 'Withdraw';
 
   @override
   String get other => 'Other';

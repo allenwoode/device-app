@@ -79,10 +79,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   @override
   void dispose() {
     _deviceStatusSubscription?.cancel();
-    _unsubscribeDeviceStatusUpdates();
+    //_unsubscribeDeviceStatusUpdates();
 
     _deviceStateSubscription?.cancel();
-    _unsubscribeDeviceStateUpdates();
+    //_unsubscribeDeviceStateUpdates();
 
     super.dispose();
   }
@@ -112,16 +112,16 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
 
-  void _unsubscribeDeviceStatusUpdates() {
-    final deviceId = widget.deviceId;
-    final id = 'instance-editor-info-status-$deviceId';
-    final topic = '/dashboard/device/status/change/realTime';
-    WebSocketService.unsubscribe(id, topic);
-  }
+  // void _unsubscribeDeviceStatusUpdates() {
+  //   final deviceId = widget.deviceId;
+  //   final id = 'instance-editor-info-status-$deviceId';
+  //   final topic = '/dashboard/device/status/change/realTime';
+  //   WebSocketService.unsubscribe(id, topic);
+  // }
 
   void _subscribeDeviceStatusUpdates() {
     final deviceId = widget.deviceId;
-    final id = 'instance-editor-info-status-$deviceId';
+    final id = 'app-instance-info-status-$deviceId';
     final topic = '/dashboard/device/status/change/realTime';
     final parameter = {'deviceId': deviceId};
 
@@ -129,6 +129,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         WebSocketService.subscribe(id, topic, parameter: parameter).listen(
           (message) {
             if (mounted) {
+              //print('===>listen device status: $message');
               _handleDeviceStatusUpdate(message);
             }
           },
@@ -140,21 +141,21 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         );
   }
 
-  void _unsubscribeDeviceStateUpdates() {
-    final deviceId = widget.deviceId;
-    final productId = widget.productId;
-    final id =
-        'instance-info-property-$deviceId-$productId-CHARGE_STATE-LOCK_STATE-USED_STATE';
-    final topic = '/dashboard/device/$productId/properties/realTime';
+  // void _unsubscribeDeviceStateUpdates() {
+  //   final deviceId = widget.deviceId;
+  //   final productId = widget.productId;
+  //   final id =
+  //       'app-instance-info-property-$deviceId-$productId-CHARGE_STATE-LOCK_STATE-USED_STATE';
+  //   final topic = '/dashboard/device/$productId/properties/realTime';
 
-    WebSocketService.unsubscribe(id, topic);
-  }
+  //   WebSocketService.unsubscribe(id, topic);
+  // }
 
   void _subscribeToDeviceStateUpdates() {
     final deviceId = widget.deviceId;
     final productId = widget.productId;
     final id =
-        'instance-info-property-$deviceId-$productId-CHARGE_STATE-LOCK_STATE-USED_STATE';
+        'app-instance-info-property-$deviceId-$productId-CHARGE_STATE-LOCK_STATE-USED_STATE';
     final topic = '/dashboard/device/$productId/properties/realTime';
     final parameter = {
       'deviceId': deviceId,
@@ -191,12 +192,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             // Update device state: online = 1, offline = 0
             _state = type == 'online' ? 1 : 0;
           });
-
-          if (ApiConfig.enableLogging) {
-            print(
-              'Device status updated via WebSocket: ${widget.deviceId} is now $type',
-            );
-          }
         }
       }
     } catch (e) {
@@ -219,12 +214,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           setState(() {
             _updateDevicePropertyState(property, stateValue);
           });
-
-          if (ApiConfig.enableLogging) {
-            print(
-              'Device property $property updated via WebSocket for device: ${widget.deviceId}',
-            );
-          }
         }
       }
     } catch (e) {
@@ -734,7 +723,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           crossAxisCount: (_num ?? 16) < 12 ? 3 : 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: (_num ?? 16) < 12 ? 0.8 : 0.6,
+          childAspectRatio: (_num ?? 16) < 12 ? 0.9 : 0.6,
         ),
         itemCount: _num ?? lockSlots.length,
         itemBuilder: (context, index) {
@@ -755,9 +744,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         Material(
           color: Colors.transparent,
           child: InkWell(
-            // onTap: () {
-            //   _showLockSlotDialog(slot);
-            // },
+            onTap: () {
+              _showLockSlotDialog(slot);
+            },
             borderRadius: BorderRadius.circular(32),
             splashColor: Colors.blue.withOpacity(0.3),
             highlightColor: Colors.blue.withOpacity(0.15),
@@ -935,11 +924,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           // Lock status legend
           Row(
             children: [
-              FaIcon(
-                FontAwesomeIcons.lockOpen,
-                color: Colors.grey[600],
-                size: 14,
-              ),
+              FaIcon(FontAwesomeIcons.lockOpen, color: Colors.grey[600], size: 14),
               const SizedBox(width: 8),
               Text(_l10n.deviceUnlock, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 24),
@@ -1023,57 +1008,160 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          title: Text('${slot.id} State'),
+          title: Text(slot.id),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Lock: ${slot.lockState == LockState.unlocked ? 'Unlock' : 'Lock'}',
+              Row(children: [
+                Text('使用状态:'),
+                const SizedBox(width: 8),
+                Text(slot.isUsed ? _l10n.inUse(slot.id) : _l10n.inIdel(slot.id), style: const TextStyle(fontSize: 12)),
+              ],),
+              const SizedBox(height: 8),
+              Row(children: [
+                Text('锁状态:'),
+                const SizedBox(width: 8),
+                _getLockedInicator(slot.lockState),
+                ]),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Text('充电状态:'),
+                  const SizedBox(width: 8),
+                  _getChargedIndicator(slot.chargingState),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text('Charge: ${_getChargingStatusText(slot.chargingState)}'),
-              const SizedBox(height: 8),
-              Text('Used: ${slot.isUsed ? 'In Use' : 'Idle'}'),
             ],
           ),
-          actions: [
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
-                borderRadius: BorderRadius.circular(8),
-                splashColor: Colors.grey.withOpacity(0.3),
-                highlightColor: Colors.grey.withOpacity(0.15),
-                splashFactory: InkRipple.splashFactory,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: Text(
-                    'Close',
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                ),
-              ),
-            ),
-          ],
+          // actions: [
+          //   Material(
+          //     color: Colors.transparent,
+          //     child: InkWell(
+          //       onTap: () => Navigator.of(context).pop(),
+          //       borderRadius: BorderRadius.circular(8),
+          //       splashColor: Colors.grey.withOpacity(0.3),
+          //       highlightColor: Colors.grey.withOpacity(0.15),
+          //       splashFactory: InkRipple.splashFactory,
+          //       child: Container(
+          //         padding: const EdgeInsets.symmetric(
+          //           horizontal: 16,
+          //           vertical: 8,
+          //         ),
+          //         child: Text(
+          //           'Close',
+          //           style: TextStyle(color: Colors.grey[600]),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ],
         );
       },
     );
   }
 
-  String _getChargingStatusText(LockState state) {
+  // String _getChargingStatusText(LockState state) {
+  //   switch (state) {
+  //     case LockState.charging:
+  //       return 'Charging';
+  //     case LockState.charged:
+  //       return 'Fully Charged';
+  //     case LockState.empty:
+  //       return 'Not Powered';
+  //     default:
+  //       return 'Unknown';
+  //   }
+  // }
+
+  Widget _getLockedInicator(LockState state) {
+    if (state == LockState.locked) {
+      return Row(children: [
+        FaIcon(FontAwesomeIcons.lock, color: Colors.grey[600], size: 14),
+        const SizedBox(width: 8),
+        Text(_l10n.deviceLock, style: const TextStyle(fontSize: 12)),
+      ],
+      );
+    } else {
+      return Row(children: [
+        FaIcon(FontAwesomeIcons.lockOpen, color: Colors.grey[600], size: 14),
+        const SizedBox(width: 8),
+        Text(_l10n.deviceUnlock, style: const TextStyle(fontSize: 12)),
+      ],
+      );
+    }
+  }
+
+  Widget _getChargedIndicator(LockState state) {
     switch (state) {
-      case LockState.charging:
-        return 'Charging';
-      case LockState.charged:
-        return 'Fully Charged';
       case LockState.empty:
-        return 'Not Powered';
+        return Row(children: [
+          Container (
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(_l10n.notPowered, style: const TextStyle(fontSize: 12)),
+          ],
+        );
+      case LockState.charging:
+        return Row(children: [
+          Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF00a0e9),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 0,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(_l10n.charging, style: const TextStyle(fontSize: 12)),
+        ],
+        );
+      case LockState.charged:
+        return Row(children: [
+          Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF55bf4f),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 0,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(_l10n.fullyCharged, style: const TextStyle(fontSize: 12)),
+        ],
+      );
       default:
-        return 'Unknown';
+        return const SizedBox(width: 8,);
     }
   }
 }

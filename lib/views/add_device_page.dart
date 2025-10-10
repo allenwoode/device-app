@@ -58,7 +58,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(_l10n.bindSuccess),
-              //backgroundColor: Colors.grey,
+              backgroundColor: Colors.green,
             ),
           );
           _deviceIdController.clear();

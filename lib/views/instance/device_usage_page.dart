@@ -266,7 +266,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        usage.depoFormat,
+                        usage.depo == '1' ? _l10n.deposit : _l10n.withdraw,
                         style: const TextStyle(
                           fontSize: 10,
                           color: Colors.white,

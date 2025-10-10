@@ -259,7 +259,7 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              log.category,
+                              _getCategoryName(log.category),
                               style: const TextStyle(
                                 fontSize: 10,
                                 color: Colors.white,
@@ -302,14 +302,27 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
 
   Color _getCategoryColor(String category) {
     switch (category) {
-      case '上报':
+      case '属性上报':
         return Colors.green;
-      case '下发':
+      case '平台下发':
         return Colors.red;
-      case '事件':
+      case '事件上报':
         return Colors.orange;
       default:
         return Colors.grey;
+    }
+  }
+
+  String _getCategoryName(String category) {
+    switch (category) {
+      case '属性上报':
+        return _l10n.report;
+      case '平台下发':
+        return _l10n.dispatch;
+      case '事件上报':
+        return _l10n.event;
+      default:
+        return '';
     }
   }
 

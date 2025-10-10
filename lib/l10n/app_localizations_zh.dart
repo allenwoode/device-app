@@ -163,7 +163,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutUs => '关于我们';
 
   @override
-  String get versionUpdateTodo => '版本更新功能待实现';
+  String get versionUpdateTodo => '已经是最新版本';
 
   @override
   String get aboutUsTodo => '关于我们功能待实现';
@@ -187,16 +187,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get operationLogs => '操作日志';
 
   @override
-  String get alarm => '提醒';
+  String get notice => '提醒';
+
+  @override
+  String get alarm => '警报';
 
   @override
   String get severe => '严重';
 
   @override
-  String get report => '上报';
+  String get report => '属性上报';
 
   @override
-  String get dispatch => '下发';
+  String get dispatch => '平台下发';
+
+  @override
+  String get event => '事件上报';
 
   @override
   String get todayUsageTop5 => '今日使用量TOP5';
@@ -260,6 +266,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String inUse(Object port) {
     return '$port 正在使用';
+  }
+
+  @override
+  String inIdel(Object port) {
+    return '$port 空闲中';
   }
 
   @override
@@ -483,10 +494,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get usageQuestion => '使用咨询';
 
   @override
-  String get primary => '存';
+  String get deposit => '存';
 
   @override
-  String get secondary => '取';
+  String get withdraw => '取';
 
   @override
   String get other => '其他';

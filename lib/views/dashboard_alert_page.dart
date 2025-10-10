@@ -94,7 +94,7 @@ class _DashboardAlertPageState extends State<DashboardAlertPage> {
         child: PieChartCard(
           title: alert.label,
           total: alert.total,
-          primaryLabel: _l10n.alarm,
+          primaryLabel: _l10n.notice,
           primaryValue: alert.depo.isNotEmpty ? alert.depo[0] : 0,
           primaryColor: Colors.green,
           secondaryLabel: _l10n.severe,

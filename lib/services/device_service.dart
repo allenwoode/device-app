@@ -9,8 +9,7 @@ import 'auth_service.dart';
 class DeviceService {
   // Device endpoints
   static const String devicesEndpoint = '/device/instance/query';
-  static const String dashboardDevicesEndpoint =
-      '/device/instance/dashboard/count';
+  static const String dashboardDevicesEndpoint = '/device/instance/dashboard/count';
   static const String deviceInvokeEndpoint = '/device/invoked';
 
   static Future<Map<String, dynamic>> getDevices({
@@ -25,8 +24,7 @@ class DeviceService {
         'pageSize': size,
         // Add any other required parameters here
         'sorts': [
-          {"name": "createTime", "order": "desc"},
-          {"name": "name", "order": "desc"},
+          {"name": "createTime", "order": "asc"},
         ],
         "terms": [],
       };
@@ -590,11 +588,6 @@ class DeviceService {
         '${ApiConfig.baseUrl}/assets/bind/$orgId/device',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
-
-      if (ApiConfig.enableLogging) {
-        print('Device Bind API Response Status: ${response.statusCode}');
-        print('Device Bind API Response Body: ${response.data}');
-      }
 
       if (response.statusCode == 200) {
         final responseData = response.data;
