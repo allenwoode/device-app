@@ -294,6 +294,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noLogInfo => 'No log information';
 
   @override
+  String get deviceConnector => 'Device Connect';
+
+  @override
   String get deviceManagement => 'Device Management';
 
   @override

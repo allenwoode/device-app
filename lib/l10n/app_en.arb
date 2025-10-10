@@ -132,6 +132,7 @@
   "alertTime": "Alert Time",
   "noLogData": "No log data",
   "noLogInfo": "No log information",
+  "deviceConnector": "Device Connect",
   "deviceManagement": "Device Management",
   "feedback": "Feedback",
   "settings": "Settings",

@@ -632,6 +632,12 @@ abstract class AppLocalizations {
   /// **'No log information'**
   String get noLogInfo;
 
+  /// No description provided for @deviceConnector.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Connect'**
+  String get deviceConnector;
+
   /// No description provided for @deviceManagement.
   ///
   /// In en, this message translates to:

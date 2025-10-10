@@ -12,6 +12,7 @@ class DeviceManagerPage extends StatefulWidget {
 }
 
 class _DeviceManagerPageState extends State<DeviceManagerPage> {
+  
   AppLocalizations get _l10n {
     try {
       return AppLocalizations.of(context)!;

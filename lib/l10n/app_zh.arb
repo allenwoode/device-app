@@ -90,6 +90,7 @@
   "alertTime": "告警时间",
   "noLogData": "暂无日志数据",
   "noLogInfo": "暂无日志信息",
+  "deviceConnector": "设备连接",
   "deviceManagement": "设备管理",
   "feedback": "反馈建议",
   "settings": "设置",

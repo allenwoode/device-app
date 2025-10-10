@@ -292,6 +292,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noLogInfo => '暂无日志信息';
 
   @override
+  String get deviceConnector => '设备连接';
+
+  @override
   String get deviceManagement => '设备管理';
 
   @override

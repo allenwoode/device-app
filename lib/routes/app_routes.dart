@@ -1,4 +1,5 @@
 import 'package:device/views/add_device_page.dart';
+import 'package:device/views/device_connector.dart';
 import 'package:device/views/device_manager.dart';
 import 'package:device/views/unbind_device_page.dart';
 import 'package:device/views/dashboard_usage_page.dart';
@@ -30,6 +31,7 @@ class AppRoutes {
   static const String deviceAlert = '/device-alert';
   static const String deviceLog = '/device-log';
   static const String deviceManager = '/device-manager';
+  static const String deviceConnector = '/device-connector';
   static const String deviceBind = '/device-bind';
   static const String deviceUnbind = '/device-unbind';
   static const String dashboardUsage = '/dashboard-usage';
@@ -155,6 +157,11 @@ class AppRoutes {
     },
   );
 
+  static final Handler _deviceConnectorHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      return DeviceConnectorPage();
+  });
+
   static final Handler _deviceManagerHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
       return DeviceManagerPage();
@@ -248,6 +255,12 @@ class AppRoutes {
     router.define(
       '$deviceLog/:deviceId/:productId',
       handler: _deviceLogHandler,
+      transitionType: TransitionType.cupertino,
+    );
+
+    router.define(
+      deviceConnector, 
+      handler: _deviceConnectorHandler, 
       transitionType: TransitionType.cupertino,
     );
 
@@ -421,6 +434,12 @@ class AppRoutes {
     String productId,
   ) {
     return navigateTo(context, '$deviceLog/$deviceId/$productId');
+  }
+
+  static Future<dynamic> goToDeviceConnector(
+    BuildContext context,
+  ) {
+    return navigateTo(context, deviceConnector);
   }
 
   static Future<dynamic> goToDeviceManager(
