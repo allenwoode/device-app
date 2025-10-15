@@ -5,6 +5,7 @@ class StorageService {
   static const String _userInfoKey = 'user_info';
   static const String _tokenExpiryKey = 'token_expiry';
   static const String _loginTimeKey = 'login_time';
+  static const String _wifiSsidKey = 'wifi_ssid_';
 
   static Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -87,5 +88,15 @@ class StorageService {
 
   static Future<bool> isLoggedIn() async {
     return await isTokenValid();
+  }
+
+  static Future<void> saveWifiConfig(String ssid, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_wifiSsidKey + ssid, password);
+  }
+
+  static Future<String?> getWifiConfig(String ssid) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_wifiSsidKey + ssid);
   }
 }

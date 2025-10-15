@@ -1,11 +1,17 @@
-import 'package:device/config/app_colors.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:device/ble/ble_manager.dart';
+import 'package:device/ble/frame_createor.dart';
+import 'package:device/ble/response.dart';
+import 'package:device/ble/tea.dart';
 import 'package:device/l10n/app_localizations.dart';
-import 'package:device/models/device_models.dart';
-import 'package:device/services/device_service.dart';
-import 'package:device/widgets/confirm_dialog.dart';
+import 'package:device/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 
 class DeviceConnectorPage extends StatefulWidget {
@@ -16,20 +22,27 @@ class DeviceConnectorPage extends StatefulWidget {
 }
 
 class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
+  static const String TEA_ENCRYPTION_KEY = "hiflying12345678";
+  static const String BLE_CONFIG_ACK = "config_ack";
 
-  final ScrollController _scrollController = ScrollController();
+  final BluetoothManager btManager = BluetoothManager();
+  final TextEditingController ssidController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  final Set<String> _selectedDevices = {};
-  bool _isUnbinding = false;
+  List<BluetoothDevice> foundDevices = [];
+  BluetoothDevice? selectedDevice;
+  bool isScanning = false;
+  bool isConnected = false;
+  bool obscurePassword = true;
+  String statusMessage = '准备就绪';
+  List<String> logs = [];
 
-  // Bluetooth related state
-  List<ScanResult> _bluetoothDevices = [];
-  bool _isBluetoothScanning = false;
-  StreamSubscription<List<ScanResult>>? _scanResultsSubscription;
-  StreamSubscription<bool>? _isScanningSubscription;
-  List<BluetoothDevice> _connectedBluetoothDevices = [];
-  bool _showBluetoothDevices = false;
-  
+  final TeaEncryptor _encryptor = TeaEncryptor(TEA_ENCRYPTION_KEY);
+  final BleDeviceResponseFrames _responseFrames = BleDeviceResponseFrames();
+
+  final StreamController<String> _statusController = StreamController<String>.broadcast();
+  Stream<String> get statusStream => _statusController.stream;
+
   AppLocalizations get _l10n {
     try {
       return AppLocalizations.of(context)!;
@@ -41,246 +54,306 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   @override
   void initState() {
     super.initState();
+
+    _scanCurrentWifiSsid();
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    _scanResultsSubscription?.cancel();
-    _isScanningSubscription?.cancel();
-    _stopBluetoothScan();
-    super.dispose();
-  }
+  Future<void> _scanCurrentWifiSsid() async {
+    // Try to get current WiFi SSID
+    String? currentSSID;
 
-  void _toggleDeviceSelection(String deviceId) {
-    setState(() {
-      if (_selectedDevices.contains(deviceId)) {
-        _selectedDevices.remove(deviceId);
-      } else {
-        _selectedDevices.add(deviceId);
+    try {
+      // Request location permission if needed
+      if (await Permission.location.isDenied) {
+        await Permission.location.request();
       }
-    });
-  }
 
-  void _selectAllDevices() {
-    setState(() {
-      _selectedDevices.clear();
-      for (final device in _connectedBluetoothDevices) {
-        _selectedDevices.add(device.platformName);
+      if (await Permission.location.isGranted) {
+        final networkInfo = NetworkInfo();
+        currentSSID = await networkInfo.getWifiName();
+
+        // Remove quotes if present (iOS adds quotes around SSID)
+        if (currentSSID != null) {
+          currentSSID = currentSSID.replaceAll('"', '');
+        }
       }
-    });
+    } catch (e) {
+      // Ignore errors, just won't pre-fill SSID
+    }
+
+    // Set the current SSID as default value
+    if (currentSSID != null && currentSSID.isNotEmpty) {
+      ssidController.text = currentSSID;
+      final String? password = await StorageService.getWifiConfig(currentSSID);
+      if (password!.isNotEmpty) {
+        passwordController.text = password;
+      }
+    }
   }
 
-  void _clearSelection() {
+  void _addLog(String message) {
     setState(() {
-      _selectedDevices.clear();
+      logs.insert(0, '${DateTime.now().toString().substring(11, 19)} - $message');
+      if (logs.length > 20) logs.removeLast();
     });
   }
 
-  void _unbindSelectedDevices() {
-    if (_selectedDevices.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            _l10n.pleaseSelectAtLeastOneDevice,
-            style: const TextStyle(fontSize: 12),
-          ),
-          backgroundColor: Colors.orange,
-        ),
+  /// 扫描 AZ 设备
+  Future<void> scanForDevices() async {
+    setState(() {
+      isScanning = true;
+      foundDevices.clear();
+      statusMessage = '正在扫描 AZ 设备...';
+    });
+    _addLog('开始扫描平台名包含 "AZ" 的设备');
+
+    try {
+      List<BluetoothDevice> devices = await btManager.scanForDevices(
+        timeout: Duration(seconds: 10)
       );
+
+      setState(() {
+        foundDevices = devices;
+        isScanning = false;
+        statusMessage = '找到 ${devices.length} 个 AZ 设备';
+      });
+      _addLog('扫描完成，找到 ${devices.length} 个设备');
+      
+      if (devices.isEmpty) {
+        _addLog('未找到 AZ 设备，请确保设备已开启');
+      }
+    } catch (e) {
+      setState(() {
+        isScanning = false;
+        statusMessage = '扫描失败';
+      });
+      _addLog('扫描错误: $e');
+    }
+  }
+
+  /// 连接设备
+  Future<void> connectToDevice(BluetoothDevice device) async {
+    setState(() => statusMessage = '正在连接...');
+    _addLog('尝试连接到: ${device.platformName}');
+
+    bool success = await btManager.connectToDevice(device, _onNotificationReceived);
+    
+    setState(() {
+      isConnected = success;
+      selectedDevice = success ? device : null;
+      statusMessage = success ? '已连接到 ${device.platformName}' : '连接失败';
+    });
+    
+    if (success) {
+      _addLog('连接成功');
+    } else {
+      _addLog('连接失败');
+    }
+  }
+
+  /// 断开连接
+  Future<void> disconnect() async {
+    await btManager.cancel();
+    await btManager.disconnect();
+    setState(() {
+      isConnected = false;
+      selectedDevice = null;
+      foundDevices = [];
+      statusMessage = '已断开连接';
+    });
+    _addLog('断开连接');
+  }
+
+  /// 发送 WiFi 配置
+  Future<void> sendWiFiConfig() async {
+    if (!isConnected) {
+      _addLog('错误: 请先连接设备');
       return;
     }
 
-    //_showUnbindConfirmDialog();
-  }
+    final ssid = ssidController.text.trim();
+    final password = passwordController.text.trim();
 
-  // Bluetooth methods
-  Future<void> _startBluetoothScan() async {
+    if (ssid.isEmpty) {
+      _addLog('错误: 请输入 WiFi SSID');
+      return;
+    }
+
+    setState(() => statusMessage = '发送配置中...');
+    _addLog('=== 开始发送 WiFi 配置 ===');
+    _addLog('SSID: $ssid');
+    _addLog('密码长度: ${password.length}');
+
     try {
-      // Check if Bluetooth is supported
-      if (await FlutterBluePlus.isSupported == false) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Bluetooth not supported on this device',
-                style: const TextStyle(fontSize: 12),
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-        return;
-      }
-
-      // Check if Bluetooth is on
-      final adapterState = await FlutterBluePlus.adapterState.first;
-      if (adapterState != BluetoothAdapterState.on) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Please turn on Bluetooth',
-                style: const TextStyle(fontSize: 12),
-              ),
-              backgroundColor: Colors.orange,
-            ),
-          );
-        }
-        return;
-      }
-
-      setState(() {
-        _isBluetoothScanning = true;
-        _bluetoothDevices.clear();
-        _showBluetoothDevices = true;
-      });
-
-      // Start scanning
-      await FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
-
-      // Listen to scan results
-      _scanResultsSubscription = FlutterBluePlus.scanResults.listen((results) {
-        if (mounted) {
-          setState(() {
-            _bluetoothDevices = results;
-          });
-        }
-      });
-
-      // Listen to scanning state
-      _isScanningSubscription = FlutterBluePlus.isScanning.listen((isScanning) {
-        if (mounted) {
-          setState(() {
-            _isBluetoothScanning = isScanning;
-          });
-        }
-      });
+      await link(ssid, password);
+      setState(() => statusMessage = '发送配置成功');
+      StorageService.saveWifiConfig(ssid, password);
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isBluetoothScanning = false;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Failed to start Bluetooth scan: $e',
-              style: const TextStyle(fontSize: 12),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      _addLog('发送配置失败');
+    } finally {
+      await disconnect();
     }
   }
 
-  Future<void> _stopBluetoothScan() async {
-    try {
-      await FlutterBluePlus.stopScan();
-    } catch (e) {
-      // Ignore errors when stopping scan
-    }
+  Future<void> link(String ssid, String password) async {
+      await sendConfigFrames(ssid, password);
+
+      await sendConfigAck();
+
+      await waitForDeviceResponse();
   }
 
-  // blue tooth connect
-  Future<void> _connectToBluetoothDevice(BluetoothDevice device) async {
+  Future<bool> sendConfigFrames(String ssid, String password, {Duration timeout = const Duration(seconds: 10)}) async {
     try {
-      // Stop scanning before connecting
-      await _stopBluetoothScan();
+      final frames = LinkingRequestFrameCreator.createConfigFrames(
+        _encryptor,
+        ssid,
+        password,
+        '',
+      );
 
-      // Show connecting dialog
-      if (mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AlertDialog(
-            content: Row(
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(width: 16),
-                Text('Connecting to ${device.platformName}...'),
-              ],
-            ),
-          ),
-        );
-      }
+      // Wait for config_success or config_fail
+      final completer = Completer<bool>();
+      late StreamSubscription subscription;
 
-      // Connect to device
-      await device.connect(timeout: const Duration(seconds: 15));
+      subscription = _statusController.stream.listen((status) {
+        if (status == 'config_success') {
+          subscription.cancel();
+          completer.complete(true);
+        } else if (status == 'config_fail') {
+          subscription.cancel();
+          completer.complete(false);
+        }
+      });
 
-      if (mounted) {
-        Navigator.of(context).pop(); // Close connecting dialog
+      // Send frames with retry logic
+      bool keepSending = true;
+      Future.delayed(timeout, () {
+        keepSending = false;
+        if (!completer.isCompleted) {
+          subscription.cancel();
+          completer.complete(false);
+        }
+      });
 
-        setState(() {
-          // Add device to connected list if not already there
-          if (!_connectedBluetoothDevices.any((d) => d.remoteId == device.remoteId)) {
-            _connectedBluetoothDevices.add(device);
+      while (keepSending && !completer.isCompleted) {
+        for (int i = 0; i < frames.length && keepSending; i++) {
+          await btManager.sendData(frames[i]);
+
+          await Future.delayed(const Duration(milliseconds: 500));
+
+          if (completer.isCompleted) {
+            keepSending = false;
+            break;
           }
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Connected to ${device.platformName}',
-              style: const TextStyle(fontSize: 12),
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
+        }
       }
+
+      return await completer.future;
     } catch (e) {
-      if (mounted) {
-        Navigator.of(context).pop(); // Close connecting dialog
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Failed to connect: $e',
-              style: const TextStyle(fontSize: 12),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      print('Send config error: $e');
+      throw Exception('send config failed');
     }
   }
 
-  Future<void> _disconnectBluetoothDevice(BluetoothDevice device) async {
+  Future<bool> sendConfigAck({int retries = 6}) async {
     try {
-      await device.disconnect();
-      if (mounted) {
-        setState(() {
-          _connectedBluetoothDevices.removeWhere((d) => d.remoteId == device.remoteId);
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Disconnected from ${device.platformName.isNotEmpty ? device.platformName : "device"}',
-              style: const TextStyle(fontSize: 12),
-            ),
-            backgroundColor: Colors.green,
-          ),
+      for (int i = 0; i < retries; i++) {
+        await btManager.sendData(
+          Uint8List.fromList(utf8.encode(BLE_CONFIG_ACK)),
         );
+
+        await Future.delayed(const Duration(milliseconds: 500));
       }
+
+      return true;
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Failed to disconnect: $e',
-              style: const TextStyle(fontSize: 12),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      print('Send ACK error: $e');
+      return false;
     }
   }
 
-  Future<void> _disconnectAllBluetoothDevices() async {
-    for (final device in List.from(_connectedBluetoothDevices)) {
-      await _disconnectBluetoothDevice(device);
+  Future<Map<String, dynamic>?> waitForDeviceResponse({Duration timeout = const Duration(seconds: 30)}) async {
+    _addLog('=== 等待设备响应 ===');
+    final completer = Completer<Map<String, dynamic>?>();
+
+    Future.delayed(timeout, () {
+      if (!completer.isCompleted) {
+        _addLog('设备响应超时，请检查WIFI密码是否正确');
+        completer.complete(null);
+      }
+    });
+
+    // The response will come via notifications
+    // When frames are complete, they'll be parsed in _onNotificationReceived
+    late StreamSubscription subscription;
+    subscription = _statusController.stream.listen((status) {
+      if (status.startsWith('device_response:')) {
+        final jsonStr = status.substring('device_response:'.length);
+        try {
+          final response = json.decode(jsonStr) as Map<String, dynamic>;
+          subscription.cancel();
+          completer.complete(response);
+        } catch (e) {
+          print('Failed to parse device response: $e');
+          subscription.cancel();
+          completer.complete(null);
+        }
+      }
+    });
+
+    return await completer.future;
+  }
+
+  /// Handle incoming notifications
+  void _onNotificationReceived(Uint8List data) {
+    // Try to interpret as text first
+    try {
+      final text = String.fromCharCodes(data).trim();
+      _addLog('收到通知: $text');
+
+      // Check for config success/fail
+      if (text.toLowerCase() == 'config_success') {
+        _addLog('✓ 设备已接受配置');
+        _statusController.add('config_success');
+        return;
+      } else if (text.toLowerCase() == 'config_fail') {
+        _addLog('✗ 设备拒绝配置');
+        _statusController.add('config_fail');
+        return;
+      }
+    } catch (e) {
+      // Not valid text, might be binary data
+      print('ACK text error: $e');
+    }
+
+    // Check if this looks like a valid frame (must have at least 3 bytes header)
+    if (data.length >= 3) {
+      final frameNumber = data[0];
+      final totalFrames = data[1];
+      final dataLength = data[2];
+
+      // Validate frame structure
+      if (frameNumber > 0 && frameNumber <= totalFrames &&
+          totalFrames > 0 && totalFrames < 100 &&
+          dataLength == data.length - 3) {
+        _addLog('接收帧 $frameNumber/$totalFrames');
+
+        try {
+          _responseFrames.addFrame(data);
+
+          if (_responseFrames.isCompleted) {
+            final decrypted = _responseFrames.unpackAndDecryptFrames(_encryptor);
+            final jsonStr = utf8.decode(decrypted, allowMalformed: true).trim();
+            _addLog('设备响应: $jsonStr');
+            _statusController.add('device_response:$jsonStr');
+          }
+        } catch (e) {
+          _addLog('帧处理错误: $e');
+        }
+      } else {
+        _addLog('未知数据格式');
+      }
     }
   }
 
@@ -308,413 +381,169 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
           ),
         ),
         centerTitle: true,
-        actions: [
-          if (!_showBluetoothDevices && _selectedDevices.isNotEmpty && !_isUnbinding)
-            TextButton(
-              onPressed: _unbindSelectedDevices,
-              child: Text(
-                _l10n.unbindCount(_selectedDevices.length),
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          if (_showBluetoothDevices && _connectedBluetoothDevices.isNotEmpty)
-            IconButton(
-              icon: const FaIcon(
-                FontAwesomeIcons.linkSlash,
-                size: 18,
-                color: Colors.red,
-              ),
-              tooltip: 'Disconnect All',
-              onPressed: _disconnectAllBluetoothDevices,
-            ),
-          IconButton(
-            icon: FaIcon(
-              _showBluetoothDevices ? FontAwesomeIcons.list : FontAwesomeIcons.bluetooth,
-              size: 18,
-              color: AppColors.primaryColor,
-            ),
-            tooltip: _showBluetoothDevices ? 'Show Device List' : 'Show Bluetooth',
-            onPressed: () {
-              setState(() {
-                _showBluetoothDevices = !_showBluetoothDevices;
-                if (!_showBluetoothDevices) {
-                  _stopBluetoothScan();
-                }
-              });
-            },
-          ),
-        ],
       ),
-      // floatingActionButton: _showBluetoothDevices
-      //     ? FloatingActionButton.extended(
-      //         onPressed: _isBluetoothScanning ? _stopBluetoothScan : _startBluetoothScan,
-      //         backgroundColor: _isBluetoothScanning ? Colors.red : AppColors.primaryColor,
-      //         icon: FaIcon(
-      //           _isBluetoothScanning ? FontAwesomeIcons.stop : FontAwesomeIcons.magnifyingGlass,
-      //           size: 16,
-      //         ),
-      //         label: Text(''),
-      //       )
-      //     : null,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _isBluetoothScanning ? _stopBluetoothScan : _startBluetoothScan,
-        backgroundColor: _isBluetoothScanning ? Colors.red : AppColors.primaryColor,
-        tooltip: '蓝牙连接',
-        child: _isBluetoothScanning ? const Icon(Icons.stop, color: Colors.white,) : const Icon(Icons.search, color: Colors.white),
-        ),
-      body: _isUnbinding ? _buildUnbindingProgress() : _buildBody(),
-    );
-  }
-
-  Widget _buildUnbindingProgress() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: 16),
-          Text(
-            _l10n.unbindingDevices,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _l10n.pleaseWaitProcessingDevices(_selectedDevices.length),
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[500],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBody() {
-    // Show Bluetooth view if toggled
-    if (_showBluetoothDevices) {
-      return _buildBluetoothView();
-    }
-
-    return Column(
-      children: [
-        // Connected Bluetooth devices banner
-        if (_connectedBluetoothDevices.isNotEmpty)
-          Container(
-            color: Colors.green[50],
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.bluetooth_connected,
-                  size: 20,
-                  color: Colors.green,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Bluetooth Connected (${_connectedBluetoothDevices.length})',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.green,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        _connectedBluetoothDevices.map((d) =>
-                          d.platformName.isNotEmpty ? d.platformName : 'Unknown'
-                        ).join(', '),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.close,
-                    size: 20,
-                    color: Colors.red,
-                  ),
-                  onPressed: _disconnectAllBluetoothDevices,
-                  tooltip: 'Disconnect All',
-                ),
-              ],
-            ),
-          ),
-
-        if (_selectedDevices.isNotEmpty)
-          Container(
-            color: AppColors.primaryColor.withOpacity(0.1),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  size: 16,
-                  color: AppColors.primaryColor,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  _l10n.selectedDevicesCount(_selectedDevices.length),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const Spacer(),
-                TextButton(
-                  onPressed: _selectAllDevices,
-                  child: Text(
-                    _l10n.selectAll,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                TextButton(
-                  onPressed: _clearSelection,
-                  child: Text(
-                    _l10n.clear,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        
-      ],
-    );
-  }
-
-  Widget _buildBluetoothView() {
-    // Filter out connected devices from scanned devices
-    final scannedDevices = _bluetoothDevices.where((scanResult) {
-      return !_connectedBluetoothDevices.any((connected) =>
-        connected.remoteId == scanResult.device.remoteId
-      );
-    }).toList();
-
-    return Column(
-      children: [
-        // Scanning indicator
-        if (_isBluetoothScanning)
-          Container(
-            color: AppColors.primaryColor.withOpacity(0.1),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'Scanning for Bluetooth devices...',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-        // Main content
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              // Connected devices section
-              if (_connectedBluetoothDevices.isNotEmpty) ...[
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.bluetooth_connected,
-                      size: 18,
-                      color: Colors.green,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Connected Devices (${_connectedBluetoothDevices.length})',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                ...(_connectedBluetoothDevices.map((device) => _buildConnectedDeviceCard(device)).toList()),
-                const SizedBox(height: 24),
-              ],
-
-              // Scanned devices section
-              if (scannedDevices.isNotEmpty || _isBluetoothScanning) ...[
-                Row(
-                  children: [
-                    Icon(
-                      Icons.bluetooth_searching,
-                      size: 18,
-                      color: AppColors.primaryColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Available Devices (${scannedDevices.length})',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                if (scannedDevices.isEmpty && _isBluetoothScanning)
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32.0),
-                      child: Text(
-                        'Searching for devices...',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  )
-                else
-                  ...(scannedDevices.map((scanResult) => _buildScannedDeviceCard(scanResult)).toList()),
-              ],
-
-              // Empty state
-              if (_connectedBluetoothDevices.isEmpty && scannedDevices.isEmpty && !_isBluetoothScanning)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(48.0),
-                    child: Column(
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.bluetooth,
-                          size: 48,
-                          color: Colors.grey[400],
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No Bluetooth devices found',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Tap the scan button to start',
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildConnectedDeviceCard(BluetoothDevice device) {
-    final deviceName = device.platformName.isNotEmpty ? device.platformName : 'Unknown Device';
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.green[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: Colors.green,
-          width: 2,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // 状态显示
             Container(
-              width: 40,
-              height: 40,
+              padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.green[100],
+                color: isConnected ? Colors.green[100] : Colors.grey[200],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
-                Icons.bluetooth_connected,
-                color: Colors.green,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    deviceName,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
+                  Icon(
+                    isConnected ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+                    color: isConnected ? Colors.green : Colors.grey,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    device.remoteId.toString(),
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey[600],
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      statusMessage,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
               ),
             ),
-            IconButton(
-              icon: const Icon(
-                Icons.link_off,
-                size: 20,
-                color: Colors.red,
+            SizedBox(height: 16),
+
+            // 扫描和设备列表
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: isScanning ? null : scanForDevices,
+                    icon: Icon(Icons.search),
+                    label: Text(isScanning ? '扫描中...' : '扫描 AZ 设备'),
+                  ),
+                ),
+                if (isConnected) ...[
+                  SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: disconnect,
+                    icon: Icon(Icons.bluetooth_disabled),
+                    label: Text('断开'),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red[300]),
+                  ),
+                ],
+              ],
+            ),
+            
+            if (foundDevices.isNotEmpty) ...[
+              SizedBox(height: 12),
+              Text('找到的 AZ 设备:', style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[300]!),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ListView.builder(
+                  itemCount: foundDevices.length,
+                  itemBuilder: (context, index) {
+                    var device = foundDevices[index];
+                    bool isSelected = selectedDevice?.remoteId == device.remoteId;
+                    return ListTile(
+                      title: Text(device.platformName),
+                      subtitle: Text(device.remoteId.toString()),
+                      trailing: isSelected
+                          ? Icon(Icons.check_circle, color: Colors.green)
+                          : Icon(Icons.arrow_forward_ios, size: 16),
+                      selected: isSelected,
+                      onTap: () => connectToDevice(device),
+                    );
+                  },
+                ),
               ),
-              onPressed: () => _disconnectBluetoothDevice(device),
-              tooltip: 'Disconnect',
+            ],
+
+            SizedBox(height: 10),
+            Divider(),
+            SizedBox(height: 10),
+
+            // WiFi 配置表单
+            Text('WiFi 配置', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            SizedBox(height: 12),
+            TextField(
+              controller: ssidController,
+              decoration: InputDecoration(
+                labelText: 'WiFi SSID',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.wifi),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: passwordController,
+              obscureText: obscurePassword,
+              decoration: InputDecoration(
+                    labelText: 'WiFi Password',
+                    hintText: 'Enter WiFi password',
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = !obscurePassword;
+                        });
+                      },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton.icon(
+              onPressed: isConnected ? sendWiFiConfig : null,
+              icon: Icon(Icons.send),
+              label: Text('发送配置'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+              ),
+            ),
+
+            SizedBox(height: 10),
+            Divider(),
+            
+            // 日志显示
+            Text('日志:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: ListView.builder(
+                  itemCount: logs.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 2),
+                      child: Text(
+                        logs[index],
+                        style: TextStyle(fontSize: 11, fontFamily: 'monospace'),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),
@@ -722,98 +551,13 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     );
   }
 
-  Widget _buildScannedDeviceCard(ScanResult scanResult) {
-    final device = scanResult.device;
-    final deviceName = device.platformName.isNotEmpty ? device.platformName : 'Unknown Device';
-    final rssi = scanResult.rssi;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: Colors.grey[300]!,
-          width: 1,
-        ),
-      ),
-      child: InkWell(
-        onTap: () => _connectToBluetoothDevice(device),
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.bluetooth,
-                  color: AppColors.primaryColor,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      deviceName,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      device.remoteId.toString(),
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.signal_cellular_alt,
-                          size: 12,
-                          color: _getRssiColor(rssi),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '$rssi dBm',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: _getRssiColor(rssi),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(
-                Icons.chevron_right,
-                color: Colors.grey,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color _getRssiColor(int rssi) {
-    if (rssi >= -60) return Colors.green;
-    if (rssi >= -80) return Colors.orange;
-    return Colors.red;
+  @override
+  void dispose() {
+    ssidController.dispose();
+    passwordController.dispose();
+    btManager.disconnect();
+    _statusController.close();
+    super.dispose();
   }
 
 }
