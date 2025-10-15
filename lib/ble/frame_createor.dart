@@ -47,7 +47,7 @@ class LinkingRequestFrameCreator {
     buffer.addByte(crc);
     final dataWithCrc = buffer.toBytes();
 
-    print('Data before encryption (with CRC): ${_bytesToHex(dataWithCrc)}');
+    //print('Data before encryption (with CRC): ${_bytesToHex(dataWithCrc)}');
 
     // Encrypt the data
     final encrypted = encryptor.encrypt(dataWithCrc);
@@ -56,9 +56,9 @@ class LinkingRequestFrameCreator {
     final frames = _createFrames(encrypted);
 
     // Print frames
-    for (int i = 0; i < frames.length; i++) {
-      print('createConfigFrames: NO.${i + 1}->${_bytesToHex(frames[i])}');
-    }
+    // for (int i = 0; i < frames.length; i++) {
+    //   print('createConfigFrames: NO.${i + 1}->${_bytesToHex(frames[i])}');
+    // }
 
     return frames;
   }
@@ -94,7 +94,7 @@ class LinkingRequestFrameCreator {
     return frames;
   }
 
-  static String _bytesToHex(Uint8List bytes) {
-    return bytes.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
-  }
+  // static String _bytesToHex(Uint8List bytes) {
+  //   return bytes.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
+  // }
 }

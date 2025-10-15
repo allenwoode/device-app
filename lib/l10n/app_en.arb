@@ -132,7 +132,7 @@
   "alertTime": "Alert Time",
   "noLogData": "No log data",
   "noLogInfo": "No log information",
-  "deviceConnector": "Device Connect",
+  "deviceConnector": "Device Configure",
   "deviceManagement": "Device Management",
   "feedback": "Feedback",
   "settings": "Settings",
@@ -267,5 +267,77 @@
   "bindFailed": "Binding failed, please check if device ID is correct",
   "bindOperationFailed": "Binding operation failed, please try again",
   "scanInstructions": "Place the device QR code within the scan frame",
-  "scanHint": "Device will be automatically bound after successful scan"
+  "scanHint": "Device will be automatically bound after successful scan",
+  "ready": "Device ready",
+  "scanningAzDevices": "Scanning AZ devices...",
+  "foundAzDevices": "Found {count} AZ devices",
+  "@foundAzDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connectedTo": "Connected to {name}",
+  "@connectedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "connectionFailed": "Connection failed",
+  "disconnected": "Disconnected",
+  "sendingConfig": "Sending configuration...",
+  "configSentSuccess": "Configuration sent successfully",
+  "configSentFailed": "Configuration failed",
+  "connecting": "Connecting...",
+  "scanning": "Scanning...",
+  "scanAzDevices": "Scan AZ Devices",
+  "disconnect": "Disconnect",
+  "sendConfig": "Send Config",
+  "startScanning": "Starting scan for devices with platform name \"AZ\"",
+  "scanComplete": "Scan complete, found {count} devices",
+  "@scanComplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noAzDevices": "No AZ devices found, please ensure device is powered on",
+  "scanError": "Scan error",
+  "attemptingConnection": "Attempting to connect to: {name}",
+  "@attemptingConnection": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "connectionSuccess": "Connection successful",
+  "errorConnectFirst": "Error: Please connect to device first",
+  "errorEnterSsid": "Error: Please enter WiFi SSID",
+  "startSendingWifiConfig": "Starting WiFi configuration",
+  "ssid": "SSID",
+  "passwordLength": "Password length",
+  "sendException": "Send exception",
+  "deviceAcceptedConfig": "✓ Device accepted configuration",
+  "deviceRejectedConfig": "✗ Device rejected configuration",
+  "receivingFrame": "Receiving frame",
+  "deviceResponse": "Device response",
+  "frameProcessingError": "Frame processing error",
+  "unknownDataFormat": "Unknown data format",
+  "waitingForDeviceResponse": "Waiting for device response...",
+  "deviceResponseTimeout": "Device response timeout, please check WiFi password",
+  "foundAzDevicesLabel": "Found AZ Devices:",
+  "wifiConfig": "WiFi Configuration",
+  "wifiSsid": "WiFi SSID",
+  "wifiPassword": "WiFi Password",
+  "enterWifiPassword": "Enter WiFi password",
+  "logs": "Message",
+  "receivedNotification": "Received notification",
+  "usageStatus": "Usage Status:",
+  "lockStatus": "Lock Status:",
+  "chargingStatus": "Charging Status:"
 }

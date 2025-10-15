@@ -5,6 +5,7 @@ import 'package:device/ble/ble_manager.dart';
 import 'package:device/ble/frame_createor.dart';
 import 'package:device/ble/response.dart';
 import 'package:device/ble/tea.dart';
+import 'package:device/config/app_colors.dart';
 import 'package:device/l10n/app_localizations.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +33,11 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   List<BluetoothDevice> foundDevices = [];
   BluetoothDevice? selectedDevice;
   bool isScanning = false;
+  bool isConnecting = false;
   bool isConnected = false;
+  bool isSending = false;
   bool obscurePassword = true;
-  String statusMessage = '准备就绪';
+  String statusMessage = '';
   List<String> logs = [];
 
   final TeaEncryptor _encryptor = TeaEncryptor(TEA_ENCRYPTION_KEY);
@@ -55,10 +58,22 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   void initState() {
     super.initState();
 
-    _scanCurrentWifiSsid();
+    init();
   }
 
-  Future<void> _scanCurrentWifiSsid() async {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Set initial status message after context is available
+    if (statusMessage.isEmpty) {
+      setState(() {
+        statusMessage = _l10n.ready;
+      });
+    }
+  }
+
+  Future<void> init() async {
     // Try to get current WiFi SSID
     String? currentSSID;
 
@@ -103,9 +118,9 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     setState(() {
       isScanning = true;
       foundDevices.clear();
-      statusMessage = '正在扫描 AZ 设备...';
+      statusMessage = _l10n.scanningAzDevices;
     });
-    _addLog('开始扫描平台名包含 "AZ" 的设备');
+    _addLog(_l10n.startScanning);
 
     try {
       List<BluetoothDevice> devices = await btManager.scanForDevices(
@@ -115,59 +130,59 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       setState(() {
         foundDevices = devices;
         isScanning = false;
-        statusMessage = '找到 ${devices.length} 个 AZ 设备';
+        statusMessage = _l10n.foundAzDevices(devices.length);
       });
-      _addLog('扫描完成，找到 ${devices.length} 个设备');
-      
+      _addLog(_l10n.scanComplete(devices.length));
+
       if (devices.isEmpty) {
-        _addLog('未找到 AZ 设备，请确保设备已开启');
+        _addLog(_l10n.noAzDevices);
       }
     } catch (e) {
       setState(() {
         isScanning = false;
-        statusMessage = '扫描失败';
+        statusMessage = _l10n.scanError;
       });
-      _addLog('扫描错误: $e');
+      _addLog('${_l10n.scanError}: $e');
     }
   }
 
   /// 连接设备
   Future<void> connectToDevice(BluetoothDevice device) async {
-    setState(() => statusMessage = '正在连接...');
-    _addLog('尝试连接到: ${device.platformName}');
+    setState(() => statusMessage = _l10n.connecting);
+    setState(() => isConnecting = true);
+    _addLog(_l10n.attemptingConnection(device.platformName));
 
     bool success = await btManager.connectToDevice(device, _onNotificationReceived);
-    
+
     setState(() {
       isConnected = success;
+      isConnecting = false;
       selectedDevice = success ? device : null;
-      statusMessage = success ? '已连接到 ${device.platformName}' : '连接失败';
+      statusMessage = success ? _l10n.connectedTo(device.platformName) : _l10n.connectionFailed;
     });
-    
+
     if (success) {
-      _addLog('连接成功');
+      _addLog(_l10n.connectionSuccess);
     } else {
-      _addLog('连接失败');
+      _addLog(_l10n.connectionFailed);
     }
   }
 
   /// 断开连接
   Future<void> disconnect() async {
-    await btManager.cancel();
     await btManager.disconnect();
     setState(() {
       isConnected = false;
+      statusMessage = _l10n.disconnected;
       selectedDevice = null;
-      foundDevices = [];
-      statusMessage = '已断开连接';
     });
-    _addLog('断开连接');
+    _addLog(_l10n.disconnected);
   }
 
   /// 发送 WiFi 配置
   Future<void> sendWiFiConfig() async {
     if (!isConnected) {
-      _addLog('错误: 请先连接设备');
+      _addLog(_l10n.errorConnectFirst);
       return;
     }
 
@@ -175,32 +190,34 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     final password = passwordController.text.trim();
 
     if (ssid.isEmpty) {
-      _addLog('错误: 请输入 WiFi SSID');
+      _addLog(_l10n.errorEnterSsid);
       return;
     }
 
-    setState(() => statusMessage = '发送配置中...');
-    _addLog('=== 开始发送 WiFi 配置 ===');
-    _addLog('SSID: $ssid');
-    _addLog('密码长度: ${password.length}');
+    setState(() => statusMessage = _l10n.sendingConfig);
+    _addLog(_l10n.startSendingWifiConfig);
+    _addLog('${_l10n.ssid}: $ssid');
+    _addLog('${_l10n.passwordLength}: ${password.length}');
 
     try {
-      await link(ssid, password);
-      setState(() => statusMessage = '发送配置成功');
-      StorageService.saveWifiConfig(ssid, password);
-    } catch (e) {
-      _addLog('发送配置失败');
-    } finally {
-      await disconnect();
-    }
-  }
+      setState(() => isSending = true);
 
-  Future<void> link(String ssid, String password) async {
       await sendConfigFrames(ssid, password);
 
       await sendConfigAck();
 
       await waitForDeviceResponse();
+
+      setState(() => statusMessage = _l10n.configSentSuccess);
+      _addLog(_l10n.configSentSuccess);
+      StorageService.saveWifiConfig(ssid, password);
+    } catch (e) {
+      print('send wifi config error: $e');
+      setState(() => statusMessage = _l10n.configSentFailed);
+      _addLog(_l10n.configSentFailed);
+    } finally {
+      setState(() => isSending = false);
+    }
   }
 
   Future<bool> sendConfigFrames(String ssid, String password, {Duration timeout = const Duration(seconds: 10)}) async {
@@ -238,6 +255,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
 
       while (keepSending && !completer.isCompleted) {
         for (int i = 0; i < frames.length && keepSending; i++) {
+
           await btManager.sendData(frames[i]);
 
           await Future.delayed(const Duration(milliseconds: 500));
@@ -273,14 +291,14 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     }
   }
 
-  Future<Map<String, dynamic>?> waitForDeviceResponse({Duration timeout = const Duration(seconds: 30)}) async {
-    _addLog('=== 等待设备响应 ===');
+  Future<Map<String, dynamic>?> waitForDeviceResponse({Duration timeout = const Duration(seconds: 10)}) async {
+    _addLog(_l10n.waitingForDeviceResponse);
     final completer = Completer<Map<String, dynamic>?>();
 
     Future.delayed(timeout, () {
       if (!completer.isCompleted) {
-        _addLog('设备响应超时，请检查WIFI密码是否正确');
-        completer.complete(null);
+        _addLog(_l10n.deviceResponseTimeout);
+        completer.completeError(Exception('device response timeout'));
       }
     });
 
@@ -292,12 +310,12 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
         final jsonStr = status.substring('device_response:'.length);
         try {
           final response = json.decode(jsonStr) as Map<String, dynamic>;
-          subscription.cancel();
           completer.complete(response);
         } catch (e) {
           print('Failed to parse device response: $e');
+          completer.completeError(Exception('Failed to parse device response: $e'));
+        } finally {
           subscription.cancel();
-          completer.complete(null);
         }
       }
     });
@@ -310,21 +328,20 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     // Try to interpret as text first
     try {
       final text = String.fromCharCodes(data).trim();
-      _addLog('收到通知: $text');
+      _addLog('${_l10n.receivedNotification}: $text');
 
       // Check for config success/fail
       if (text.toLowerCase() == 'config_success') {
-        _addLog('✓ 设备已接受配置');
+        _addLog(_l10n.deviceAcceptedConfig);
         _statusController.add('config_success');
         return;
       } else if (text.toLowerCase() == 'config_fail') {
-        _addLog('✗ 设备拒绝配置');
+        _addLog(_l10n.deviceRejectedConfig);
         _statusController.add('config_fail');
         return;
       }
     } catch (e) {
       // Not valid text, might be binary data
-      print('ACK text error: $e');
     }
 
     // Check if this looks like a valid frame (must have at least 3 bytes header)
@@ -337,7 +354,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       if (frameNumber > 0 && frameNumber <= totalFrames &&
           totalFrames > 0 && totalFrames < 100 &&
           dataLength == data.length - 3) {
-        _addLog('接收帧 $frameNumber/$totalFrames');
+        _addLog('${_l10n.receivingFrame} $frameNumber/$totalFrames');
 
         try {
           _responseFrames.addFrame(data);
@@ -345,14 +362,14 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
           if (_responseFrames.isCompleted) {
             final decrypted = _responseFrames.unpackAndDecryptFrames(_encryptor);
             final jsonStr = utf8.decode(decrypted, allowMalformed: true).trim();
-            _addLog('设备响应: $jsonStr');
+            _addLog('${_l10n.deviceResponse}: $jsonStr');
             _statusController.add('device_response:$jsonStr');
           }
         } catch (e) {
-          _addLog('帧处理错误: $e');
+          _addLog('${_l10n.frameProcessingError}: $e');
         }
       } else {
-        _addLog('未知数据格式');
+        _addLog(_l10n.unknownDataFormat);
       }
     }
   }
@@ -419,16 +436,16 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
                   child: ElevatedButton.icon(
                     onPressed: isScanning ? null : scanForDevices,
                     icon: Icon(Icons.search),
-                    label: Text(isScanning ? '扫描中...' : '扫描 AZ 设备'),
+                    label: Text(isScanning ? _l10n.scanning : _l10n.scanAzDevices),
                   ),
                 ),
                 if (isConnected) ...[
                   SizedBox(width: 10),
                   ElevatedButton.icon(
                     onPressed: disconnect,
-                    icon: Icon(Icons.bluetooth_disabled),
-                    label: Text('断开'),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red[300]),
+                    icon: Icon(Icons.bluetooth_disabled, color: Colors.white,),
+                    label: Text(_l10n.disconnect, style: TextStyle(color: Colors.white),),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[500]),
                   ),
                 ],
               ],
@@ -436,10 +453,10 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
             
             if (foundDevices.isNotEmpty) ...[
               SizedBox(height: 12),
-              Text('找到的 AZ 设备:', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(_l10n.foundAzDevicesLabel, style: TextStyle(fontWeight: FontWeight.bold)),
               SizedBox(height: 8),
               Container(
-                height: 80,
+                height: 70,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey[300]!),
                   borderRadius: BorderRadius.circular(8),
@@ -457,6 +474,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
                           : Icon(Icons.arrow_forward_ios, size: 16),
                       selected: isSelected,
                       onTap: () => connectToDevice(device),
+                      enabled: !isConnecting,
                     );
                   },
                 ),
@@ -468,23 +486,24 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
             SizedBox(height: 10),
 
             // WiFi 配置表单
-            Text('WiFi 配置', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(_l10n.wifiConfig, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             SizedBox(height: 12),
             TextField(
               controller: ssidController,
               decoration: InputDecoration(
-                labelText: 'WiFi SSID',
+                labelText: _l10n.wifiSsid,
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.wifi),
               ),
+              enabled: false,
             ),
             SizedBox(height: 10),
             TextField(
               controller: passwordController,
               obscureText: obscurePassword,
               decoration: InputDecoration(
-                    labelText: 'WiFi Password',
-                    hintText: 'Enter WiFi password',
+                    labelText: _l10n.wifiPassword,
+                    hintText: _l10n.enterWifiPassword,
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -505,23 +524,24 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
                     ),
                   ),
             ),
+
             SizedBox(height: 10),
             ElevatedButton.icon(
-              onPressed: isConnected ? sendWiFiConfig : null,
+              onPressed: (isConnected && !isSending) ? sendWiFiConfig : null,
               icon: Icon(Icons.send),
-              label: Text('发送配置'),
+              label: Text(_l10n.sendConfig),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Colors.blue,
+                backgroundColor: AppColors.primaryColor,
                 foregroundColor: Colors.white,
               ),
             ),
 
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             Divider(),
-            
+
             // 日志显示
-            Text('日志:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            Text(_l10n.logs, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
             Expanded(
               child: Container(

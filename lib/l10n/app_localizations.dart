@@ -635,7 +635,7 @@ abstract class AppLocalizations {
   /// No description provided for @deviceConnector.
   ///
   /// In en, this message translates to:
-  /// **'Device Connect'**
+  /// **'Device Configure'**
   String get deviceConnector;
 
   /// No description provided for @deviceManagement.
@@ -1069,6 +1069,270 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Device will be automatically bound after successful scan'**
   String get scanHint;
+
+  /// No description provided for @ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Device ready'**
+  String get ready;
+
+  /// No description provided for @scanningAzDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning AZ devices...'**
+  String get scanningAzDevices;
+
+  /// No description provided for @foundAzDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Found {count} AZ devices'**
+  String foundAzDevices(int count);
+
+  /// No description provided for @connectedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to {name}'**
+  String connectedTo(String name);
+
+  /// No description provided for @connectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed'**
+  String get connectionFailed;
+
+  /// No description provided for @disconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get disconnected;
+
+  /// No description provided for @sendingConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending configuration...'**
+  String get sendingConfig;
+
+  /// No description provided for @configSentSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration sent successfully'**
+  String get configSentSuccess;
+
+  /// No description provided for @configSentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration failed'**
+  String get configSentFailed;
+
+  /// No description provided for @connecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting...'**
+  String get connecting;
+
+  /// No description provided for @scanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning...'**
+  String get scanning;
+
+  /// No description provided for @scanAzDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan AZ Devices'**
+  String get scanAzDevices;
+
+  /// No description provided for @disconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get disconnect;
+
+  /// No description provided for @sendConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Config'**
+  String get sendConfig;
+
+  /// No description provided for @startScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting scan for devices with platform name \"AZ\"'**
+  String get startScanning;
+
+  /// No description provided for @scanComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan complete, found {count} devices'**
+  String scanComplete(int count);
+
+  /// No description provided for @noAzDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'No AZ devices found, please ensure device is powered on'**
+  String get noAzDevices;
+
+  /// No description provided for @scanError.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan error'**
+  String get scanError;
+
+  /// No description provided for @attemptingConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempting to connect to: {name}'**
+  String attemptingConnection(String name);
+
+  /// No description provided for @connectionSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection successful'**
+  String get connectionSuccess;
+
+  /// No description provided for @errorConnectFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: Please connect to device first'**
+  String get errorConnectFirst;
+
+  /// No description provided for @errorEnterSsid.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: Please enter WiFi SSID'**
+  String get errorEnterSsid;
+
+  /// No description provided for @startSendingWifiConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting WiFi configuration'**
+  String get startSendingWifiConfig;
+
+  /// No description provided for @ssid.
+  ///
+  /// In en, this message translates to:
+  /// **'SSID'**
+  String get ssid;
+
+  /// No description provided for @passwordLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password length'**
+  String get passwordLength;
+
+  /// No description provided for @sendException.
+  ///
+  /// In en, this message translates to:
+  /// **'Send exception'**
+  String get sendException;
+
+  /// No description provided for @deviceAcceptedConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'✓ Device accepted configuration'**
+  String get deviceAcceptedConfig;
+
+  /// No description provided for @deviceRejectedConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'✗ Device rejected configuration'**
+  String get deviceRejectedConfig;
+
+  /// No description provided for @receivingFrame.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving frame'**
+  String get receivingFrame;
+
+  /// No description provided for @deviceResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Device response'**
+  String get deviceResponse;
+
+  /// No description provided for @frameProcessingError.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame processing error'**
+  String get frameProcessingError;
+
+  /// No description provided for @unknownDataFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown data format'**
+  String get unknownDataFormat;
+
+  /// No description provided for @waitingForDeviceResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for device response...'**
+  String get waitingForDeviceResponse;
+
+  /// No description provided for @deviceResponseTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Device response timeout, please check WiFi password'**
+  String get deviceResponseTimeout;
+
+  /// No description provided for @foundAzDevicesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Found AZ Devices:'**
+  String get foundAzDevicesLabel;
+
+  /// No description provided for @wifiConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'WiFi Configuration'**
+  String get wifiConfig;
+
+  /// No description provided for @wifiSsid.
+  ///
+  /// In en, this message translates to:
+  /// **'WiFi SSID'**
+  String get wifiSsid;
+
+  /// No description provided for @wifiPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'WiFi Password'**
+  String get wifiPassword;
+
+  /// No description provided for @enterWifiPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter WiFi password'**
+  String get enterWifiPassword;
+
+  /// No description provided for @logs.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get logs;
+
+  /// No description provided for @receivedNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Received notification'**
+  String get receivedNotification;
+
+  /// No description provided for @usageStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage Status:'**
+  String get usageStatus;
+
+  /// No description provided for @lockStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Status:'**
+  String get lockStatus;
+
+  /// No description provided for @chargingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Charging Status:'**
+  String get chargingStatus;
 }
 
 class _AppLocalizationsDelegate

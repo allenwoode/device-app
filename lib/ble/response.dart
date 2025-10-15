@@ -11,7 +11,6 @@ class BleDeviceResponseFrames {
   void addFrame(Uint8List data) {
     // Expect caller to validate, but double-check anyway
     if (data.length < 3) {
-      print('ResponseFrames: Frame too short (${data.length} bytes)');
       return;
     }
 
@@ -20,19 +19,14 @@ class BleDeviceResponseFrames {
     final dataLength = data[2];
 
     if (dataLength != data.length - 3) {
-      print('ResponseFrames: Data length mismatch - header says $dataLength but got ${data.length - 3}');
       return;
     }
 
     _totalFrames = totalFrames;
     _frames[frameNumber] = Uint8List.fromList(data.sublist(3));
 
-    print('ResponseFrames: Stored frame $frameNumber/$totalFrames (${dataLength} bytes payload)');
-    print('  Progress: ${_frames.length}/$_totalFrames frames received');
-
     if (_frames.length == _totalFrames) {
       _isCompleted = true;
-      print('ResponseFrames: All frames received, ready to decrypt...');
     }
   }
 
@@ -55,15 +49,14 @@ class BleDeviceResponseFrames {
     if ((encrypted[0] & 0xFF) == 0xFE) {
       encrypted = encrypted.sublist(2);
     }
-    print('Encrypted response data: ${_bytesToHex(encrypted)}');
-
+    //print('Encrypted response data: ${_bytesToHex(encrypted)}');
     final decrypted = encryptor.decrypt(encrypted);
-    print('Decrypted response data: ${_bytesToHex(decrypted)}');
+    //print('Decrypted response data: ${_bytesToHex(decrypted)}');
 
     return decrypted;
   }
 
-  String _bytesToHex(Uint8List bytes) {
-    return bytes.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
-  }
+  // String _bytesToHex(Uint8List bytes) {
+  //   return bytes.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
+  // }
 }

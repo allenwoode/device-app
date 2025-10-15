@@ -43,10 +43,10 @@ class TeaEncryptor {
     }
 
     final encrypted = resultBuffer.toBytes();
-    print('[encrypt]');
-    print('plain: ${_bytesToHex(plain)}');
-    print('key: $key');
-    print('encrypted: ${_bytesToHex(encrypted)}');
+    // print('[encrypt]');
+    // print('plain: ${_bytesToHex(plain)}');
+    // print('key: $key');
+    // print('encrypted: ${_bytesToHex(encrypted)}');
 
     return encrypted;
   }
@@ -83,17 +83,17 @@ class TeaEncryptor {
     }
 
     final plain = resultBuffer.toBytes();
-    print('[decrypt]');
-    print('encrypted: ${_bytesToHex(encrypted)}');
-    print('key: $key');
-    print('plain: ${_bytesToHex(plain)}');
+    // print('[decrypt]');
+    // print('encrypted: ${_bytesToHex(encrypted)}');
+    // print('key: $key');
+    // print('plain: ${_bytesToHex(plain)}');
 
     return plain;
   }
 
-  String _bytesToHex(Uint8List bytes) {
-    return bytes.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
-  }
+  // String _bytesToHex(Uint8List bytes) {
+  //   return bytes.map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
+  // }
 
   // Convert bytes to 32-bit integers (big-endian)
   List<int> _bytesToInts(Uint8List bytes) {

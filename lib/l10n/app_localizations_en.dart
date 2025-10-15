@@ -294,7 +294,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noLogInfo => 'No log information';
 
   @override
-  String get deviceConnector => 'Device Connect';
+  String get deviceConnector => 'Device Configure';
 
   @override
   String get deviceManagement => 'Device Management';
@@ -541,4 +541,147 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get scanHint =>
       'Device will be automatically bound after successful scan';
+
+  @override
+  String get ready => 'Device ready';
+
+  @override
+  String get scanningAzDevices => 'Scanning AZ devices...';
+
+  @override
+  String foundAzDevices(int count) {
+    return 'Found $count AZ devices';
+  }
+
+  @override
+  String connectedTo(String name) {
+    return 'Connected to $name';
+  }
+
+  @override
+  String get connectionFailed => 'Connection failed';
+
+  @override
+  String get disconnected => 'Disconnected';
+
+  @override
+  String get sendingConfig => 'Sending configuration...';
+
+  @override
+  String get configSentSuccess => 'Configuration sent successfully';
+
+  @override
+  String get configSentFailed => 'Configuration failed';
+
+  @override
+  String get connecting => 'Connecting...';
+
+  @override
+  String get scanning => 'Scanning...';
+
+  @override
+  String get scanAzDevices => 'Scan AZ Devices';
+
+  @override
+  String get disconnect => 'Disconnect';
+
+  @override
+  String get sendConfig => 'Send Config';
+
+  @override
+  String get startScanning =>
+      'Starting scan for devices with platform name \"AZ\"';
+
+  @override
+  String scanComplete(int count) {
+    return 'Scan complete, found $count devices';
+  }
+
+  @override
+  String get noAzDevices =>
+      'No AZ devices found, please ensure device is powered on';
+
+  @override
+  String get scanError => 'Scan error';
+
+  @override
+  String attemptingConnection(String name) {
+    return 'Attempting to connect to: $name';
+  }
+
+  @override
+  String get connectionSuccess => 'Connection successful';
+
+  @override
+  String get errorConnectFirst => 'Error: Please connect to device first';
+
+  @override
+  String get errorEnterSsid => 'Error: Please enter WiFi SSID';
+
+  @override
+  String get startSendingWifiConfig => 'Starting WiFi configuration';
+
+  @override
+  String get ssid => 'SSID';
+
+  @override
+  String get passwordLength => 'Password length';
+
+  @override
+  String get sendException => 'Send exception';
+
+  @override
+  String get deviceAcceptedConfig => '✓ Device accepted configuration';
+
+  @override
+  String get deviceRejectedConfig => '✗ Device rejected configuration';
+
+  @override
+  String get receivingFrame => 'Receiving frame';
+
+  @override
+  String get deviceResponse => 'Device response';
+
+  @override
+  String get frameProcessingError => 'Frame processing error';
+
+  @override
+  String get unknownDataFormat => 'Unknown data format';
+
+  @override
+  String get waitingForDeviceResponse => 'Waiting for device response...';
+
+  @override
+  String get deviceResponseTimeout =>
+      'Device response timeout, please check WiFi password';
+
+  @override
+  String get foundAzDevicesLabel => 'Found AZ Devices:';
+
+  @override
+  String get wifiConfig => 'WiFi Configuration';
+
+  @override
+  String get wifiSsid => 'WiFi SSID';
+
+  @override
+  String get wifiPassword => 'WiFi Password';
+
+  @override
+  String get enterWifiPassword => 'Enter WiFi password';
+
+  @override
+  String get logs => 'Message';
+
+  @override
+  String get receivedNotification => 'Received notification';
+
+  @override
+  String get usageStatus => 'Usage Status:';
+
+  @override
+  String get lockStatus => 'Lock Status:';
+
+  @override
+  String get chargingStatus => 'Charging Status:';
 }

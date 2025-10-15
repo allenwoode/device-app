@@ -1014,20 +1014,20 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                Text('使用状态:'),
+                Text(_l10n.usageStatus),
                 const SizedBox(width: 8),
                 Text(slot.isUsed ? _l10n.inUse(slot.id) : _l10n.inIdel(slot.id), style: const TextStyle(fontSize: 12)),
               ],),
               const SizedBox(height: 8),
               Row(children: [
-                Text('锁状态:'),
+                Text(_l10n.lockStatus),
                 const SizedBox(width: 8),
                 _getLockedInicator(slot.lockState),
                 ]),
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Text('充电状态:'),
+                  Text(_l10n.chargingStatus),
                   const SizedBox(width: 8),
                   _getChargedIndicator(slot.chargingState),
                 ],

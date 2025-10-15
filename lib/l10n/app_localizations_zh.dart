@@ -292,7 +292,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noLogInfo => '暂无日志信息';
 
   @override
-  String get deviceConnector => '设备连接';
+  String get deviceConnector => '设备配网';
 
   @override
   String get deviceManagement => '设备管理';
@@ -525,4 +525,144 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get scanHint => '扫描成功后将自动绑定设备';
+
+  @override
+  String get ready => '准备就绪';
+
+  @override
+  String get scanningAzDevices => '正在扫描 AZ 设备...';
+
+  @override
+  String foundAzDevices(int count) {
+    return '找到 $count 个 AZ 设备';
+  }
+
+  @override
+  String connectedTo(String name) {
+    return '已连接到 $name';
+  }
+
+  @override
+  String get connectionFailed => '连接失败';
+
+  @override
+  String get disconnected => '已断开连接';
+
+  @override
+  String get sendingConfig => '发送配置中...';
+
+  @override
+  String get configSentSuccess => '发送配置成功';
+
+  @override
+  String get configSentFailed => '发送配置失败';
+
+  @override
+  String get connecting => '连接中...';
+
+  @override
+  String get scanning => '扫描中...';
+
+  @override
+  String get scanAzDevices => '扫描 AZ 设备';
+
+  @override
+  String get disconnect => '断开';
+
+  @override
+  String get sendConfig => '发送配置';
+
+  @override
+  String get startScanning => '开始扫描平台名包含 \"AZ\" 的设备';
+
+  @override
+  String scanComplete(int count) {
+    return '扫描完成，找到 $count 个设备';
+  }
+
+  @override
+  String get noAzDevices => '未找到 AZ 设备，请确保设备已开启';
+
+  @override
+  String get scanError => '扫描错误';
+
+  @override
+  String attemptingConnection(String name) {
+    return '尝试连接到: $name';
+  }
+
+  @override
+  String get connectionSuccess => '连接成功';
+
+  @override
+  String get errorConnectFirst => '错误: 请先连接设备';
+
+  @override
+  String get errorEnterSsid => '错误: 请输入 WiFi SSID';
+
+  @override
+  String get startSendingWifiConfig => '开始发送 WiFi 配置';
+
+  @override
+  String get ssid => 'SSID';
+
+  @override
+  String get passwordLength => '密码长度';
+
+  @override
+  String get sendException => '发送异常';
+
+  @override
+  String get deviceAcceptedConfig => '✓ 设备已接受配置';
+
+  @override
+  String get deviceRejectedConfig => '✗ 设备拒绝配置';
+
+  @override
+  String get receivingFrame => '接收帧';
+
+  @override
+  String get deviceResponse => '设备响应';
+
+  @override
+  String get frameProcessingError => '帧处理错误';
+
+  @override
+  String get unknownDataFormat => '未知数据格式';
+
+  @override
+  String get waitingForDeviceResponse => '等待设备响应...';
+
+  @override
+  String get deviceResponseTimeout => '设备响应超时，请检查WIFI密码是否正确';
+
+  @override
+  String get foundAzDevicesLabel => '找到的 AZ 设备:';
+
+  @override
+  String get wifiConfig => 'WiFi 配置';
+
+  @override
+  String get wifiSsid => 'WiFi SSID';
+
+  @override
+  String get wifiPassword => 'WiFi Password';
+
+  @override
+  String get enterWifiPassword => 'Enter WiFi password';
+
+  @override
+  String get logs => '日志:';
+
+  @override
+  String get receivedNotification => '收到通知';
+
+  @override
+  String get usageStatus => '使用状态:';
+
+  @override
+  String get lockStatus => '锁状态:';
+
+  @override
+  String get chargingStatus => '充电状态:';
 }

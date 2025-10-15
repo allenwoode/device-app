@@ -235,7 +235,7 @@ class _MinePageState extends State<MinePage> {
       child: Column(
         children: [
           _buildMenuItem(
-            icon: Icons.device_hub,
+            icon: Icons.bluetooth,
             title: _l10n.deviceConnector,
             showArrow: true,
             onTap: () {

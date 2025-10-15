@@ -10,8 +10,6 @@ class BluetoothManager {
   BluetoothCharacteristic? notifyCharacteristic;
   StreamSubscription? notificationSubscription;
 
-  bool writeWithoutResponse = false; // Track which write type to use
-
   Future<List<BluetoothDevice>> scanForDevices({Duration timeout = const Duration(seconds: 15)}) async {
     List<BluetoothDevice> azDevices = [];
     Set<String> foundDeviceIds = {};
@@ -55,7 +53,6 @@ class BluetoothManager {
         
         if (isAZDevice) {
           azDevices.add(r.device);
-          await FlutterBluePlus.startScan();
           break;
         }
       }
@@ -80,6 +77,7 @@ class BluetoothManager {
     } catch (e) {
       print('停止扫描异常: $e');
     }
+
     await subscription.cancel();
     
     return azDevices;
@@ -96,25 +94,15 @@ class BluetoothManager {
       List<BluetoothService> services = await device.discoverServices();
       
       for (var service in services) {
-        print('服务 UUID: ${service.uuid}');
         if (service.uuid.str == 'fee7') {
           for (var characteristic in service.characteristics) {
-            print('  特征 UUID: ${characteristic.uuid}');
-            print('  属性: Write=${characteristic.properties.write}, Read=${characteristic.properties.read}, '
-                'Notify=${characteristic.properties.notify}, '
-                'WriteNoResponse=${characteristic.properties.writeWithoutResponse}');
 
-            // Select write characteristic: Write=true, Notify=false, WriteNoResponse=false
             if (characteristic.uuid.str == 'fec7') {
               writeCharacteristic = characteristic;
-              print('  -> 设置为写入特征 (Write=true)');
             }
 
-            // Select notify characteristic: Notify=true
             if (characteristic.uuid.str == 'fec8') {
               notifyCharacteristic = characteristic;
-              await characteristic.setNotifyValue(true);
-              print('  -> 设置为通知特征 (Notify=true)');
             }
           }
         }
@@ -126,7 +114,6 @@ class BluetoothManager {
 
       // Enable notifications
       await notifyCharacteristic!.setNotifyValue(true);
-      print('Notifications enabled');
 
       // Subscribe to notifications
       notificationSubscription = notifyCharacteristic!.lastValueStream.listen((data) {
@@ -140,11 +127,6 @@ class BluetoothManager {
     }
   }
 
-  // 取消监听
-  Future<void> cancel() async {
-    await notificationSubscription?.cancel();
-  }
-
   /// 断开连接
   Future<void> disconnect() async {
     await notificationSubscription?.cancel();
@@ -152,74 +134,15 @@ class BluetoothManager {
     connectedDevice = null;
     writeCharacteristic = null;
     notifyCharacteristic = null;
-    writeWithoutResponse = false;
   }
 
   /// 发送数据并等待响应
-  Future<Map<String, dynamic>> sendData(Uint8List data, {Function(String)? onLog}) async {
+  Future<void> sendData(Uint8List data) async {
     if (writeCharacteristic == null) {
-      print('错误: 写入特征未找到');
-      onLog?.call('错误: 写入特征未找到');
-      return {'success': false, 'error': '写入特征未找到'};
+      throw Exception('write characteristic no found');
     }
 
-    try {
-      String writeType = writeWithoutResponse ? 'without response' : 'with response';
-      String dataHex = data.map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ');
-      print('发送数据 (${data.length} 字节, $writeType): $dataHex');
-      onLog?.call('写入 ${data.length} 字节 ($writeType)');
-
-      // 如果有通知特征，设置临时监听以捕获响应
-      List<int>? response;
-      var responseCompleter = Completer<List<int>?>();
-      var subscription;
-
-      if (notifyCharacteristic != null) {
-        subscription = notifyCharacteristic!.lastValueStream.listen((data) {
-          if (!responseCompleter.isCompleted) {
-            responseCompleter.complete(data);
-          }
-        });
-
-        // 设置超时
-        Future.delayed(Duration(milliseconds: 500), () {
-          if (!responseCompleter.isCompleted) {
-            responseCompleter.complete(null);
-          }
-        });
-      }
-
-      // 执行写入
-      await writeCharacteristic!.write(data, withoutResponse: writeWithoutResponse);
-
-      // 等待响应（如果有通知特征）
-      if (notifyCharacteristic != null) {
-        response = await responseCompleter.future;
-        await subscription?.cancel();
-
-        if (response != null) {
-          String responseHex = response.map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ');
-          print('收到响应: $responseHex');
-          onLog?.call('响应: $responseHex');
-          return {'success': true, 'response': response, 'responseHex': responseHex};
-        }
-      }
-
-      // Write with response 的 ACK
-      if (!writeWithoutResponse) {
-        onLog?.call('写入响应: ACK 成功');
-      }
-
-      return {'success': true};
-    } catch (e) {
-      print('发送数据失败: $e');
-      onLog?.call('发送失败: $e');
-      return {'success': false, 'error': e.toString()};
-    }
-  }
-
-  /// 监听数据接收
-  Stream<List<int>>? listenToNotifications() {
-    return notifyCharacteristic?.lastValueStream;
+    // 执行写入
+    await writeCharacteristic!.write(data);
   }
 }
