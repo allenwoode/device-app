@@ -79,12 +79,16 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   Future<void> _checkBluetoothState() async {
     stateSubscription = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
         if (state != BluetoothAdapterState.on) {
-          _addLog(_l10n.pleaseEnableBluetooth);
-          setState(() => statusMessage = _l10n.bluetoothNotEnabled);
-          setState(() => bleOff = true);
+          setState(() {
+            statusMessage = _l10n.pleaseEnableBluetooth;
+            bleOff = true;
+          });
+          _addLog(_l10n.bluetoothNotEnabled);
         } else {
-          setState(() => statusMessage = _l10n.ready);
-          setState(() => bleOff = false);
+          setState(() {
+            statusMessage = _l10n.ready;
+            bleOff = false;
+          });
         }
     });
   }
@@ -150,6 +154,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
 
       if (confirmed == true) {
         await turnOn();
+      } else {
+        return;
       }
     }
 
@@ -180,7 +186,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
         isScanning = false;
         statusMessage = _l10n.scanError;
       });
-      _addLog('${_l10n.scanError}: $e');
+      _addLog(_l10n.scanError);
     }
   }
 
@@ -255,8 +261,6 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       _addLog(_l10n.configSentFailed);
     } finally {
       setState(() => isSending = false);
-
-      Future.delayed(Duration(seconds: 3), () => disconnect());
     }
   }
 
