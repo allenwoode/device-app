@@ -87,13 +87,6 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
           setState(() => bleOff = false);
         }
     });
-      
-    // if (Platform.isAndroid) {
-    //     await FlutterBluePlus.turnOn();
-    // }
-
-    // cancel to prevent duplicate listeners
-    //stateSub.cancel();
   }
 
   Future<void> _getCurrentSsid() async {
