@@ -17,22 +17,11 @@ class BluetoothManager {
     // 检查蓝牙是否支持
     if (await FlutterBluePlus.isSupported == false) {
       print("蓝牙不支持");
-      return azDevices;
-    }
-
-    // 检查蓝牙是否开启
-    var adapterState = await FlutterBluePlus.adapterState.first;
-    if (adapterState != BluetoothAdapterState.on) {
-      print("蓝牙未开启，请先开启蓝牙");
-      return azDevices;
+      throw Exception('ble unsupport!');
     }
 
     // 先停止之前的扫描
-    try {
-      await FlutterBluePlus.stopScan();
-    } catch (e) {
-      print('停止扫描异常: $e');
-    }
+    await FlutterBluePlus.stopScan();
 
     // 订阅扫描结果
     var subscription = FlutterBluePlus.scanResults.listen((results) async {
@@ -72,11 +61,7 @@ class BluetoothManager {
     }
 
     // 停止扫描
-    try {
-      await FlutterBluePlus.stopScan();
-    } catch (e) {
-      print('停止扫描异常: $e');
-    }
+    await FlutterBluePlus.stopScan();
 
     await subscription.cancel();
     

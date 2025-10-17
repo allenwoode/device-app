@@ -1333,6 +1333,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Charging Status:'**
   String get chargingStatus;
+
+  /// No description provided for @pleaseEnableBluetooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable Bluetooth'**
+  String get pleaseEnableBluetooth;
+
+  /// No description provided for @bluetoothNotEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth not enabled'**
+  String get bluetoothNotEnabled;
+
+  /// No description provided for @bluetoothEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth enabled'**
+  String get bluetoothEnabled;
+
+  /// No description provided for @bluetoothRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth Required'**
+  String get bluetoothRequired;
+
+  /// No description provided for @bluetoothRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth is required to scan for devices. Would you like to turn it on now?'**
+  String get bluetoothRequiredMessage;
+
+  /// No description provided for @turnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn On'**
+  String get turnOn;
 }
 
 class _AppLocalizationsDelegate

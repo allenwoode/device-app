@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:device/ble/ble_manager.dart';
@@ -8,6 +9,7 @@ import 'package:device/ble/tea.dart';
 import 'package:device/config/app_colors.dart';
 import 'package:device/l10n/app_localizations.dart';
 import 'package:device/services/storage_service.dart';
+import 'package:device/widgets/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -44,7 +46,9 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   final BleDeviceResponseFrames _responseFrames = BleDeviceResponseFrames();
 
   final StreamController<String> _statusController = StreamController<String>.broadcast();
-  Stream<String> get statusStream => _statusController.stream;
+  //Stream<String> get statusStream => _statusController.stream;
+  StreamSubscription? stateSubscription;
+  bool bleOff = false;
 
   AppLocalizations get _l10n {
     try {
@@ -57,14 +61,13 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   @override
   void initState() {
     super.initState();
-
-    init();
+    _checkBluetoothState();
+    _getCurrentSsid();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     // Set initial status message after context is available
     if (statusMessage.isEmpty) {
       setState(() {
@@ -73,7 +76,28 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     }
   }
 
-  Future<void> init() async {
+  Future<void> _checkBluetoothState() async {
+    stateSubscription = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
+        if (state != BluetoothAdapterState.on) {
+          _addLog(_l10n.pleaseEnableBluetooth);
+          setState(() => statusMessage = _l10n.bluetoothNotEnabled);
+          setState(() => bleOff = true);
+        } else {
+          _addLog(_l10n.bluetoothEnabled);
+          setState(() => statusMessage = _l10n.ready);
+          setState(() => bleOff = false);
+        }
+    });
+      
+    // if (Platform.isAndroid) {
+    //     await FlutterBluePlus.turnOn();
+    // }
+
+    // cancel to prevent duplicate listeners
+    //stateSub.cancel();
+  }
+
+  Future<void> _getCurrentSsid() async {
     // Try to get current WiFi SSID
     String? currentSSID;
 
@@ -113,8 +137,30 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     });
   }
 
+  Future<bool> turnOn() async {
+    if (Platform.isAndroid) {
+      await FlutterBluePlus.turnOn();
+      return true;
+    }
+    return false;
+  }
+
   /// 扫描 AZ 设备
   Future<void> scanForDevices() async {
+    if (bleOff) {
+      final confirmed = await ConfirmDialog.show(
+        context: context,
+        title: _l10n.bluetoothRequired,
+        message: _l10n.bluetoothRequiredMessage,
+        confirmText: _l10n.turnOn,
+        cancelText: _l10n.cancel,
+      );
+
+      if (confirmed == true) {
+        await turnOn();
+      }
+    }
+
     setState(() {
       isScanning = true;
       foundDevices.clear();
@@ -217,6 +263,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       _addLog(_l10n.configSentFailed);
     } finally {
       setState(() => isSending = false);
+
+      Future.delayed(Duration(seconds: 3), () => disconnect());
     }
   }
 
@@ -577,6 +625,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     passwordController.dispose();
     btManager.disconnect();
     _statusController.close();
+    stateSubscription?.cancel();
     super.dispose();
   }
 

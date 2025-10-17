@@ -41,7 +41,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   Future<void> _submitFeedback() async {
     final feedback = _feedbackController.text.trim();
-    final contact = _contactController.text.trim();
 
     if (feedback.isEmpty) {
       setState(() {
