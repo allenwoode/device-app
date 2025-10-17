@@ -235,7 +235,7 @@
   "sendingConfig": "发送配置中...",
   "configSentSuccess": "发送配置成功",
   "configSentFailed": "发送配置失败",
-  "connecting": "连接中...",
+  "connecting": "正在连接...",
   "scanning": "扫描中...",
   "scanAzDevices": "扫描 AZ 设备",
   "disconnect": "断开",
@@ -269,5 +269,11 @@
   "receivedNotification": "收到通知",
   "usageStatus": "使用状态:",
   "lockStatus": "锁状态:",
-  "chargingStatus": "充电状态:"
+  "chargingStatus": "充电状态:",
+  "pleaseEnableBluetooth": "请开启蓝牙",
+  "bluetoothNotEnabled": "蓝牙未开启",
+  "bluetoothEnabled": "已开启蓝牙",
+  "bluetoothRequired": "需要蓝牙",
+  "bluetoothRequiredMessage": "扫描设备需要开启蓝牙，是否现在开启？",
+  "turnOn": "开启"
 }

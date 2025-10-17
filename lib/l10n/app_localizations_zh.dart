@@ -558,7 +558,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get configSentFailed => '发送配置失败';
 
   @override
-  String get connecting => '连接中...';
+  String get connecting => '正在连接...';
 
   @override
   String get scanning => '扫描中...';
@@ -665,4 +665,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chargingStatus => '充电状态:';
+
+  @override
+  String get pleaseEnableBluetooth => '请开启蓝牙';
+
+  @override
+  String get bluetoothNotEnabled => '蓝牙未开启';
+
+  @override
+  String get bluetoothEnabled => '已开启蓝牙';
+
+  @override
+  String get bluetoothRequired => '需要蓝牙';
+
+  @override
+  String get bluetoothRequiredMessage => '扫描设备需要开启蓝牙，是否现在开启？';
+
+  @override
+  String get turnOn => '开启';
 }

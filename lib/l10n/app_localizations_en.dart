@@ -684,4 +684,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chargingStatus => 'Charging Status:';
+
+  @override
+  String get pleaseEnableBluetooth => 'Please enable Bluetooth';
+
+  @override
+  String get bluetoothNotEnabled => 'Bluetooth not enabled';
+
+  @override
+  String get bluetoothEnabled => 'Bluetooth enabled';
+
+  @override
+  String get bluetoothRequired => 'Bluetooth Required';
+
+  @override
+  String get bluetoothRequiredMessage =>
+      'Bluetooth is required to scan for devices. Would you like to turn it on now?';
+
+  @override
+  String get turnOn => 'Turn On';
 }
