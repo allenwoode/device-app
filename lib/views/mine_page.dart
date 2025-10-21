@@ -60,7 +60,7 @@ class _MinePageState extends State<MinePage> {
   }
 
   void _handleAboutUs() {
-    _showStyledAlertDialog(_l10n.aboutUs, _l10n.aboutUsTodo);
+    AppRoutes.goToAboutUs(context);
   }
 
   void _showStyledAlertDialog(String title, String message) {
@@ -235,7 +235,7 @@ class _MinePageState extends State<MinePage> {
       child: Column(
         children: [
           _buildMenuItem(
-            icon: Icons.bluetooth,
+            icon: Icons.device_hub,
             title: _l10n.deviceConnector,
             showArrow: true,
             onTap: () {

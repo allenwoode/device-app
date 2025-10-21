@@ -7,6 +7,7 @@ import '../services/auth_service.dart';
 import '../routes/app_routes.dart';
 import '../widgets/confirm_dialog.dart';
 import 'route_component.dart';
+import 'password_update_page.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -36,31 +37,6 @@ class _SettingPageState extends State<SettingPage> {
     super.initState();
     _loadSavedLocale();
   }
-
-  // Future<void> _loadCurrentLanguage() async {
-  //   try {
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final savedLanguageCode = prefs.getString('language_code') ?? 'zh';
-
-  //     // Find the language name from the code
-  //     String languageName = '中文'; // default
-  //     for (final entry in _languages.entries) {
-  //       if (entry.value == savedLanguageCode) {
-  //         languageName = entry.key;
-  //         break;
-  //       }
-  //     }
-
-  //     setState(() {
-  //       _selectedLanguage = languageName;
-  //     });
-  //   } catch (e) {
-  //     // Default to Chinese if loading fails
-  //     setState(() {
-  //       _selectedLanguage = '中文';
-  //     });
-  //   }
-  // }
 
   void _showLanguageDialog() {
     showDialog(
@@ -149,35 +125,11 @@ class _SettingPageState extends State<SettingPage> {
       //await prefs.setString('language_name', language);
 
       if (mounted) {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text(
-        //       '语言已设置为$language',
-        //       style: const TextStyle(fontSize: 12),
-        //     ),
-        //     backgroundColor: Colors.green,
-        //   ),
-        // );
-
-        // Show restart dialog to apply language changes
-        //_showRestartDialog(language);
-        
         // apply set to main page and effect right now
         final routeComponent = RouteComponent.of(context);
         if (routeComponent != null) {
           routeComponent.setLocale(Locale(languageCode));
         }
-
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text(
-        //       '语言已切换为$language',
-        //       style: const TextStyle(fontSize: 12),
-        //     ),
-        //     backgroundColor: Colors.green,
-        //   ),
-        // );
-
       }
     } catch (e) {
       if (mounted) {
@@ -273,13 +225,10 @@ class _SettingPageState extends State<SettingPage> {
             title: _l10n.privacySecurity,
             subtitle: _l10n.privacySecuritySubtitle,
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    _l10n.securityFeatureTodo,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  backgroundColor: Colors.orange,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PasswordUpdatePage(),
                 ),
               );
             },

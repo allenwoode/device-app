@@ -703,4 +703,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get turnOn => 'Turn On';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get oldPassword => 'Current Password';
+
+  @override
+  String get newPassword => 'New Password';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get pleaseEnterOldPassword => 'Please enter current password';
+
+  @override
+  String get pleaseEnterNewPassword => 'Please enter new password';
+
+  @override
+  String get pleaseEnterConfirmPassword => 'Please confirm new password';
+
+  @override
+  String get passwordsDoNotMatch =>
+      'New password and confirmation do not match';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 6 characters';
+
+  @override
+  String get updatePassword => 'Update Password';
+
+  @override
+  String get passwordUpdateSuccess => 'Password updated successfully';
+
+  @override
+  String get passwordUpdateFailed =>
+      'Password update failed, please check your current password';
+
+  @override
+  String get oldPasswordIncorrect => 'Current password is incorrect';
+
+  @override
+  String get appVersion => 'Version';
+
+  @override
+  String get appDescription => 'IOT to B device management application';
+
+  @override
+  String get copyright =>
+      'Copyright © 2025 Device Manager. All rights reserved.';
 }

@@ -345,5 +345,21 @@
   "bluetoothEnabled": "Bluetooth enabled",
   "bluetoothRequired": "Bluetooth Required",
   "bluetoothRequiredMessage": "Bluetooth is required to scan for devices. Would you like to turn it on now?",
-  "turnOn": "Turn On"
+  "turnOn": "Turn On",
+  "changePassword": "Change Password",
+  "oldPassword": "Current Password",
+  "newPassword": "New Password",
+  "confirmPassword": "Confirm Password",
+  "pleaseEnterOldPassword": "Please enter current password",
+  "pleaseEnterNewPassword": "Please enter new password",
+  "pleaseEnterConfirmPassword": "Please confirm new password",
+  "passwordsDoNotMatch": "New password and confirmation do not match",
+  "passwordTooShort": "Password must be at least 6 characters",
+  "updatePassword": "Update Password",
+  "passwordUpdateSuccess": "Password updated successfully",
+  "passwordUpdateFailed": "Password update failed, please check your current password",
+  "oldPasswordIncorrect": "Current password is incorrect",
+  "appVersion": "Version",
+  "appDescription": "IOT to B device management application",
+  "copyright": "Copyright © 2025 Device Manager. All rights reserved."
 }

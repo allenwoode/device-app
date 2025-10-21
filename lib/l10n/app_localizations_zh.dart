@@ -646,10 +646,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get wifiSsid => 'WiFi SSID';
 
   @override
-  String get wifiPassword => 'WiFi Password';
+  String get wifiPassword => 'WiFi密码';
 
   @override
-  String get enterWifiPassword => 'Enter WiFi password';
+  String get enterWifiPassword => '输入WiFi密码';
 
   @override
   String get logs => '日志:';
@@ -683,4 +683,52 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get turnOn => '开启';
+
+  @override
+  String get changePassword => '修改密码';
+
+  @override
+  String get oldPassword => '当前密码';
+
+  @override
+  String get newPassword => '新密码';
+
+  @override
+  String get confirmPassword => '确认密码';
+
+  @override
+  String get pleaseEnterOldPassword => '请输入当前密码';
+
+  @override
+  String get pleaseEnterNewPassword => '请输入新密码';
+
+  @override
+  String get pleaseEnterConfirmPassword => '请确认新密码';
+
+  @override
+  String get passwordsDoNotMatch => '新密码与确认密码不一致';
+
+  @override
+  String get passwordTooShort => '密码长度至少为6位';
+
+  @override
+  String get updatePassword => '更新密码';
+
+  @override
+  String get passwordUpdateSuccess => '密码修改成功';
+
+  @override
+  String get passwordUpdateFailed => '密码修改失败，请检查当前密码是否正确';
+
+  @override
+  String get oldPasswordIncorrect => '当前密码不正确';
+
+  @override
+  String get appVersion => '版本';
+
+  @override
+  String get appDescription => '物联网ToB设备管理应用';
+
+  @override
+  String get copyright => '版权所有 © 2025 设备管理器。保留所有权利。';
 }

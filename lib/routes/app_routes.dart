@@ -8,6 +8,7 @@ import 'package:device/views/setting_page.dart';
 import 'package:device/views/qr_scanner_page.dart';
 import 'package:device/views/dashboard_alert_page.dart';
 import 'package:device/views/dashboard_log_page.dart';
+import 'package:device/views/about_us_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import '../views/main_page.dart';
@@ -40,6 +41,7 @@ class AppRoutes {
   static const String qrScanner = '/qr-scanner';
   static const String dashboardAlert = '/dashboard-alert';
   static const String dashboardDeviceLog = '/dashboard-device-log';
+  static const String aboutUs = '/about-us';
 
   // Route handlers
   static final Handler _rootHandler = Handler(
@@ -207,6 +209,11 @@ class AppRoutes {
       return const DashboardLogPage();
   });
 
+  static final Handler _aboutUsHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      return const AboutUsPage();
+  });
+
   // Configure routes
   static void configureRoutes() {
 
@@ -315,6 +322,12 @@ class AppRoutes {
     router.define(
       dashboardDeviceLog,
       handler: _dashboardDeviceLogHandler,
+      transitionType: TransitionType.cupertino,
+    );
+
+    router.define(
+      aboutUs,
+      handler: _aboutUsHandler,
       transitionType: TransitionType.cupertino,
     );
 
@@ -478,5 +491,9 @@ class AppRoutes {
 
   static Future<dynamic> goToDashboardDeviceLog(BuildContext context) {
     return navigateTo(context, dashboardDeviceLog);
+  }
+
+  static Future<dynamic> goToAboutUs(BuildContext context) {
+    return navigateTo(context, aboutUs);
   }
 }
