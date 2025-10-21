@@ -361,5 +361,9 @@
   "oldPasswordIncorrect": "Current password is incorrect",
   "appVersion": "Version",
   "appDescription": "IOT to B device management application",
-  "copyright": "Copyright © 2025 Device Manager. All rights reserved."
+  "copyright": "Copyright © 2025 Device Manager. All rights reserved.",
+  "searchDevice": "Search Device",
+  "searchDeviceHint": "Enter device ID or name",
+  "search": "Search",
+  "clearSearch": "Clear"
 }

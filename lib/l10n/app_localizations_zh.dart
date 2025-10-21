@@ -731,4 +731,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get copyright => '版权所有 © 2025 设备管理器。保留所有权利。';
+
+  @override
+  String get searchDevice => '搜索设备';
+
+  @override
+  String get searchDeviceHint => '输入设备ID或名称';
+
+  @override
+  String get search => '搜索';
+
+  @override
+  String get clearSearch => '清除';
 }

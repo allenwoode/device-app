@@ -1465,6 +1465,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copyright © 2025 Device Manager. All rights reserved.'**
   String get copyright;
+
+  /// No description provided for @searchDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Device'**
+  String get searchDevice;
+
+  /// No description provided for @searchDeviceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter device ID or name'**
+  String get searchDeviceHint;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearSearch;
 }
 
 class _AppLocalizationsDelegate

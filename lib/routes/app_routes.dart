@@ -9,6 +9,7 @@ import 'package:device/views/qr_scanner_page.dart';
 import 'package:device/views/dashboard_alert_page.dart';
 import 'package:device/views/dashboard_log_page.dart';
 import 'package:device/views/about_us_page.dart';
+import 'package:device/views/device_search_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import '../views/main_page.dart';
@@ -18,6 +19,7 @@ import '../views/instance/function_page.dart';
 import '../views/instance/device_usage_page.dart';
 import '../views/instance/device_alert_page.dart';
 import '../views/instance/device_log_page.dart';
+import '../models/device_models.dart';
 
 class AppRoutes {
   static final FluroRouter router = FluroRouter();
@@ -42,6 +44,7 @@ class AppRoutes {
   static const String dashboardAlert = '/dashboard-alert';
   static const String dashboardDeviceLog = '/dashboard-device-log';
   static const String aboutUs = '/about-us';
+  static const String deviceSearch = '/device-search';
 
   // Route handlers
   static final Handler _rootHandler = Handler(
@@ -495,5 +498,17 @@ class AppRoutes {
 
   static Future<dynamic> goToAboutUs(BuildContext context) {
     return navigateTo(context, aboutUs);
+  }
+
+  static Future<dynamic> goToDeviceSearch(
+    BuildContext context,
+    List<DeviceData> allDevices,
+  ) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DeviceSearchPage(allDevices: allDevices),
+      ),
+    );
   }
 }

@@ -234,6 +234,11 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     await _loadDevices(isRefresh: true);
   }
 
+  void _onSearchDevice() async {
+    // Navigate to search page with all devices
+    await AppRoutes.goToDeviceSearch(context, _devices);
+  }
+
   void _onScanDevice() async {
     // Navigate to Add Device page
     final result = await AppRoutes.goToDeviceBind(context);
@@ -262,6 +267,22 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         centerTitle: false,
         actions: [
           IconButton(
+            onPressed: _onSearchDevice,
+            icon: FaIcon(
+              FontAwesomeIcons.magnifyingGlass,
+              color: Colors.black,
+              size: 18,
+            ),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: FaIcon(
+              FontAwesomeIcons.bell,
+              color: Colors.black,
+              size: 20,
+            ),
+          ),
+          IconButton(
             onPressed: _onScanDevice,
             icon: const FaIcon(
               FontAwesomeIcons.circlePlus,
@@ -273,48 +294,6 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       ),
       body: Column(
         children: [
-          // Search Bar
-          Container(
-            padding: const EdgeInsets.all(10),
-            color: Colors.white,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (value) {
-                  setState(() {
-                    // This triggers rebuild to update the suffixIcon
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: _l10n.searchDeviceIdName,
-                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 20),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() {
-                              // Trigger rebuild to hide clear button and update results
-                            });
-                          },
-                        )
-                      : null,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Device Grid
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())

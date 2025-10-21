@@ -754,4 +754,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get copyright =>
       'Copyright © 2025 Device Manager. All rights reserved.';
+
+  @override
+  String get searchDevice => 'Search Device';
+
+  @override
+  String get searchDeviceHint => 'Enter device ID or name';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get clearSearch => 'Clear';
 }
