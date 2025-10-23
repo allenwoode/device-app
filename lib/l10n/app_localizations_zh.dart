@@ -485,6 +485,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pleaseFillFeedback => '请输入反馈内容';
 
   @override
+  String get feedbackSubmitSuccess => '反馈提交成功';
+
+  @override
   String get feedbackSubmitFailed => '提交失败，请重试';
 
   @override
@@ -742,5 +745,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get search => '搜索';
 
   @override
-  String get clearSearch => '清除';
+  String get registrationNumber => '备案号';
+
+  @override
+  String get officialWebsite => '官网';
 }

@@ -1,0 +1,7 @@
+POST /feedback/_create
+
+{
+  "type": "feature",
+  "content": "增加设备自动连接新功能",
+  "company": "浙江杰马电子科技"
+}

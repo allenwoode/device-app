@@ -180,14 +180,14 @@ class _AboutUsPageState extends State<AboutUsPage> {
       child: Column(
         children: [
           _buildMenuItem(
-            title: '备案号',
+            title: _l10n.registrationNumber,
             showArrow: false,
             message: 'ABN20251022889765X',
             onTap: () {}
           ),
           _buildDivider(),
           _buildMenuItem(
-            title: '官网',
+            title: _l10n.officialWebsite,
             showArrow: true,
             onTap: () {
               _launchURL('https://www.jama-net.com/');

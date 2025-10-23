@@ -209,6 +209,7 @@
   "contactHelpText": "提供联系方式有助于我们更好地回复您",
   "submitFeedback": "提交反馈",
   "pleaseFillFeedback": "请输入反馈内容",
+  "feedbackSubmitSuccess": "反馈提交成功",
   "feedbackSubmitFailed": "提交失败，请重试",
   "featureSuggestion": "功能建议",
   "bugReport": "问题反馈",
@@ -295,5 +296,6 @@
   "searchDevice": "搜索设备",
   "searchDeviceHint": "输入设备ID或名称",
   "search": "搜索",
-  "clearSearch": "清除"
+  "registrationNumber": "备案号",
+  "officialWebsite": "官网"
 }

@@ -172,7 +172,8 @@ class DeviceUsage {
   final String deviceId;
   final String depo;
   final String depoFormat;
-  final String createTime;
+  final int createTime;
+  final int createTimeFormat;
 
   DeviceUsage({
     required this.port,
@@ -185,6 +186,7 @@ class DeviceUsage {
     required this.depo,
     required this.depoFormat,
     required this.createTime,
+    required this.createTimeFormat,
   });
 
   factory DeviceUsage.fromJson(Map<String, dynamic> json) {
@@ -198,8 +200,15 @@ class DeviceUsage {
       deviceId: json['deviceId'] ?? '',
       depo: json['depo'] ?? '',
       depoFormat: json['depo_format'] ?? '',
-      createTime: json['createTime'] ?? '',
+      createTime: json['createTime'] ?? 0,
+      createTimeFormat: json['createTime_format'] ?? 0,
     );
+  }
+
+  String get formattedCreateTime {
+    if (createTime == 0) return '';
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(createTime);
+    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
   }
 }
 

@@ -986,6 +986,12 @@ abstract class AppLocalizations {
   /// **'Please enter feedback content'**
   String get pleaseFillFeedback;
 
+  /// No description provided for @feedbackSubmitSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback submitted successfully'**
+  String get feedbackSubmitSuccess;
+
   /// No description provided for @feedbackSubmitFailed.
   ///
   /// In en, this message translates to:
@@ -1484,11 +1490,17 @@ abstract class AppLocalizations {
   /// **'Search'**
   String get search;
 
-  /// No description provided for @clearSearch.
+  /// No description provided for @registrationNumber.
   ///
   /// In en, this message translates to:
-  /// **'Clear'**
-  String get clearSearch;
+  /// **'Registration No'**
+  String get registrationNumber;
+
+  /// No description provided for @officialWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Official Website'**
+  String get officialWebsite;
 }
 
 class _AppLocalizationsDelegate

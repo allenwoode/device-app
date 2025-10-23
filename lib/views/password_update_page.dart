@@ -12,7 +12,6 @@ class PasswordUpdatePage extends StatefulWidget {
 }
 
 class _PasswordUpdatePageState extends State<PasswordUpdatePage> {
-  final _formKey = GlobalKey<FormState>();
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -21,6 +20,10 @@ class _PasswordUpdatePageState extends State<PasswordUpdatePage> {
   bool _newPasswordVisible = false;
   bool _confirmPasswordVisible = false;
   bool _isLoading = false;
+
+  String? _oldPasswordError;
+  String? _newPasswordError;
+  String? _confirmPasswordError;
 
   AppLocalizations get _l10n {
     try {
@@ -38,35 +41,58 @@ class _PasswordUpdatePageState extends State<PasswordUpdatePage> {
     super.dispose();
   }
 
-  String? _validateOldPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return _l10n.pleaseEnterOldPassword;
-    }
-    return null;
-  }
-
-  String? _validateNewPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return _l10n.pleaseEnterNewPassword;
-    }
-    if (value.length < 6) {
-      return _l10n.passwordTooShort;
-    }
-    return null;
-  }
-
-  String? _validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return _l10n.pleaseEnterConfirmPassword;
-    }
-    if (value != _newPasswordController.text) {
-      return _l10n.passwordsDoNotMatch;
-    }
-    return null;
-  }
-
   Future<void> _handleUpdatePassword() async {
-    if (!_formKey.currentState!.validate()) {
+    final oldPassword = _oldPasswordController.text.trim();
+    final newPassword = _newPasswordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    // Validate all fields
+    bool hasError = false;
+
+    if (oldPassword.isEmpty) {
+      setState(() {
+        _oldPasswordError = _l10n.pleaseEnterOldPassword;
+      });
+      hasError = true;
+    } else {
+      setState(() {
+        _oldPasswordError = null;
+      });
+    }
+
+    if (newPassword.isEmpty) {
+      setState(() {
+        _newPasswordError = _l10n.pleaseEnterNewPassword;
+      });
+      hasError = true;
+    } else if (newPassword.length < 6) {
+      setState(() {
+        _newPasswordError = _l10n.passwordTooShort;
+      });
+      hasError = true;
+    } else {
+      setState(() {
+        _newPasswordError = null;
+      });
+    }
+
+    if (confirmPassword.isEmpty) {
+      setState(() {
+        _confirmPasswordError = _l10n.pleaseEnterConfirmPassword;
+      });
+      hasError = true;
+    } else if (confirmPassword != newPassword) {
+      setState(() {
+        _confirmPasswordError = _l10n.passwordsDoNotMatch;
+      });
+      hasError = true;
+    } else {
+      setState(() {
+        _confirmPasswordError = null;
+      });
+    }
+
+    if (hasError) {
       return;
     }
 
@@ -160,51 +186,69 @@ class _PasswordUpdatePageState extends State<PasswordUpdatePage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 20),
-                _buildPasswordField(
-                  controller: _oldPasswordController,
-                  label: _l10n.oldPassword,
-                  isPasswordVisible: _oldPasswordVisible,
-                  onVisibilityToggle: () {
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 20),
+              _buildPasswordField(
+                controller: _oldPasswordController,
+                label: _l10n.oldPassword,
+                isPasswordVisible: _oldPasswordVisible,
+                errorText: _oldPasswordError,
+                onVisibilityToggle: () {
+                  setState(() {
+                    _oldPasswordVisible = !_oldPasswordVisible;
+                  });
+                },
+                onChanged: (value) {
+                  if (_oldPasswordError != null && value.trim().isNotEmpty) {
                     setState(() {
-                      _oldPasswordVisible = !_oldPasswordVisible;
+                      _oldPasswordError = null;
                     });
-                  },
-                  validator: _validateOldPassword,
-                ),
-                const SizedBox(height: 20),
-                _buildPasswordField(
-                  controller: _newPasswordController,
-                  label: _l10n.newPassword,
-                  isPasswordVisible: _newPasswordVisible,
-                  onVisibilityToggle: () {
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildPasswordField(
+                controller: _newPasswordController,
+                label: _l10n.newPassword,
+                isPasswordVisible: _newPasswordVisible,
+                errorText: _newPasswordError,
+                onVisibilityToggle: () {
+                  setState(() {
+                    _newPasswordVisible = !_newPasswordVisible;
+                  });
+                },
+                onChanged: (value) {
+                  if (_newPasswordError != null && value.trim().isNotEmpty) {
                     setState(() {
-                      _newPasswordVisible = !_newPasswordVisible;
+                      _newPasswordError = null;
                     });
-                  },
-                  validator: _validateNewPassword,
-                ),
-                const SizedBox(height: 20),
-                _buildPasswordField(
-                  controller: _confirmPasswordController,
-                  label: _l10n.confirmPassword,
-                  isPasswordVisible: _confirmPasswordVisible,
-                  onVisibilityToggle: () {
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildPasswordField(
+                controller: _confirmPasswordController,
+                label: _l10n.confirmPassword,
+                isPasswordVisible: _confirmPasswordVisible,
+                errorText: _confirmPasswordError,
+                onVisibilityToggle: () {
+                  setState(() {
+                    _confirmPasswordVisible = !_confirmPasswordVisible;
+                  });
+                },
+                onChanged: (value) {
+                  if (_confirmPasswordError != null && value.trim().isNotEmpty) {
                     setState(() {
-                      _confirmPasswordVisible = !_confirmPasswordVisible;
+                      _confirmPasswordError = null;
                     });
-                  },
-                  validator: _validateConfirmPassword,
-                ),
-                const SizedBox(height: 40),
-                _buildUpdateButton(),
-              ],
-            ),
+                  }
+                },
+              ),
+              const SizedBox(height: 40),
+              _buildUpdateButton(),
+            ],
           ),
         ),
       ),
@@ -216,51 +260,83 @@ class _PasswordUpdatePageState extends State<PasswordUpdatePage> {
     required String label,
     required bool isPasswordVisible,
     required VoidCallback onVisibilityToggle,
-    required String? Function(String?) validator,
+    required Function(String) onChanged,
+    String? errorText,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextFormField(
-        controller: controller,
-        obscureText: !isPasswordVisible,
-        validator: validator,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-          border: OutlineInputBorder(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 16,
-          ),
-          suffixIcon: IconButton(
-            icon: Icon(
-              isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-              color: Colors.grey[600],
-              size: 20,
+          child: TextField(
+            controller: controller,
+            obscureText: !isPasswordVisible,
+            onChanged: onChanged,
+            decoration: InputDecoration(
+              labelText: label,
+              labelStyle: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: errorText != null
+                    ? const BorderSide(color: Colors.red, width: 1)
+                    : BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: errorText != null
+                    ? const BorderSide(color: Colors.red, width: 1)
+                    : BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(
+                  color: errorText != null ? Colors.red : AppColors.primaryColor,
+                  width: 2,
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 16,
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.grey[600],
+                  size: 20,
+                ),
+                onPressed: onVisibilityToggle,
+              ),
             ),
-            onPressed: onVisibilityToggle,
           ),
         ),
-      ),
+        if (errorText != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 12, top: 8),
+            child: Text(
+              errorText,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+              ),
+            ),
+          ),
+      ],
     );
   }
 

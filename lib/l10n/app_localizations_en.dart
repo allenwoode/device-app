@@ -498,6 +498,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseFillFeedback => 'Please enter feedback content';
 
   @override
+  String get feedbackSubmitSuccess => 'Feedback submitted successfully';
+
+  @override
   String get feedbackSubmitFailed => 'Submission failed, please try again';
 
   @override
@@ -765,5 +768,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search => 'Search';
 
   @override
-  String get clearSearch => 'Clear';
+  String get registrationNumber => 'Registration No';
+
+  @override
+  String get officialWebsite => 'Official Website';
 }

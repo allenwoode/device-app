@@ -1,7 +1,7 @@
 
 class ApiConfig {
-  static const String baseUrl = 'http://192.168.2.137:8848';
-  //static const String baseUrl = 'http://114.55.146.54:8848';
+  //static const String baseUrl = 'http://192.168.2.137:8848';
+  static const String baseUrl = 'http://114.55.146.54:8848';
   static const Duration timeout = Duration(seconds: 10);
   
   // Common headers with dynamic token

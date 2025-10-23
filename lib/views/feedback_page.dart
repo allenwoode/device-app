@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:device/models/login_models.dart';
+import 'package:device/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:device/config/app_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
+import '../services/device_service.dart';
 
 class FeedbackPage extends StatefulWidget {
   const FeedbackPage({super.key});
@@ -13,14 +18,15 @@ class FeedbackPage extends StatefulWidget {
 class _FeedbackPageState extends State<FeedbackPage> {
   final TextEditingController _feedbackController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
-  String _selectedFeedbackType = 'featureSuggestion';
+  String _selectedFeedbackType = 'feature';
   bool _isSubmitting = false;
   String? _feedbackError;
+  User? _currentUser;
 
   final List<String> _feedbackTypes = [
-    'featureSuggestion',
-    'bugReport',
-    'usageQuestion',
+    'feature',
+    'bug',
+    'question',
     'other'
   ];
 
@@ -33,14 +39,35 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   @override
+  void initState() {
+    _loadUserInfo();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _feedbackController.dispose();
     _contactController.dispose();
     super.dispose();
   }
 
+  Future<void> _loadUserInfo() async {
+    try {
+      final userInfoString = await StorageService.getUserInfo();
+      if (userInfoString != null) {
+        final userJson = jsonDecode(userInfoString);
+        setState(() {
+          _currentUser = User.fromJson(userJson);
+        });
+      }
+    } catch (e) {
+      print('load user info error: $e');
+    }
+  }
+
   Future<void> _submitFeedback() async {
     final feedback = _feedbackController.text.trim();
+    final contact = _contactController.text.trim();
 
     if (feedback.isEmpty) {
       setState(() {
@@ -55,27 +82,36 @@ class _FeedbackPageState extends State<FeedbackPage> {
     });
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      // Submit feedback via DeviceService
+      final success = await DeviceService.submitFeedback(
+        type: _selectedFeedbackType,
+        email: contact,
+        content: feedback,
+        company: _currentUser?.orgName ?? '',
+      );
 
       if (mounted) {
         setState(() {
           _isSubmitting = false;
         });
 
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text('反馈提交成功，感谢您的建议！', style: TextStyle(fontSize: 12)),
-        //     backgroundColor: Colors.green,
-        //   ),
-        // );
+        if (success) {
+          _feedbackController.clear();
+          // _contactController.clear();
+          // setState(() {
+          //   _selectedFeedbackType = 'feature';
+          // });
 
-        _feedbackController.clear();
-        _contactController.clear();
-        setState(() {
-          _selectedFeedbackType = 'featureSuggestion';
-        });
-        //Navigator.of(context).pop();
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_l10n.feedbackSubmitSuccess, style: const TextStyle(fontSize: 12)),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          throw Exception('Feedback submission failed');
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -164,13 +200,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
               final isSelected = _selectedFeedbackType == typeKey;
               String typeText;
               switch (typeKey) {
-                case 'featureSuggestion':
+                case 'feature':
                   typeText = _l10n.featureSuggestion;
                   break;
-                case 'bugReport':
+                case 'bug':
                   typeText = _l10n.bugReport;
                   break;
-                case 'usageQuestion':
+                case 'question':
                   typeText = _l10n.usageQuestion;
                   break;
                 case 'other':

@@ -251,6 +251,7 @@
   "contactHelpText": "Providing contact information helps us respond to you better",
   "submitFeedback": "Submit Feedback",
   "pleaseFillFeedback": "Please enter feedback content",
+  "feedbackSubmitSuccess": "Feedback submitted successfully",
   "feedbackSubmitFailed": "Submission failed, please try again",
   "featureSuggestion": "Feature Suggestion",
   "bugReport": "Bug Report",
@@ -365,5 +366,6 @@
   "searchDevice": "Search Device",
   "searchDeviceHint": "Enter device ID or name",
   "search": "Search",
-  "clearSearch": "Clear"
+  "registrationNumber": "Registration No",
+  "officialWebsite": "Official Website"
 }

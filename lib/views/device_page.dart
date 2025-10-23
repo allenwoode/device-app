@@ -96,9 +96,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         });
       }
     } catch (e) {
-      setState(() {
-
-      });
+      print('load user info error: $e');
     }
   }
 
