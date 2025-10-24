@@ -158,6 +158,36 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get failed;
+
+  /// No description provided for @finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish;
+
+  /// No description provided for @continueConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueConfig;
+
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:
@@ -1082,6 +1112,18 @@ abstract class AppLocalizations {
   /// **'Device ready'**
   String get ready;
 
+  /// No description provided for @readyForNextDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for next device configuration'**
+  String get readyForNextDevice;
+
+  /// No description provided for @autoConnectingToDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-connecting to {name}...'**
+  String autoConnectingToDevice(String name);
+
   /// No description provided for @scanningAzDevices.
   ///
   /// In en, this message translates to:
@@ -1199,14 +1241,20 @@ abstract class AppLocalizations {
   /// No description provided for @errorConnectFirst.
   ///
   /// In en, this message translates to:
-  /// **'Error: Please connect to device first'**
+  /// **'Please connect to device first'**
   String get errorConnectFirst;
 
   /// No description provided for @errorEnterSsid.
   ///
   /// In en, this message translates to:
-  /// **'Error: Please enter WiFi SSID'**
+  /// **'Please enter WiFi SSID'**
   String get errorEnterSsid;
+
+  /// No description provided for @errorEnterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter WiFi password'**
+  String get errorEnterPassword;
 
   /// No description provided for @startSendingWifiConfig.
   ///

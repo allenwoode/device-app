@@ -39,6 +39,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cancel => '取消';
 
   @override
+  String get ok => '确定';
+
+  @override
+  String get success => '成功';
+
+  @override
+  String get failed => '失败';
+
+  @override
+  String get finish => '完成';
+
+  @override
+  String get continueConfig => '继续配置';
+
+  @override
   String welcome(String name) {
     return '欢迎，$name！';
   }
@@ -533,6 +548,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ready => '准备就绪';
 
   @override
+  String get readyForNextDevice => '准备配置下一台设备';
+
+  @override
+  String autoConnectingToDevice(String name) {
+    return '自动连接到 $name...';
+  }
+
+  @override
   String get scanningAzDevices => '正在扫描 AZ 设备...';
 
   @override
@@ -598,10 +621,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get connectionSuccess => '连接成功';
 
   @override
-  String get errorConnectFirst => '错误: 请先连接设备';
+  String get errorConnectFirst => '请先连接设备';
 
   @override
-  String get errorEnterSsid => '错误: 请输入 WiFi SSID';
+  String get errorEnterSsid => '请输入 WiFi SSID';
+
+  @override
+  String get errorEnterPassword => '请输入 WiFi 密码';
 
   @override
   String get startSendingWifiConfig => '开始发送 WiFi 配置';

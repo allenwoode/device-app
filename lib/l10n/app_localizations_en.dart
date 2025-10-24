@@ -39,6 +39,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get ok => 'OK';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get failed => 'Failed';
+
+  @override
+  String get finish => 'Finish';
+
+  @override
+  String get continueConfig => 'Continue';
+
+  @override
   String welcome(String name) {
     return 'Welcome, $name!';
   }
@@ -549,6 +564,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ready => 'Device ready';
 
   @override
+  String get readyForNextDevice => 'Ready for next device configuration';
+
+  @override
+  String autoConnectingToDevice(String name) {
+    return 'Auto-connecting to $name...';
+  }
+
+  @override
   String get scanningAzDevices => 'Scanning AZ devices...';
 
   @override
@@ -616,10 +639,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectionSuccess => 'Connection successful';
 
   @override
-  String get errorConnectFirst => 'Error: Please connect to device first';
+  String get errorConnectFirst => 'Please connect to device first';
 
   @override
-  String get errorEnterSsid => 'Error: Please enter WiFi SSID';
+  String get errorEnterSsid => 'Please enter WiFi SSID';
+
+  @override
+  String get errorEnterPassword => 'Please enter WiFi password';
 
   @override
   String get startSendingWifiConfig => 'Starting WiFi configuration';

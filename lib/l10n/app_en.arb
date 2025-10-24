@@ -10,6 +10,11 @@
   "resetPassword": "Reset Password",
   "accountAppeal": "Account Appeal",
   "cancel": "Cancel",
+  "ok": "OK",
+  "success": "Success",
+  "failed": "Failed",
+  "finish": "Finish",
+  "continueConfig": "Continue",
   "welcome": "Welcome, {name}!",
   "@welcome": {
     "placeholders": {
@@ -270,6 +275,15 @@
   "scanInstructions": "Place the device QR code within the scan frame",
   "scanHint": "Device will be automatically bound after successful scan",
   "ready": "Device ready",
+  "readyForNextDevice": "Ready for next device configuration",
+  "autoConnectingToDevice": "Auto-connecting to {name}...",
+  "@autoConnectingToDevice": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "scanningAzDevices": "Scanning AZ devices...",
   "foundAzDevices": "Found {count} AZ devices",
   "@foundAzDevices": {
@@ -317,8 +331,9 @@
     }
   },
   "connectionSuccess": "Connection successful",
-  "errorConnectFirst": "Error: Please connect to device first",
-  "errorEnterSsid": "Error: Please enter WiFi SSID",
+  "errorConnectFirst": "Please connect to device first",
+  "errorEnterSsid": "Please enter WiFi SSID",
+  "errorEnterPassword": "Please enter WiFi password",
   "startSendingWifiConfig": "Starting WiFi configuration",
   "ssid": "SSID",
   "passwordLength": "Password length",

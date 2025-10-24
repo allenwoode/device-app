@@ -8,8 +8,10 @@ import 'package:device/ble/response.dart';
 import 'package:device/ble/tea.dart';
 import 'package:device/config/app_colors.dart';
 import 'package:device/l10n/app_localizations.dart';
+import 'package:device/routes/app_routes.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/widgets/confirm_dialog.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -31,6 +33,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   final BluetoothManager btManager = BluetoothManager();
   final TextEditingController ssidController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final FocusNode ssidFocusNode = FocusNode();
+  final FocusNode passwordFocusNode = FocusNode();
 
   List<BluetoothDevice> foundDevices = [];
   BluetoothDevice? selectedDevice;
@@ -41,6 +45,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   bool obscurePassword = true;
   String statusMessage = '';
   List<String> logs = [];
+  String? ssidError;
+  String? passwordError;
 
   final TeaEncryptor _encryptor = TeaEncryptor(TEA_ENCRYPTION_KEY);
   final BleDeviceResponseFrames _responseFrames = BleDeviceResponseFrames();
@@ -181,6 +187,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       if (devices.isEmpty) {
         _addLog(_l10n.noAzDevices);
       }
+      await connectToDevice(foundDevices[0]);
     } catch (e) {
       setState(() {
         isScanning = false;
@@ -233,8 +240,27 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     final ssid = ssidController.text.trim();
     final password = passwordController.text.trim();
 
+    // Clear previous errors
+    setState(() {
+      ssidError = null;
+      passwordError = null;
+    });
+
     if (ssid.isEmpty) {
+      setState(() {
+        ssidError = _l10n.errorEnterSsid;
+      });
       _addLog(_l10n.errorEnterSsid);
+      ssidFocusNode.requestFocus();
+      return;
+    }
+
+    if (password.isEmpty) {
+      setState(() {
+        passwordError = _l10n.errorEnterPassword;
+      });
+      _addLog(_l10n.errorEnterPassword);
+      passwordFocusNode.requestFocus();
       return;
     }
 
@@ -243,6 +269,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     _addLog('${_l10n.ssid}: $ssid');
     _addLog('${_l10n.passwordLength}: ${password.length}');
 
+    bool success = false;
     try {
       setState(() => isSending = true);
 
@@ -252,16 +279,70 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
 
       await waitForDeviceResponse();
 
-      setState(() => statusMessage = _l10n.configSentSuccess);
+      setState(() {
+        statusMessage = _l10n.configSentSuccess;
+        isSending = false;
+      });
       _addLog(_l10n.configSentSuccess);
       StorageService.saveWifiConfig(ssid, password);
+      success = true;
     } catch (e) {
       print('send wifi config error: $e');
-      setState(() => statusMessage = _l10n.configSentFailed);
+      setState(() {
+        statusMessage = _l10n.configSentFailed;
+        isSending = false;
+      });
       _addLog(_l10n.configSentFailed);
-    } finally {
-      setState(() => isSending = false);
+      success = false;
     }
+
+    // Show dialog according to success status
+    if (!mounted) return;
+
+    if (success) {
+      // Show success dialog with option to continue or finish
+      final shouldFinish = await ConfirmDialog.show(
+        context: context,
+        title: _l10n.success,
+        message: _l10n.configSentSuccess,
+        cancelText: _l10n.continueConfig,
+        confirmText: _l10n.finish,
+        confirmButtonColor: Colors.green,
+      );
+
+      await disconnect();
+
+      // If user chose to continue configuring more devices
+      if (shouldFinish == false) {
+
+        // Reset status
+        setState(() {
+          statusMessage = _l10n.ready;
+          foundDevices.clear();
+          selectedDevice = null;
+        });
+        return;
+      }
+
+      // User chose to finish - go to main page
+      AppRoutes.goToMain(context);
+    } else {
+      // Show failure dialog with retry option
+      final shouldRetry = await ConfirmDialog.show(
+        context: context,
+        title: _l10n.failed,
+        message: _l10n.configSentFailed,
+        cancelText: _l10n.cancel,
+        confirmText: _l10n.retry,
+        confirmButtonColor: AppColors.primaryColor,
+      );
+
+      // If user chose to retry, call sendWiFiConfig again
+      if (shouldRetry == true) {
+        await sendWiFiConfig();
+      }
+    }
+    
   }
 
   Future<bool> sendConfigFrames(String ssid, String password, {Duration timeout = const Duration(seconds: 10)}) async {
@@ -534,39 +615,73 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
             SizedBox(height: 12),
             TextField(
               controller: ssidController,
+              focusNode: ssidFocusNode,
               decoration: InputDecoration(
                 labelText: _l10n.wifiSsid,
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.wifi),
+                errorText: ssidError,
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red, width: 2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red, width: 2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               enabled: false,
+              onChanged: (value) {
+                if (ssidError != null) {
+                  setState(() {
+                    ssidError = null;
+                  });
+                }
+              },
             ),
             SizedBox(height: 10),
             TextField(
               controller: passwordController,
+              focusNode: passwordFocusNode,
               obscureText: obscurePassword,
               decoration: InputDecoration(
-                    labelText: _l10n.wifiPassword,
-                    hintText: _l10n.enterWifiPassword,
-                    prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        obscurePassword ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          obscurePassword = !obscurePassword;
-                        });
-                      },
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
+                labelText: _l10n.wifiPassword,
+                hintText: _l10n.enterWifiPassword,
+                prefixIcon: const Icon(Icons.lock),
+                errorText: passwordError,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    obscurePassword ? Icons.visibility : Icons.visibility_off,
                   ),
+                  onPressed: () {
+                    setState(() {
+                      obscurePassword = !obscurePassword;
+                    });
+                  },
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red, width: 2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red, width: 2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+              ),
+              onChanged: (value) {
+                if (passwordError != null) {
+                  setState(() {
+                    passwordError = null;
+                  });
+                }
+              },
             ),
 
             SizedBox(height: 10),
@@ -619,6 +734,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   void dispose() {
     ssidController.dispose();
     passwordController.dispose();
+    ssidFocusNode.dispose();
+    passwordFocusNode.dispose();
     btManager.disconnect();
     _statusController.close();
     stateSubscription?.cancel();
