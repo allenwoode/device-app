@@ -10,13 +10,12 @@ class BluetoothManager {
   BluetoothCharacteristic? notifyCharacteristic;
   StreamSubscription? notificationSubscription;
 
-  Future<List<BluetoothDevice>> scanForDevices({Duration timeout = const Duration(seconds: 15)}) async {
-    List<BluetoothDevice> azDevices = [];
+  Future<List<BluetoothDevice>> scanForDevices(String platformName, {Duration timeout = const Duration(seconds: 15)}) async {
+    List<BluetoothDevice> devices = [];
     Set<String> foundDeviceIds = {};
 
     // 检查蓝牙是否支持
     if (await FlutterBluePlus.isSupported == false) {
-      print("蓝牙不支持");
       throw Exception('ble unsupport!');
     }
 
@@ -28,7 +27,7 @@ class BluetoothManager {
 
       for (ScanResult r in results) {
         String deviceId = r.device.remoteId.toString();
-        String platformName = r.device.platformName;
+        String name = r.device.platformName;
         //String localName = r.device.advName;
         //int rssi = r.rssi;
         
@@ -37,11 +36,11 @@ class BluetoothManager {
         foundDeviceIds.add(deviceId);
       
         
-        // 检查是否包含 'AZ'（不区分大小写）
-        bool isAZDevice = platformName == 'AZ';
+        // 检查是否包含（不区分大小写）
+        bool found = name == platformName;
         
-        if (isAZDevice) {
-          azDevices.add(r.device);
+        if (found) {
+          devices.add(r.device);
           break;
         }
       }
@@ -65,7 +64,7 @@ class BluetoothManager {
 
     await subscription.cancel();
     
-    return azDevices;
+    return devices;
   }
 
   /// 连接到指定设备

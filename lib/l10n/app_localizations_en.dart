@@ -572,11 +572,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get scanningAzDevices => 'Scanning AZ devices...';
+  String get scanningAzDevices => 'ScanningBLEdevices...';
 
   @override
   String foundAzDevices(int count) {
-    return 'Found $count AZ devices';
+    return 'Found ${count}BLEdevices';
   }
 
   @override
@@ -606,7 +606,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanning => 'Scanning...';
 
   @override
-  String get scanAzDevices => 'Scan AZ Devices';
+  String get scanAzDevices => 'ScanBLEDevices';
 
   @override
   String get disconnect => 'Disconnect';
@@ -615,8 +615,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendConfig => 'Send Config';
 
   @override
-  String get startScanning =>
-      'Starting scan for devices with platform name \"AZ\"';
+  String get startScanning => 'Starting scan for BLE devices';
 
   @override
   String scanComplete(int count) {
@@ -625,7 +624,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noAzDevices =>
-      'No AZ devices found, please ensure device is powered on';
+      'No BLE devices found, please ensure device is powered on';
 
   @override
   String get scanError => 'Scan error';
@@ -685,7 +684,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Device response timeout, please check WiFi password';
 
   @override
-  String get foundAzDevicesLabel => 'Found AZ Devices:';
+  String get foundAzDevicesLabel => 'FoundBLEDevices:';
 
   @override
   String get wifiConfig => 'WiFi Configuration';
@@ -776,13 +775,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appVersion => 'Version';
-
-  @override
-  String get appDescription => 'IOT to B device management application';
-
-  @override
-  String get copyright =>
-      'Copyright © 2025 Device Manager. All rights reserved.';
 
   @override
   String get searchDevice => 'Search Device';

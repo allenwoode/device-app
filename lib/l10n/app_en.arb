@@ -284,8 +284,8 @@
       }
     }
   },
-  "scanningAzDevices": "Scanning AZ devices...",
-  "foundAzDevices": "Found {count} AZ devices",
+  "scanningAzDevices": "ScanningBLEdevices...",
+  "foundAzDevices": "Found {count}BLEdevices",
   "@foundAzDevices": {
     "placeholders": {
       "count": {
@@ -308,10 +308,10 @@
   "configSentFailed": "Configuration failed",
   "connecting": "Connecting...",
   "scanning": "Scanning...",
-  "scanAzDevices": "Scan AZ Devices",
+  "scanAzDevices": "ScanBLEDevices",
   "disconnect": "Disconnect",
   "sendConfig": "Send Config",
-  "startScanning": "Starting scan for devices with platform name \"AZ\"",
+  "startScanning": "Starting scan for BLE devices",
   "scanComplete": "Scan complete, found {count} devices",
   "@scanComplete": {
     "placeholders": {
@@ -320,7 +320,7 @@
       }
     }
   },
-  "noAzDevices": "No AZ devices found, please ensure device is powered on",
+  "noAzDevices": "No BLE devices found, please ensure device is powered on",
   "scanError": "Scan error",
   "attemptingConnection": "Attempting to connect to: {name}",
   "@attemptingConnection": {
@@ -346,7 +346,7 @@
   "unknownDataFormat": "Unknown data format",
   "waitingForDeviceResponse": "Waiting for device response...",
   "deviceResponseTimeout": "Device response timeout, please check WiFi password",
-  "foundAzDevicesLabel": "Found AZ Devices:",
+  "foundAzDevicesLabel": "FoundBLEDevices:",
   "wifiConfig": "WiFi Configuration",
   "wifiSsid": "WiFi SSID",
   "wifiPassword": "WiFi Password",
@@ -376,8 +376,6 @@
   "passwordUpdateFailed": "Password update failed, please check your current password",
   "oldPasswordIncorrect": "Current password is incorrect",
   "appVersion": "Version",
-  "appDescription": "IOT to B device management application",
-  "copyright": "Copyright © 2025 Device Manager. All rights reserved.",
   "searchDevice": "Search Device",
   "searchDeviceHint": "Enter device ID or name",
   "search": "Search",

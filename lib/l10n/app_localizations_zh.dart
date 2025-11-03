@@ -556,11 +556,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get scanningAzDevices => '正在扫描 AZ 设备...';
+  String get scanningAzDevices => '正在扫描蓝牙设备...';
 
   @override
   String foundAzDevices(int count) {
-    return '找到 $count 个 AZ 设备';
+    return '找到 $count 个蓝牙设备';
   }
 
   @override
@@ -590,7 +590,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get scanning => '扫描中...';
 
   @override
-  String get scanAzDevices => '扫描 AZ 设备';
+  String get scanAzDevices => '扫描蓝牙设备';
 
   @override
   String get disconnect => '断开';
@@ -599,7 +599,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sendConfig => '发送配置';
 
   @override
-  String get startScanning => '开始扫描平台名包含 \"AZ\" 的设备';
+  String get startScanning => '开始扫描蓝牙设备';
 
   @override
   String scanComplete(int count) {
@@ -607,7 +607,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get noAzDevices => '未找到 AZ 设备，请确保设备已开启';
+  String get noAzDevices => '未找到蓝牙设备，请确保设备已开启';
 
   @override
   String get scanError => '扫描错误';
@@ -666,7 +666,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deviceResponseTimeout => '设备响应超时，请检查WIFI密码是否正确';
 
   @override
-  String get foundAzDevicesLabel => '找到的 AZ 设备:';
+  String get foundAzDevicesLabel => '找到的蓝牙设备:';
 
   @override
   String get wifiConfig => 'WiFi 配置';
@@ -754,12 +754,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appVersion => '版本';
-
-  @override
-  String get appDescription => '物联网ToB设备管理应用';
-
-  @override
-  String get copyright => '版权所有 © 2025 设备管理器。保留所有权利。';
 
   @override
   String get searchDevice => '搜索设备';

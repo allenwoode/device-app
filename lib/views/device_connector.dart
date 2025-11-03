@@ -11,7 +11,6 @@ import 'package:device/l10n/app_localizations.dart';
 import 'package:device/routes/app_routes.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/widgets/confirm_dialog.dart';
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -29,6 +28,7 @@ class DeviceConnectorPage extends StatefulWidget {
 class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   static const String TEA_ENCRYPTION_KEY = "hiflying12345678";
   static const String BLE_CONFIG_ACK = "config_ack";
+  static const String BLE_PLATFORM_NM = "ChargingNet";
 
   final BluetoothManager btManager = BluetoothManager();
   final TextEditingController ssidController = TextEditingController();
@@ -173,7 +173,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     _addLog(_l10n.startScanning);
 
     try {
-      List<BluetoothDevice> devices = await btManager.scanForDevices(
+      List<BluetoothDevice> devices = await btManager.scanForDevices(BLE_PLATFORM_NM,
         timeout: Duration(seconds: 10)
       );
 

@@ -1127,13 +1127,13 @@ abstract class AppLocalizations {
   /// No description provided for @scanningAzDevices.
   ///
   /// In en, this message translates to:
-  /// **'Scanning AZ devices...'**
+  /// **'ScanningBLEdevices...'**
   String get scanningAzDevices;
 
   /// No description provided for @foundAzDevices.
   ///
   /// In en, this message translates to:
-  /// **'Found {count} AZ devices'**
+  /// **'Found {count}BLEdevices'**
   String foundAzDevices(int count);
 
   /// No description provided for @connectedTo.
@@ -1187,7 +1187,7 @@ abstract class AppLocalizations {
   /// No description provided for @scanAzDevices.
   ///
   /// In en, this message translates to:
-  /// **'Scan AZ Devices'**
+  /// **'ScanBLEDevices'**
   String get scanAzDevices;
 
   /// No description provided for @disconnect.
@@ -1205,7 +1205,7 @@ abstract class AppLocalizations {
   /// No description provided for @startScanning.
   ///
   /// In en, this message translates to:
-  /// **'Starting scan for devices with platform name \"AZ\"'**
+  /// **'Starting scan for BLE devices'**
   String get startScanning;
 
   /// No description provided for @scanComplete.
@@ -1217,7 +1217,7 @@ abstract class AppLocalizations {
   /// No description provided for @noAzDevices.
   ///
   /// In en, this message translates to:
-  /// **'No AZ devices found, please ensure device is powered on'**
+  /// **'No BLE devices found, please ensure device is powered on'**
   String get noAzDevices;
 
   /// No description provided for @scanError.
@@ -1331,7 +1331,7 @@ abstract class AppLocalizations {
   /// No description provided for @foundAzDevicesLabel.
   ///
   /// In en, this message translates to:
-  /// **'Found AZ Devices:'**
+  /// **'FoundBLEDevices:'**
   String get foundAzDevicesLabel;
 
   /// No description provided for @wifiConfig.
@@ -1507,18 +1507,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get appVersion;
-
-  /// No description provided for @appDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'IOT to B device management application'**
-  String get appDescription;
-
-  /// No description provided for @copyright.
-  ///
-  /// In en, this message translates to:
-  /// **'Copyright © 2025 Device Manager. All rights reserved.'**
-  String get copyright;
 
   /// No description provided for @searchDevice.
   ///
