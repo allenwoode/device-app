@@ -39,6 +39,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cancel => '取消';
 
   @override
+  String get ok => '确定';
+
+  @override
+  String get success => '成功';
+
+  @override
+  String get failed => '失败';
+
+  @override
+  String get finish => '完成';
+
+  @override
+  String get continueConfig => '继续配置';
+
+  @override
   String welcome(String name) {
     return '欢迎，$name！';
   }
@@ -292,6 +307,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noLogInfo => '暂无日志信息';
 
   @override
+  String get deviceConnector => '设备配网';
+
+  @override
   String get deviceManagement => '设备管理';
 
   @override
@@ -482,6 +500,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pleaseFillFeedback => '请输入反馈内容';
 
   @override
+  String get feedbackSubmitSuccess => '反馈提交成功';
+
+  @override
   String get feedbackSubmitFailed => '提交失败，请重试';
 
   @override
@@ -522,4 +543,230 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get scanHint => '扫描成功后将自动绑定设备';
+
+  @override
+  String get ready => '准备就绪';
+
+  @override
+  String get readyForNextDevice => '准备配置下一台设备';
+
+  @override
+  String autoConnectingToDevice(String name) {
+    return '自动连接到 $name...';
+  }
+
+  @override
+  String get scanningAzDevices => '正在扫描蓝牙设备...';
+
+  @override
+  String foundAzDevices(int count) {
+    return '找到 $count 个蓝牙设备';
+  }
+
+  @override
+  String connectedTo(String name) {
+    return '已连接到 $name';
+  }
+
+  @override
+  String get connectionFailed => '连接失败';
+
+  @override
+  String get disconnected => '已断开连接';
+
+  @override
+  String get sendingConfig => '发送配置中...';
+
+  @override
+  String get configSentSuccess => '发送配置成功';
+
+  @override
+  String get configSentFailed => '发送配置失败';
+
+  @override
+  String get connecting => '正在连接...';
+
+  @override
+  String get scanning => '扫描中...';
+
+  @override
+  String get scanAzDevices => '扫描蓝牙设备';
+
+  @override
+  String get disconnect => '断开';
+
+  @override
+  String get sendConfig => '发送配置';
+
+  @override
+  String get startScanning => '开始扫描蓝牙设备';
+
+  @override
+  String scanComplete(int count) {
+    return '扫描完成，找到 $count 个设备';
+  }
+
+  @override
+  String get noAzDevices => '未找到蓝牙设备，请确保设备已开启';
+
+  @override
+  String get scanError => '扫描错误';
+
+  @override
+  String attemptingConnection(String name) {
+    return '尝试连接到: $name';
+  }
+
+  @override
+  String get connectionSuccess => '连接成功';
+
+  @override
+  String get errorConnectFirst => '请先连接设备';
+
+  @override
+  String get errorEnterSsid => '请输入 WiFi SSID';
+
+  @override
+  String get errorEnterPassword => '请输入 WiFi 密码';
+
+  @override
+  String get startSendingWifiConfig => '开始发送 WiFi 配置';
+
+  @override
+  String get ssid => 'SSID';
+
+  @override
+  String get passwordLength => '密码长度';
+
+  @override
+  String get sendException => '发送异常';
+
+  @override
+  String get deviceAcceptedConfig => '✓ 设备已接受配置';
+
+  @override
+  String get deviceRejectedConfig => '✗ 设备拒绝配置';
+
+  @override
+  String get receivingFrame => '接收帧';
+
+  @override
+  String get deviceResponse => '设备响应';
+
+  @override
+  String get frameProcessingError => '帧处理错误';
+
+  @override
+  String get unknownDataFormat => '未知数据格式';
+
+  @override
+  String get waitingForDeviceResponse => '等待设备响应...';
+
+  @override
+  String get deviceResponseTimeout => '设备响应超时，请检查WIFI密码是否正确';
+
+  @override
+  String get foundAzDevicesLabel => '找到的蓝牙设备:';
+
+  @override
+  String get wifiConfig => 'WiFi 配置';
+
+  @override
+  String get wifiSsid => 'WiFi SSID';
+
+  @override
+  String get wifiPassword => 'WiFi密码';
+
+  @override
+  String get enterWifiPassword => '输入WiFi密码';
+
+  @override
+  String get logs => '日志:';
+
+  @override
+  String get receivedNotification => '收到通知';
+
+  @override
+  String get usageStatus => '使用状态:';
+
+  @override
+  String get lockStatus => '锁状态:';
+
+  @override
+  String get chargingStatus => '充电状态:';
+
+  @override
+  String get pleaseEnableBluetooth => '请开启蓝牙';
+
+  @override
+  String get bluetoothNotEnabled => '蓝牙未开启';
+
+  @override
+  String get bluetoothEnabled => '已开启蓝牙';
+
+  @override
+  String get bluetoothRequired => '需要蓝牙';
+
+  @override
+  String get bluetoothRequiredMessage => '扫描设备需要开启蓝牙，是否现在开启？';
+
+  @override
+  String get turnOn => '开启';
+
+  @override
+  String get changePassword => '修改密码';
+
+  @override
+  String get oldPassword => '当前密码';
+
+  @override
+  String get newPassword => '新密码';
+
+  @override
+  String get confirmPassword => '确认密码';
+
+  @override
+  String get pleaseEnterOldPassword => '请输入当前密码';
+
+  @override
+  String get pleaseEnterNewPassword => '请输入新密码';
+
+  @override
+  String get pleaseEnterConfirmPassword => '请确认新密码';
+
+  @override
+  String get passwordsDoNotMatch => '新密码与确认密码不一致';
+
+  @override
+  String get passwordTooShort => '密码长度至少为6位';
+
+  @override
+  String get updatePassword => '更新密码';
+
+  @override
+  String get passwordUpdateSuccess => '密码修改成功';
+
+  @override
+  String get passwordUpdateFailed => '密码修改失败，请检查当前密码是否正确';
+
+  @override
+  String get oldPasswordIncorrect => '当前密码不正确';
+
+  @override
+  String get appVersion => '版本';
+
+  @override
+  String get searchDevice => '搜索设备';
+
+  @override
+  String get searchDeviceHint => '输入设备ID或名称';
+
+  @override
+  String get search => '搜索';
+
+  @override
+  String get registrationNumber => '备案号';
+
+  @override
+  String get officialWebsite => '官网';
 }

@@ -1,4 +1,5 @@
 import 'package:device/views/add_device_page.dart';
+import 'package:device/views/device_connector.dart';
 import 'package:device/views/device_manager.dart';
 import 'package:device/views/unbind_device_page.dart';
 import 'package:device/views/dashboard_usage_page.dart';
@@ -7,6 +8,8 @@ import 'package:device/views/setting_page.dart';
 import 'package:device/views/qr_scanner_page.dart';
 import 'package:device/views/dashboard_alert_page.dart';
 import 'package:device/views/dashboard_log_page.dart';
+import 'package:device/views/about_us_page.dart';
+import 'package:device/views/device_search_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import '../views/main_page.dart';
@@ -16,6 +19,7 @@ import '../views/instance/function_page.dart';
 import '../views/instance/device_usage_page.dart';
 import '../views/instance/device_alert_page.dart';
 import '../views/instance/device_log_page.dart';
+import '../models/device_models.dart';
 
 class AppRoutes {
   static final FluroRouter router = FluroRouter();
@@ -30,6 +34,7 @@ class AppRoutes {
   static const String deviceAlert = '/device-alert';
   static const String deviceLog = '/device-log';
   static const String deviceManager = '/device-manager';
+  static const String deviceConnector = '/device-connector';
   static const String deviceBind = '/device-bind';
   static const String deviceUnbind = '/device-unbind';
   static const String dashboardUsage = '/dashboard-usage';
@@ -38,6 +43,8 @@ class AppRoutes {
   static const String qrScanner = '/qr-scanner';
   static const String dashboardAlert = '/dashboard-alert';
   static const String dashboardDeviceLog = '/dashboard-device-log';
+  static const String aboutUs = '/about-us';
+  static const String deviceSearch = '/device-search';
 
   // Route handlers
   static final Handler _rootHandler = Handler(
@@ -155,6 +162,11 @@ class AppRoutes {
     },
   );
 
+  static final Handler _deviceConnectorHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      return DeviceConnectorPage();
+  });
+
   static final Handler _deviceManagerHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
       return DeviceManagerPage();
@@ -198,6 +210,11 @@ class AppRoutes {
   static final Handler _dashboardDeviceLogHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
       return const DashboardLogPage();
+  });
+
+  static final Handler _aboutUsHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      return const AboutUsPage();
   });
 
   // Configure routes
@@ -252,6 +269,12 @@ class AppRoutes {
     );
 
     router.define(
+      deviceConnector, 
+      handler: _deviceConnectorHandler, 
+      transitionType: TransitionType.cupertino,
+    );
+
+    router.define(
       deviceManager, 
       handler: _deviceManagerHandler, 
       transitionType: TransitionType.cupertino,
@@ -302,6 +325,12 @@ class AppRoutes {
     router.define(
       dashboardDeviceLog,
       handler: _dashboardDeviceLogHandler,
+      transitionType: TransitionType.cupertino,
+    );
+
+    router.define(
+      aboutUs,
+      handler: _aboutUsHandler,
       transitionType: TransitionType.cupertino,
     );
 
@@ -423,6 +452,12 @@ class AppRoutes {
     return navigateTo(context, '$deviceLog/$deviceId/$productId');
   }
 
+  static Future<dynamic> goToDeviceConnector(
+    BuildContext context,
+  ) {
+    return navigateTo(context, deviceConnector);
+  }
+
   static Future<dynamic> goToDeviceManager(
     BuildContext context,
   ) {
@@ -459,5 +494,21 @@ class AppRoutes {
 
   static Future<dynamic> goToDashboardDeviceLog(BuildContext context) {
     return navigateTo(context, dashboardDeviceLog);
+  }
+
+  static Future<dynamic> goToAboutUs(BuildContext context) {
+    return navigateTo(context, aboutUs);
+  }
+
+  static Future<dynamic> goToDeviceSearch(
+    BuildContext context,
+    List<DeviceData> allDevices,
+  ) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DeviceSearchPage(allDevices: allDevices),
+      ),
+    );
   }
 }

@@ -399,42 +399,46 @@ class DeviceService {
   static Future<List<DeviceUsage>> getDeviceUsage({
     required String deviceId,
   }) async {
-    // try {
-    //   // Try API first
-    //   final response = await ApiInterceptor.post(
-    //     '${ApiConfig.baseUrl}/device-instance/$deviceId/event/LOCK_OPEN_TYPE',
-    //     data: {
-    //       'terms': []
-    //     },
-    //   ).timeout(ApiConfig.timeout);
+    try {
+      // Get today's date in YYYY-MM-DD format
+      final today = DateTime.now();
+      final todayStr = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 
-    //   if (ApiConfig.enableLogging) {
-    //     print('Device Usage API Response Status: ${response.statusCode}');
-    //     print('Device Usage API Response Body: ${response.data}');
-    //   }
+      // Try API first
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/device-instance/$deviceId/event/LOCK_OPEN_TYPE?format=true',
+        data: {
+          'terms': [{"type":"and","value":todayStr,"termType":"gte","column":"timestamp"}]
+        },
+      ).timeout(ApiConfig.timeout);
 
-    //   if (response.statusCode == 201) {
-    //     List<dynamic> dataList = response.data['result']['data'] ?? [];
-    //     return dataList.map((item) => DeviceUsage.fromJson(item)).toList();
-    //   } else {
-    //     throw HttpException('HTTP ${response.statusCode}: ${response.data}');
-    //   }
-    // } catch (e) {
-    //   if (ApiConfig.enableLogging) {
-    //     print('Device usage API request failed: $e, falling back to local data');
-    //   }
+      if (ApiConfig.enableLogging) {
+        print('Device Usage API Response Status: ${response.statusCode}');
+        print('Device Usage API Response Body: ${response.data}');
+      }
 
-    //   if (ApiConfig.useLocalFallback) {
-    //     return await _loadLocalDeviceUsage();
-    //   } else {
-    //     rethrow;
-    //   }
-    // }
+      if (response.statusCode == 200) {
+        List<dynamic> dataList = response.data['result']['data'] ?? [];
+        return dataList.map((item) => DeviceUsage.fromJson(item)).toList();
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Device usage API request failed: $e, falling back to local data');
+      }
 
-    if (ApiConfig.useLocalFallback) {
+      if (ApiConfig.useLocalFallback) {
         return await _loadLocalDeviceUsage();
+      } else {
+        rethrow;
+      }
     }
-    return [];
+
+    // if (ApiConfig.useLocalFallback) {
+    //     return await _loadLocalDeviceUsage();
+    // }
+    // return [];
   }
 
   static Future<List<DeviceUsage>> _loadLocalDeviceUsage() async {
@@ -646,6 +650,46 @@ class DeviceService {
     } catch (e) {
       if (ApiConfig.enableLogging) {
         print('Device unbind API request failed: $e');
+      }
+      return false;
+    }
+  }
+
+  static Future<bool> submitFeedback({
+    required String type,
+    required String content,
+    String? email,
+    String? company,
+  }) async {
+    try {
+      final requestBody = {
+        'type': type,
+        'content': content,
+        'email': email ?? '',
+        'company': company ?? '',
+      };
+
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/feedback/_create',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Feedback Submit API Response Status: ${response.statusCode}');
+        print('Feedback Submit API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          return responseData['status'] == 200;
+        }
+      }
+
+      return false;
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Feedback submit API request failed: $e');
       }
       return false;
     }

@@ -158,6 +158,36 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get failed;
+
+  /// No description provided for @finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish;
+
+  /// No description provided for @continueConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueConfig;
+
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:
@@ -632,6 +662,12 @@ abstract class AppLocalizations {
   /// **'No log information'**
   String get noLogInfo;
 
+  /// No description provided for @deviceConnector.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Configure'**
+  String get deviceConnector;
+
   /// No description provided for @deviceManagement.
   ///
   /// In en, this message translates to:
@@ -980,6 +1016,12 @@ abstract class AppLocalizations {
   /// **'Please enter feedback content'**
   String get pleaseFillFeedback;
 
+  /// No description provided for @feedbackSubmitSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback submitted successfully'**
+  String get feedbackSubmitSuccess;
+
   /// No description provided for @feedbackSubmitFailed.
   ///
   /// In en, this message translates to:
@@ -1063,6 +1105,438 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Device will be automatically bound after successful scan'**
   String get scanHint;
+
+  /// No description provided for @ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Device ready'**
+  String get ready;
+
+  /// No description provided for @readyForNextDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for next device configuration'**
+  String get readyForNextDevice;
+
+  /// No description provided for @autoConnectingToDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-connecting to {name}...'**
+  String autoConnectingToDevice(String name);
+
+  /// No description provided for @scanningAzDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'ScanningBLEdevices...'**
+  String get scanningAzDevices;
+
+  /// No description provided for @foundAzDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Found {count}BLEdevices'**
+  String foundAzDevices(int count);
+
+  /// No description provided for @connectedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to {name}'**
+  String connectedTo(String name);
+
+  /// No description provided for @connectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed'**
+  String get connectionFailed;
+
+  /// No description provided for @disconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get disconnected;
+
+  /// No description provided for @sendingConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending configuration...'**
+  String get sendingConfig;
+
+  /// No description provided for @configSentSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration sent successfully'**
+  String get configSentSuccess;
+
+  /// No description provided for @configSentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration failed'**
+  String get configSentFailed;
+
+  /// No description provided for @connecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting...'**
+  String get connecting;
+
+  /// No description provided for @scanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning...'**
+  String get scanning;
+
+  /// No description provided for @scanAzDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'ScanBLEDevices'**
+  String get scanAzDevices;
+
+  /// No description provided for @disconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get disconnect;
+
+  /// No description provided for @sendConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Config'**
+  String get sendConfig;
+
+  /// No description provided for @startScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting scan for BLE devices'**
+  String get startScanning;
+
+  /// No description provided for @scanComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan complete, found {count} devices'**
+  String scanComplete(int count);
+
+  /// No description provided for @noAzDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'No BLE devices found, please ensure device is powered on'**
+  String get noAzDevices;
+
+  /// No description provided for @scanError.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan error'**
+  String get scanError;
+
+  /// No description provided for @attemptingConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempting to connect to: {name}'**
+  String attemptingConnection(String name);
+
+  /// No description provided for @connectionSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection successful'**
+  String get connectionSuccess;
+
+  /// No description provided for @errorConnectFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please connect to device first'**
+  String get errorConnectFirst;
+
+  /// No description provided for @errorEnterSsid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter WiFi SSID'**
+  String get errorEnterSsid;
+
+  /// No description provided for @errorEnterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter WiFi password'**
+  String get errorEnterPassword;
+
+  /// No description provided for @startSendingWifiConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting WiFi configuration'**
+  String get startSendingWifiConfig;
+
+  /// No description provided for @ssid.
+  ///
+  /// In en, this message translates to:
+  /// **'SSID'**
+  String get ssid;
+
+  /// No description provided for @passwordLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password length'**
+  String get passwordLength;
+
+  /// No description provided for @sendException.
+  ///
+  /// In en, this message translates to:
+  /// **'Send exception'**
+  String get sendException;
+
+  /// No description provided for @deviceAcceptedConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'✓ Device accepted configuration'**
+  String get deviceAcceptedConfig;
+
+  /// No description provided for @deviceRejectedConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'✗ Device rejected configuration'**
+  String get deviceRejectedConfig;
+
+  /// No description provided for @receivingFrame.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving frame'**
+  String get receivingFrame;
+
+  /// No description provided for @deviceResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Device response'**
+  String get deviceResponse;
+
+  /// No description provided for @frameProcessingError.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame processing error'**
+  String get frameProcessingError;
+
+  /// No description provided for @unknownDataFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown data format'**
+  String get unknownDataFormat;
+
+  /// No description provided for @waitingForDeviceResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for device response...'**
+  String get waitingForDeviceResponse;
+
+  /// No description provided for @deviceResponseTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Device response timeout, please check WiFi password'**
+  String get deviceResponseTimeout;
+
+  /// No description provided for @foundAzDevicesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'FoundBLEDevices:'**
+  String get foundAzDevicesLabel;
+
+  /// No description provided for @wifiConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'WiFi Configuration'**
+  String get wifiConfig;
+
+  /// No description provided for @wifiSsid.
+  ///
+  /// In en, this message translates to:
+  /// **'WiFi SSID'**
+  String get wifiSsid;
+
+  /// No description provided for @wifiPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'WiFi Password'**
+  String get wifiPassword;
+
+  /// No description provided for @enterWifiPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter WiFi password'**
+  String get enterWifiPassword;
+
+  /// No description provided for @logs.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get logs;
+
+  /// No description provided for @receivedNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Received notification'**
+  String get receivedNotification;
+
+  /// No description provided for @usageStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage Status:'**
+  String get usageStatus;
+
+  /// No description provided for @lockStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Status:'**
+  String get lockStatus;
+
+  /// No description provided for @chargingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Charging Status:'**
+  String get chargingStatus;
+
+  /// No description provided for @pleaseEnableBluetooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable Bluetooth'**
+  String get pleaseEnableBluetooth;
+
+  /// No description provided for @bluetoothNotEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth not enabled'**
+  String get bluetoothNotEnabled;
+
+  /// No description provided for @bluetoothEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth enabled'**
+  String get bluetoothEnabled;
+
+  /// No description provided for @bluetoothRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth Required'**
+  String get bluetoothRequired;
+
+  /// No description provided for @bluetoothRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth is required to scan for devices. Would you like to turn it on now?'**
+  String get bluetoothRequiredMessage;
+
+  /// No description provided for @turnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn On'**
+  String get turnOn;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePassword;
+
+  /// No description provided for @oldPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Password'**
+  String get oldPassword;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPassword;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @pleaseEnterOldPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter current password'**
+  String get pleaseEnterOldPassword;
+
+  /// No description provided for @pleaseEnterNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter new password'**
+  String get pleaseEnterNewPassword;
+
+  /// No description provided for @pleaseEnterConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm new password'**
+  String get pleaseEnterConfirmPassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'New password and confirmation do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordTooShort;
+
+  /// No description provided for @updatePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Password'**
+  String get updatePassword;
+
+  /// No description provided for @passwordUpdateSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated successfully'**
+  String get passwordUpdateSuccess;
+
+  /// No description provided for @passwordUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Password update failed, please check your current password'**
+  String get passwordUpdateFailed;
+
+  /// No description provided for @oldPasswordIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is incorrect'**
+  String get oldPasswordIncorrect;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get appVersion;
+
+  /// No description provided for @searchDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Device'**
+  String get searchDevice;
+
+  /// No description provided for @searchDeviceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter device ID or name'**
+  String get searchDeviceHint;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @registrationNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration No'**
+  String get registrationNumber;
+
+  /// No description provided for @officialWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Official Website'**
+  String get officialWebsite;
 }
 
 class _AppLocalizationsDelegate

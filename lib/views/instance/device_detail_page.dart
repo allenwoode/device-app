@@ -43,7 +43,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   List<LockSlot> lockSlots = [];
   bool _isLoading = true;
   String? _errorMessage;
-  String _deviceName = '';
+  //String _deviceName = '';
   int _state = 0;
   int? _num;
 
@@ -79,10 +79,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   @override
   void dispose() {
     _deviceStatusSubscription?.cancel();
-    //_unsubscribeDeviceStatusUpdates();
+    _unsubscribeDeviceStatusUpdates();
 
     _deviceStateSubscription?.cancel();
-    //_unsubscribeDeviceStateUpdates();
+    _unsubscribeDeviceStateUpdates();
 
     super.dispose();
   }
@@ -90,7 +90,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   Future<void> _loadDeviceData() async {
     try {
       final device = await DeviceService.getDeviceDetail(widget.deviceId);
-      _deviceName = device.name;
+      //_deviceName = device.name;
       _state = device.state;
       _num = device.spec;
 
@@ -112,12 +112,12 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
 
-  // void _unsubscribeDeviceStatusUpdates() {
-  //   final deviceId = widget.deviceId;
-  //   final id = 'instance-editor-info-status-$deviceId';
-  //   final topic = '/dashboard/device/status/change/realTime';
-  //   WebSocketService.unsubscribe(id, topic);
-  // }
+  void _unsubscribeDeviceStatusUpdates() {
+    final deviceId = widget.deviceId;
+    final id = 'instance-editor-info-status-$deviceId';
+    final topic = '/dashboard/device/status/change/realTime';
+    WebSocketService.unsubscribe(id, topic);
+  }
 
   void _subscribeDeviceStatusUpdates() {
     final deviceId = widget.deviceId;
@@ -141,15 +141,15 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         );
   }
 
-  // void _unsubscribeDeviceStateUpdates() {
-  //   final deviceId = widget.deviceId;
-  //   final productId = widget.productId;
-  //   final id =
-  //       'app-instance-info-property-$deviceId-$productId-CHARGE_STATE-LOCK_STATE-USED_STATE';
-  //   final topic = '/dashboard/device/$productId/properties/realTime';
+  void _unsubscribeDeviceStateUpdates() {
+    final deviceId = widget.deviceId;
+    final productId = widget.productId;
+    final id =
+        'app-instance-info-property-$deviceId-$productId-CHARGE_STATE-LOCK_STATE-USED_STATE';
+    final topic = '/dashboard/device/$productId/properties/realTime';
 
-  //   WebSocketService.unsubscribe(id, topic);
-  // }
+    WebSocketService.unsubscribe(id, topic);
+  }
 
   void _subscribeToDeviceStateUpdates() {
     final deviceId = widget.deviceId;
@@ -229,22 +229,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   ) {
     final stateString = stateValue['state'] as String?;
     if (stateString == null) return;
-
-    // Create a temporary state data structure to reuse existing parsing logic
-    // Map<String, dynamic> tempStateData = {
-    //   'result': [
-    //     {
-    //       'data': {
-    //         'value': {
-    //           'property': property,
-    //           'value': {
-    //             'state': stateString
-    //           }
-    //         }
-    //       }
-    //     }
-    //   ]
-    // };
 
     // Update the specific property state
     if (property == 'CHARGE_STATE') {
@@ -1014,20 +998,20 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                Text('使用状态:'),
+                Text(_l10n.usageStatus),
                 const SizedBox(width: 8),
                 Text(slot.isUsed ? _l10n.inUse(slot.id) : _l10n.inIdel(slot.id), style: const TextStyle(fontSize: 12)),
               ],),
               const SizedBox(height: 8),
               Row(children: [
-                Text('锁状态:'),
+                Text(_l10n.lockStatus),
                 const SizedBox(width: 8),
                 _getLockedInicator(slot.lockState),
                 ]),
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Text('充电状态:'),
+                  Text(_l10n.chargingStatus),
                   const SizedBox(width: 8),
                   _getChargedIndicator(slot.chargingState),
                 ],

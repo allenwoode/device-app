@@ -8,6 +8,7 @@ import 'api_interceptor.dart';
 class AuthService {
   static const String _loginEndpoint = '/auth/login';
   static const String _logoutEndpoint = '/auth/logout';
+  static const String _updatePasswordEndpoint = '/user/passwd';
 
   static Future<LoginResponse?> login(String username, String password) async {
     try {
@@ -102,5 +103,42 @@ class AuthService {
 
   static bool isTokenValid(String? token) {
     return token != null && token.isNotEmpty;
+  }
+
+  static Future<bool> updatePassword({
+    required String oldPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      final requestData = {
+        'oldPassword': oldPassword,
+        'newPassword': newPassword,
+        'confirmPassword': confirmPassword,
+      };
+
+      final response = await ApiInterceptor.put(
+        '${ApiConfig.baseUrl}$_updatePasswordEndpoint',
+        data: requestData,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = response.data;
+        // Check if the response indicates success
+        if (jsonData['status'] == 200) {
+          return true;
+        } else {
+          print('Password update failed: ${jsonData['message']}');
+          return false;
+        }
+      } else {
+        print('Password update failed with status: ${response.statusCode}');
+        print('Response body: ${response.data}');
+        return false;
+      }
+    } catch (e) {
+      print('Password update error: $e');
+      return false;
+    }
   }
 }

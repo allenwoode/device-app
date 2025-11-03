@@ -177,14 +177,6 @@ class _LoginPageState extends State<LoginPage> {
         if (!mounted) return;
 
         if (loginResponse != null && loginResponse.status == 200) {
-          // Login successful
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text(_l10n.welcome.replaceAll('{name}', loginResponse.result.user.name)),
-          //     backgroundColor: Colors.green,
-          //   ),
-          // );
-
           // Navigate to main page
           AppRoutes.goToMain(context);
         } else {

@@ -33,7 +33,6 @@ class WebSocketService {
 
       final token = await StorageService.getToken();
       if (token == null) {
-        //print('WebSocket: No auth token available');
         return false;
       }
 
@@ -156,8 +155,6 @@ class WebSocketService {
       final type = message['type'] as String?;
       final topic = message['topic'] as String?;
 
-      //print('===>on message: $data');
-      // Handle different message types
       if (type == 'result' && topic != null) {
         // This is a subscription result message with actual data
         if (_topicControllers.containsKey(topic)) {
@@ -183,14 +180,14 @@ class WebSocketService {
 
   /// Handle WebSocket errors
   static void _onError(error) {
-    print('WebSocket: Error occurred: $error');
+    //print('WebSocket: Error occurred: $error');
     _isConnected = false;
     _scheduleReconnect();
   }
 
   /// Handle WebSocket disconnection
   static void _onDisconnected() {
-    print('WebSocket: Connection closed');
+    //print('WebSocket: Connection closed');
     _isConnected = false;
     _scheduleReconnect();
   }

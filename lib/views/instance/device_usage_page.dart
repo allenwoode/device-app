@@ -288,7 +288,7 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                     Expanded(
                       flex: 2,
                       child: Text(
-                        usage.createTime,
+                        usage.formattedCreateTime,
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.black87,

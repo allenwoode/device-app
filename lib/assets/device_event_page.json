@@ -1,0 +1,168 @@
+POST /device-instance/11110001/event/LOCK_OPEN_TYPE?format=true
+
+{
+  "message": "success",
+  "result": {
+    "pageIndex": 0,
+    "pageSize": 12,
+    "total": 26,
+    "data": [
+      {
+        "port_format": "5",
+        "createTime_format": 1756719455999,
+        "depo_format": "存",
+        "type": "0",
+        "deviceId": "11110001",
+        "depo": "1",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1756719455990,
+        "type_format": "密码开锁",
+        "createTime": 1756719455999,
+        "port": 5,
+        "timestamp": 1756719455990
+      },
+      {
+        "port_format": "5",
+        "createTime_format": 1756690944355,
+        "depo_format": "存",
+        "type": "0",
+        "deviceId": "11110001",
+        "depo": "1",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1756690944353,
+        "type_format": "密码开锁",
+        "createTime": 1756690944355,
+        "port": 5,
+        "timestamp": 1756690944353
+      },
+      {
+        "port_format": "5",
+        "createTime_format": 1756690903996,
+        "depo_format": "取",
+        "type": "0",
+        "deviceId": "11110001",
+        "depo": "2",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1756690903992,
+        "type_format": "密码开锁",
+        "createTime": 1756690903996,
+        "port": 5,
+        "timestamp": 1756690903992
+      },
+      {
+        "port_format": "5",
+        "createTime_format": 1756690874643,
+        "type": "0",
+        "deviceId": "11110001",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1756690874640,
+        "type_format": "密码开锁",
+        "createTime": 1756690874643,
+        "port": 5,
+        "timestamp": 1756690874640
+      },
+      {
+        "port_format": "4",
+        "createTime_format": 1756690630143,
+        "type": "0",
+        "deviceId": "11110001",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1756690630141,
+        "type_format": "密码开锁",
+        "load": "2",
+        "createTime": 1756690630143,
+        "port": 4,
+        "load_format": "2",
+        "timestamp": 1756690630141
+      },
+      {
+        "port_format": "4",
+        "createTime_format": 1756690568071,
+        "type": "0",
+        "deviceId": "11110001",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1756690568059,
+        "type_format": "密码开锁",
+        "load": "1",
+        "createTime": 1756690568071,
+        "port": 4,
+        "load_format": "1",
+        "timestamp": 1756690568059
+      },
+      {
+        "port_format": "2",
+        "createTime_format": 1755050754516,
+        "type": "2",
+        "deviceId": "11110001",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1755050754514,
+        "type_format": "指纹开锁",
+        "createTime": 1755050754516,
+        "port": 2,
+        "timestamp": 1755050754514
+      },
+      {
+        "port_format": "5",
+        "createTime_format": 1755050734520,
+        "type": "2",
+        "deviceId": "11110001",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1755050734513,
+        "type_format": "指纹开锁",
+        "createTime": 1755050734520,
+        "port": 5,
+        "timestamp": 1755050734513
+      },
+      {
+        "port_format": "7",
+        "createTime_format": 1755050714522,
+        "type": "2",
+        "deviceId": "11110001",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1755050714514,
+        "type_format": "指纹开锁",
+        "createTime": 1755050714522,
+        "port": 7,
+        "timestamp": 1755050714514
+      },
+      {
+        "port_format": "8",
+        "createTime_format": 1755050694509,
+        "type": "2",
+        "deviceId": "11110001",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1755050694506,
+        "type_format": "指纹开锁",
+        "createTime": 1755050694509,
+        "port": 8,
+        "timestamp": 1755050694506
+      },
+      {
+        "port_format": "12",
+        "createTime_format": 1755050674517,
+        "type": "2",
+        "deviceId": "11110001",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1755050674513,
+        "type_format": "指纹开锁",
+        "createTime": 1755050674517,
+        "port": 12,
+        "timestamp": 1755050674513
+      },
+      {
+        "port_format": "9",
+        "createTime_format": 1755050654520,
+        "type": "2",
+        "deviceId": "11110001",
+        "deviceId_format": "11110001",
+        "timestamp_format": 1755050654516,
+        "type_format": "指纹开锁",
+        "createTime": 1755050654520,
+        "port": 9,
+        "timestamp": 1755050654516
+      }
+    ]
+  },
+  "status": 200,
+  "timestamp": 1761125106943
+}

@@ -1,4 +1,3 @@
-import 'package:device/config/app_colors.dart';
 import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -61,7 +60,7 @@ class _MinePageState extends State<MinePage> {
   }
 
   void _handleAboutUs() {
-    _showStyledAlertDialog(_l10n.aboutUs, _l10n.aboutUsTodo);
+    AppRoutes.goToAboutUs(context);
   }
 
   void _showStyledAlertDialog(String title, String message) {
@@ -235,6 +234,15 @@ class _MinePageState extends State<MinePage> {
       color: Colors.white,
       child: Column(
         children: [
+          _buildMenuItem(
+            icon: Icons.device_hub,
+            title: _l10n.deviceConnector,
+            showArrow: true,
+            onTap: () {
+              AppRoutes.goToDeviceConnector(context);
+            },
+          ),
+          _buildDivider(),
           _buildMenuItem(
             icon: Icons.devices_outlined,
             //iconColor: Colors.blue,

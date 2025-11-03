@@ -10,6 +10,11 @@
   "resetPassword": "Reset Password",
   "accountAppeal": "Account Appeal",
   "cancel": "Cancel",
+  "ok": "OK",
+  "success": "Success",
+  "failed": "Failed",
+  "finish": "Finish",
+  "continueConfig": "Continue",
   "welcome": "Welcome, {name}!",
   "@welcome": {
     "placeholders": {
@@ -132,6 +137,7 @@
   "alertTime": "Alert Time",
   "noLogData": "No log data",
   "noLogInfo": "No log information",
+  "deviceConnector": "Device Configure",
   "deviceManagement": "Device Management",
   "feedback": "Feedback",
   "settings": "Settings",
@@ -250,6 +256,7 @@
   "contactHelpText": "Providing contact information helps us respond to you better",
   "submitFeedback": "Submit Feedback",
   "pleaseFillFeedback": "Please enter feedback content",
+  "feedbackSubmitSuccess": "Feedback submitted successfully",
   "feedbackSubmitFailed": "Submission failed, please try again",
   "featureSuggestion": "Feature Suggestion",
   "bugReport": "Bug Report",
@@ -266,5 +273,112 @@
   "bindFailed": "Binding failed, please check if device ID is correct",
   "bindOperationFailed": "Binding operation failed, please try again",
   "scanInstructions": "Place the device QR code within the scan frame",
-  "scanHint": "Device will be automatically bound after successful scan"
+  "scanHint": "Device will be automatically bound after successful scan",
+  "ready": "Device ready",
+  "readyForNextDevice": "Ready for next device configuration",
+  "autoConnectingToDevice": "Auto-connecting to {name}...",
+  "@autoConnectingToDevice": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "scanningAzDevices": "ScanningBLEdevices...",
+  "foundAzDevices": "Found {count}BLEdevices",
+  "@foundAzDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "connectedTo": "Connected to {name}",
+  "@connectedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "connectionFailed": "Connection failed",
+  "disconnected": "Disconnected",
+  "sendingConfig": "Sending configuration...",
+  "configSentSuccess": "Configuration sent successfully",
+  "configSentFailed": "Configuration failed",
+  "connecting": "Connecting...",
+  "scanning": "Scanning...",
+  "scanAzDevices": "ScanBLEDevices",
+  "disconnect": "Disconnect",
+  "sendConfig": "Send Config",
+  "startScanning": "Starting scan for BLE devices",
+  "scanComplete": "Scan complete, found {count} devices",
+  "@scanComplete": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noAzDevices": "No BLE devices found, please ensure device is powered on",
+  "scanError": "Scan error",
+  "attemptingConnection": "Attempting to connect to: {name}",
+  "@attemptingConnection": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "connectionSuccess": "Connection successful",
+  "errorConnectFirst": "Please connect to device first",
+  "errorEnterSsid": "Please enter WiFi SSID",
+  "errorEnterPassword": "Please enter WiFi password",
+  "startSendingWifiConfig": "Starting WiFi configuration",
+  "ssid": "SSID",
+  "passwordLength": "Password length",
+  "sendException": "Send exception",
+  "deviceAcceptedConfig": "✓ Device accepted configuration",
+  "deviceRejectedConfig": "✗ Device rejected configuration",
+  "receivingFrame": "Receiving frame",
+  "deviceResponse": "Device response",
+  "frameProcessingError": "Frame processing error",
+  "unknownDataFormat": "Unknown data format",
+  "waitingForDeviceResponse": "Waiting for device response...",
+  "deviceResponseTimeout": "Device response timeout, please check WiFi password",
+  "foundAzDevicesLabel": "FoundBLEDevices:",
+  "wifiConfig": "WiFi Configuration",
+  "wifiSsid": "WiFi SSID",
+  "wifiPassword": "WiFi Password",
+  "enterWifiPassword": "Enter WiFi password",
+  "logs": "Message",
+  "receivedNotification": "Received notification",
+  "usageStatus": "Usage Status:",
+  "lockStatus": "Lock Status:",
+  "chargingStatus": "Charging Status:",
+  "pleaseEnableBluetooth": "Please enable Bluetooth",
+  "bluetoothNotEnabled": "Bluetooth not enabled",
+  "bluetoothEnabled": "Bluetooth enabled",
+  "bluetoothRequired": "Bluetooth Required",
+  "bluetoothRequiredMessage": "Bluetooth is required to scan for devices. Would you like to turn it on now?",
+  "turnOn": "Turn On",
+  "changePassword": "Change Password",
+  "oldPassword": "Current Password",
+  "newPassword": "New Password",
+  "confirmPassword": "Confirm Password",
+  "pleaseEnterOldPassword": "Please enter current password",
+  "pleaseEnterNewPassword": "Please enter new password",
+  "pleaseEnterConfirmPassword": "Please confirm new password",
+  "passwordsDoNotMatch": "New password and confirmation do not match",
+  "passwordTooShort": "Password must be at least 6 characters",
+  "updatePassword": "Update Password",
+  "passwordUpdateSuccess": "Password updated successfully",
+  "passwordUpdateFailed": "Password update failed, please check your current password",
+  "oldPasswordIncorrect": "Current password is incorrect",
+  "appVersion": "Version",
+  "searchDevice": "Search Device",
+  "searchDeviceHint": "Enter device ID or name",
+  "search": "Search",
+  "registrationNumber": "Registration No",
+  "officialWebsite": "Official Website"
 }

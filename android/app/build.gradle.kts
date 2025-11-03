@@ -55,6 +55,17 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
+
+    applicationVariants.all {
+        outputs.all {
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            val versionName = flutter.versionName ?: "1.0.0"
+            val buildType = this.name
+
+            // Generate output name: device-v1.1.0-1-release.apk or device-1.1.0-debug.apk
+            output.outputFileName = "device-${versionName}-${buildType}.apk"
+        }
+    }
 }
 
 flutter {
