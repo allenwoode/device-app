@@ -51,7 +51,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   final TeaEncryptor _encryptor = TeaEncryptor(TEA_ENCRYPTION_KEY);
   final BleDeviceResponseFrames _responseFrames = BleDeviceResponseFrames();
 
-  final StreamController<String> _statusController = StreamController<String>.broadcast();
+  final StreamController<String> _statusController =
+      StreamController<String>.broadcast();
   //Stream<String> get statusStream => _statusController.stream;
   StreamSubscription? stateSubscription;
   bool bleOff = false;
@@ -83,23 +84,26 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   }
 
   Future<void> _checkBluetoothState() async {
-    stateSubscription = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
-        if (state != BluetoothAdapterState.on) {
-          setState(() {
-            statusMessage = _l10n.pleaseEnableBluetooth;
-            bleOff = true;
-          });
-          _addLog(_l10n.bluetoothNotEnabled);
-        } else {
-          setState(() {
-            statusMessage = _l10n.ready;
-            bleOff = false;
-          });
-        }
+    stateSubscription = FlutterBluePlus.adapterState.listen((
+      BluetoothAdapterState state,
+    ) {
+      if (state != BluetoothAdapterState.on) {
+        setState(() {
+          statusMessage = _l10n.pleaseEnableBluetooth;
+          bleOff = true;
+        });
+        _addLog(_l10n.bluetoothNotEnabled);
+      } else {
+        setState(() {
+          statusMessage = _l10n.ready;
+          bleOff = false;
+        });
+      }
     });
   }
 
   Future<void> _getCurrentSsid() async {
+    print('=================get current ssid ===============');
     // Try to get current WiFi SSID
     String? currentSSID;
 
@@ -109,6 +113,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
         await Permission.location.request();
       }
 
+      // TODO
+      // IOS platform location permission granted
       if (await Permission.location.isGranted) {
         final networkInfo = NetworkInfo();
         currentSSID = await networkInfo.getWifiName();
@@ -120,6 +126,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       }
     } catch (e) {
       // Ignore errors, just won't pre-fill SSID
+      print('===== current ssid no found!');
+      return;
     }
 
     // Set the current SSID as default value
@@ -134,7 +142,10 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
 
   void _addLog(String message) {
     setState(() {
-      logs.insert(0, '${DateTime.now().toString().substring(11, 19)} - $message');
+      logs.insert(
+        0,
+        '${DateTime.now().toString().substring(11, 19)} - $message',
+      );
       if (logs.length > 20) logs.removeLast();
     });
   }
@@ -143,13 +154,19 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     if (Platform.isAndroid) {
       await FlutterBluePlus.turnOn();
       return true;
+    } else if (Platform.isIOS) {
+      await ConfirmDialog.show(
+        context: context,
+        title: 'turn on BLE',
+        message: 'turn on BLE to connect near devices',
+      );
     }
     return false;
   }
 
-  /// 扫描 AZ 设备
+  /// 扫描 蓝牙 设备
   Future<void> scanForDevices() async {
-    if (bleOff) {
+    if (bleOff && Platform.isAndroid) {
       final confirmed = await ConfirmDialog.show(
         context: context,
         title: _l10n.bluetoothRequired,
@@ -165,6 +182,15 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       }
     }
 
+    // if (Platform.isIOS) {
+    //   await ConfirmDialog.show(
+    //     context: context,
+    //     title: '蓝牙未开启',
+    //     message: '开启蓝牙后扫描附近设备',
+    //   );
+    //   return;
+    // }
+
     setState(() {
       isScanning = true;
       foundDevices.clear();
@@ -173,8 +199,9 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     _addLog(_l10n.startScanning);
 
     try {
-      List<BluetoothDevice> devices = await btManager.scanForDevices(BLE_PLATFORM_NM,
-        timeout: Duration(seconds: 10)
+      List<BluetoothDevice> devices = await btManager.scanForDevices(
+        BLE_PLATFORM_NM,
+        timeout: Duration(seconds: 10),
       );
 
       setState(() {
@@ -203,13 +230,18 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     setState(() => isConnecting = true);
     _addLog(_l10n.attemptingConnection(device.platformName));
 
-    bool success = await btManager.connectToDevice(device, _onNotificationReceived);
+    bool success = await btManager.connectToDevice(
+      device,
+      _onNotificationReceived,
+    );
 
     setState(() {
       isConnected = success;
       isConnecting = false;
       selectedDevice = success ? device : null;
-      statusMessage = success ? _l10n.connectedTo(device.platformName) : _l10n.connectionFailed;
+      statusMessage = success
+          ? _l10n.connectedTo(device.platformName)
+          : _l10n.connectionFailed;
     });
 
     if (success) {
@@ -314,7 +346,6 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
 
       // If user chose to continue configuring more devices
       if (shouldFinish == false) {
-
         // Reset status
         setState(() {
           statusMessage = _l10n.ready;
@@ -342,10 +373,13 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
         await sendWiFiConfig();
       }
     }
-    
   }
 
-  Future<bool> sendConfigFrames(String ssid, String password, {Duration timeout = const Duration(seconds: 10)}) async {
+  Future<bool> sendConfigFrames(
+    String ssid,
+    String password, {
+    Duration timeout = const Duration(seconds: 10),
+  }) async {
     try {
       final frames = LinkingRequestFrameCreator.createConfigFrames(
         _encryptor,
@@ -380,7 +414,6 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
 
       while (keepSending && !completer.isCompleted) {
         for (int i = 0; i < frames.length && keepSending; i++) {
-
           await btManager.sendData(frames[i]);
 
           await Future.delayed(const Duration(milliseconds: 500));
@@ -416,7 +449,9 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     }
   }
 
-  Future<Map<String, dynamic>?> waitForDeviceResponse({Duration timeout = const Duration(seconds: 10)}) async {
+  Future<Map<String, dynamic>?> waitForDeviceResponse({
+    Duration timeout = const Duration(seconds: 10),
+  }) async {
     _addLog(_l10n.waitingForDeviceResponse);
     final completer = Completer<Map<String, dynamic>?>();
 
@@ -438,7 +473,9 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
           completer.complete(response);
         } catch (e) {
           print('Failed to parse device response: $e');
-          completer.completeError(Exception('Failed to parse device response: $e'));
+          completer.completeError(
+            Exception('Failed to parse device response: $e'),
+          );
         } finally {
           subscription.cancel();
         }
@@ -476,8 +513,10 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       final dataLength = data[2];
 
       // Validate frame structure
-      if (frameNumber > 0 && frameNumber <= totalFrames &&
-          totalFrames > 0 && totalFrames < 100 &&
+      if (frameNumber > 0 &&
+          frameNumber <= totalFrames &&
+          totalFrames > 0 &&
+          totalFrames < 100 &&
           dataLength == data.length - 3) {
         _addLog('${_l10n.receivingFrame} $frameNumber/$totalFrames');
 
@@ -485,7 +524,9 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
           _responseFrames.addFrame(data);
 
           if (_responseFrames.isCompleted) {
-            final decrypted = _responseFrames.unpackAndDecryptFrames(_encryptor);
+            final decrypted = _responseFrames.unpackAndDecryptFrames(
+              _encryptor,
+            );
             final jsonStr = utf8.decode(decrypted, allowMalformed: true).trim();
             _addLog('${_l10n.deviceResponse}: $jsonStr');
             _statusController.add('device_response:$jsonStr');
@@ -539,14 +580,19 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
               child: Row(
                 children: [
                   Icon(
-                    isConnected ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+                    isConnected
+                        ? Icons.bluetooth_connected
+                        : Icons.bluetooth_disabled,
                     color: isConnected ? Colors.green : Colors.grey,
                   ),
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       statusMessage,
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
@@ -561,24 +607,34 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
                   child: ElevatedButton.icon(
                     onPressed: isScanning ? null : scanForDevices,
                     icon: Icon(Icons.search),
-                    label: Text(isScanning ? _l10n.scanning : _l10n.scanAzDevices),
+                    label: Text(
+                      isScanning ? _l10n.scanning : _l10n.scanAzDevices,
+                    ),
                   ),
                 ),
                 if (isConnected) ...[
                   SizedBox(width: 10),
                   ElevatedButton.icon(
                     onPressed: disconnect,
-                    icon: Icon(Icons.bluetooth_disabled, color: Colors.white,),
-                    label: Text(_l10n.disconnect, style: TextStyle(color: Colors.white),),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[500]),
+                    icon: Icon(Icons.bluetooth_disabled, color: Colors.white),
+                    label: Text(
+                      _l10n.disconnect,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[500],
+                    ),
                   ),
                 ],
               ],
             ),
-            
+
             if (foundDevices.isNotEmpty) ...[
               SizedBox(height: 12),
-              Text(_l10n.foundAzDevicesLabel, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                _l10n.foundAzDevicesLabel,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: 8),
               Container(
                 height: 70,
@@ -590,7 +646,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
                   itemCount: foundDevices.length,
                   itemBuilder: (context, index) {
                     var device = foundDevices[index];
-                    bool isSelected = selectedDevice?.remoteId == device.remoteId;
+                    bool isSelected =
+                        selectedDevice?.remoteId == device.remoteId;
                     return ListTile(
                       title: Text(device.platformName),
                       subtitle: Text(device.remoteId.toString()),
@@ -611,7 +668,10 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
             SizedBox(height: 10),
 
             // WiFi 配置表单
-            Text(_l10n.wifiConfig, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(
+              _l10n.wifiConfig,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 12),
             TextField(
               controller: ssidController,
@@ -700,7 +760,10 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
             Divider(),
 
             // 日志显示
-            Text(_l10n.logs, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            Text(
+              _l10n.logs,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 8),
             Expanded(
               child: Container(
@@ -741,5 +804,4 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     stateSubscription?.cancel();
     super.dispose();
   }
-
 }

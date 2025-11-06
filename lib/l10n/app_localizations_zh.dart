@@ -675,7 +675,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get wifiSsid => 'WiFi SSID';
 
   @override
-  String get wifiPassword => 'WiFi密码';
+  String get wifiPassword => 'WiFi 密码';
 
   @override
   String get enterWifiPassword => '输入WiFi密码';
