@@ -272,7 +272,7 @@
   "foundAzDevicesLabel": "找到的蓝牙设备:",
   "wifiConfig": "WiFi 配置",
   "wifiSsid": "WiFi SSID",
-  "wifiPassword": "WiFi密码",
+  "wifiPassword": "WiFi 密码",
   "enterWifiPassword": "输入WiFi密码",
   "logs": "日志:",
   "receivedNotification": "收到通知",
