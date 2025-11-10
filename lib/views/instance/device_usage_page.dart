@@ -23,9 +23,17 @@ class DeviceUsagePage extends StatefulWidget {
 
 class _DeviceUsagePageState extends State<DeviceUsagePage> {
   bool _isLoading = true;
+  bool _isLoadingMore = false;
   String? _errorMessage;
 
   List<DeviceUsage> _usageData = [];
+  List<DeviceUsageCount> _usageCountData = [];
+  int _currentPage = 0;
+  final _pageSize = 12;
+  int _totalRecords = 0;
+  bool _hasMoreData = true;
+
+  final ScrollController _scrollController = ScrollController();
 
   AppLocalizations get _l10n {
     try {
@@ -48,16 +56,43 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
   void initState() {
     super.initState();
     _loadDeviceData();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // 当滚动到距离底部100像素时开始预加载
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100) {
+      if (!_isLoadingMore && _hasMoreData) {
+        _loadMoreData();
+      }
+    }
   }
 
   Future<void> _loadDeviceData() async {
     try {
       final response = await DeviceService.getDeviceUsage(
         deviceId: widget.deviceId,
+        pageIndex: 0,
+        pageSize: _pageSize,
+      );
+
+      final countResponse = await DeviceService.getDeviceUsageCount(
+        deviceId: widget.deviceId,
       );
 
       setState(() {
-        _usageData = response;
+        _usageData = response.result.data;
+        _usageCountData = countResponse;
+        _totalRecords = response.result.total;
+        _currentPage = 0;
+        _hasMoreData = _usageData.length < _totalRecords;
         _isLoading = false;
       });
     } catch (e) {
@@ -68,27 +103,51 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
     }
   }
 
-  Widget _buildTopBar() {
-    Map<int, int> portUsageCount = {};
-    for (var usage in _usageData) {
-      portUsageCount[usage.port] = (portUsageCount[usage.port] ?? 0) + 1;
-    }
+  Future<void> _loadMoreData() async {
+    if (_isLoadingMore || !_hasMoreData) return;
 
-    List<ChartBarData> chartData =
-        portUsageCount.entries
-            .map(
-              (entry) => ChartBarData(
-                label: 'C${entry.key}',
-                value: entry.value,
-                color: _getPortColor(entry.key - 1),
-              ),
-            )
-            .toList()
-          ..sort(
-            (a, b) => int.parse(
-              a.label.substring(1),
-            ).compareTo(int.parse(b.label.substring(1))),
-          );
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final nextPage = _currentPage + 1;
+      final response = await DeviceService.getDeviceUsage(
+        deviceId: widget.deviceId,
+        pageIndex: nextPage,
+        pageSize: _pageSize,
+      );
+
+      setState(() {
+        _usageData.addAll(response.result.data);
+        _currentPage = nextPage;
+        _totalRecords = response.result.total;
+        _hasMoreData = _usageData.length < _totalRecords;
+        _isLoadingMore = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingMore = false;
+      });
+    }
+  }
+
+  Widget _buildTopBar() {
+    // Use API count data instead of manually counting
+    List<ChartBarData> chartData = _usageCountData
+        .map(
+          (usageCount) => ChartBarData(
+            label: 'C${usageCount.port}',
+            value: usageCount.count,
+            color: _getPortColor(usageCount.port - 1),
+          ),
+        )
+        .toList()
+      ..sort(
+        (a, b) => int.parse(
+          a.label.substring(1),
+        ).compareTo(int.parse(b.label.substring(1))),
+      );
 
     return Container(
       margin: const EdgeInsets.only(left: 8, top: 16, right: 8, bottom: 0),
@@ -365,12 +424,31 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
           : RefreshIndicator(
               onRefresh: _loadDeviceData,
               child: SingleChildScrollView(
+                controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
                     _buildTopBar(),
                     const SizedBox(height: 8),
                     _buildUsageTable(),
+                    if (_isLoadingMore)
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    if (!_hasMoreData && _usageData.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          _l10n.noMoreData,
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

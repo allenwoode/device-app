@@ -1,0 +1,28 @@
+POST /device-instance/today/count/11110002/event/LOCK_OPEN_TYPE
+
+# response
+{
+    "message": "success",
+    "result": [
+        {
+            "createTime": 1762758563692,
+            "port": 5,
+            "count": 4,
+            "type": "0",
+            "deviceId": "11110002",
+            "depo": "2",
+            "timestamp": 1762758563691
+        },
+        {
+            "createTime": 1762762592175,
+            "port": 3,
+            "count": 11,
+            "type": "0",
+            "deviceId": "11110002",
+            "depo": "2",
+            "timestamp": 1762762592174
+        }
+    ],
+    "status": 200,
+    "timestamp": 1762766900320
+}

@@ -528,10 +528,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usageQuestion => 'Usage Question';
 
   @override
-  String get deposit => 'Deposit';
+  String get deposit => 'Place';
 
   @override
-  String get withdraw => 'Withdraw';
+  String get withdraw => 'Fetch';
 
   @override
   String get other => 'Other';
@@ -790,4 +790,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get officialWebsite => 'Official Website';
+
+  @override
+  String get noMoreData => 'No more data';
 }

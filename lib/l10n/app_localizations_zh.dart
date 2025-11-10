@@ -769,4 +769,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get officialWebsite => '官网';
+
+  @override
+  String get noMoreData => '没有更多数据';
 }

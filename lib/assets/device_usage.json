@@ -1,40 +1,60 @@
+POST /device-instance/today/11110002/event/LOCK_OPEN_TYPE
+
+# request body
 {
-  "message": "success",
-  "result": {
     "pageIndex": 0,
     "pageSize": 12,
-    "total": 2,
-    "data": [
-      {
-        "port_format": "1",
-        "createTime_format": 1761127434628,
-        "depo_format": "取",
-        "type": "0",
-        "deviceId": "11110001",
-        "depo": "2",
-        "deviceId_format": "11110001",
-        "timestamp_format": 1761127434627,
-        "type_format": "密码开锁",
-        "createTime": 1761127434628,
-        "port": 1,
-        "timestamp": 1761127434627
-      },
-      {
-        "port_format": "1",
-        "createTime_format": 1761127195244,
-        "depo_format": "存",
-        "type": "0",
-        "deviceId": "11110001",
-        "depo": "1",
-        "deviceId_format": "11110001",
-        "timestamp_format": 1761127195234,
-        "type_format": "密码开锁",
-        "createTime": 1761127195244,
-        "port": 1,
-        "timestamp": 1761127195234
-      }
+    "terms": [],
+    "sorts": [
+        {
+            "name": "create_time",
+            "order": "desc"
+        }
     ]
-  },
-  "status": 200,
-  "timestamp": 1761127738741
+}
+
+#response
+{
+    "message": "success",
+    "result": {
+        "pageIndex": 0,
+        "pageSize": 12,
+        "total": 4,
+        "data": [
+            {
+                "createTime": 1762758533738,
+                "port": 5,
+                "type": "0",
+                "deviceId": "11110002",
+                "depo": "1",
+                "timestamp": 1762758533737
+            },
+            {
+                "createTime": 1762758545689,
+                "port": 5,
+                "type": "0",
+                "deviceId": "11110002",
+                "depo": "2",
+                "timestamp": 1762758545688
+            },
+            {
+                "createTime": 1762758557411,
+                "port": 5,
+                "type": "0",
+                "deviceId": "11110002",
+                "depo": "1",
+                "timestamp": 1762758557409
+            },
+            {
+                "createTime": 1762758563692,
+                "port": 5,
+                "type": "0",
+                "deviceId": "11110002",
+                "depo": "2",
+                "timestamp": 1762758563691
+            }
+        ]
+    },
+    "status": 200,
+    "timestamp": 1762760066841
 }

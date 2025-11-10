@@ -261,8 +261,8 @@
   "featureSuggestion": "Feature Suggestion",
   "bugReport": "Bug Report",
   "usageQuestion": "Usage Question",
-  "deposit": "Deposit",
-  "withdraw": "Withdraw",
+  "deposit": "Place",
+  "withdraw": "Fetch",
   "other": "Other",
   "scanDeviceQRCode": "Scan Device QR Code",
   "permissionInsufficient": "Permission Insufficient",
@@ -380,5 +380,6 @@
   "searchDeviceHint": "Enter device ID or name",
   "search": "Search",
   "registrationNumber": "Registration No",
-  "officialWebsite": "Official Website"
+  "officialWebsite": "Official Website",
+  "noMoreData": "No more data"
 }

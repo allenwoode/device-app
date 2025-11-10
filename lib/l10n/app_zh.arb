@@ -303,5 +303,6 @@
   "searchDeviceHint": "输入设备ID或名称",
   "search": "搜索",
   "registrationNumber": "备案号",
-  "officialWebsite": "官网"
+  "officialWebsite": "官网",
+  "noMoreData": "没有更多数据"
 }

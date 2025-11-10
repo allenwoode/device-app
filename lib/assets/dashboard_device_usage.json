@@ -1,56 +1,65 @@
+POST /report/usage/_query
+
+# request body
+{
+    "pageIndex": 0,
+    "pageSize": 12,
+    "terms": [
+        {
+            "column":"date", 
+            "term":"eq", 
+            "value":"2025-11-10"
+        }
+    ],
+    "sorts": [
+        {
+            "name": "amount",
+            "order": "desc"
+        }
+    ]
+}
+
+# response
 {
     "message": "success",
     "result": [
         {
-            "id": "11110001",
-            "label": "1001 Classroom",
-            "total": 82,
-            "depo": [45, 37],
-            "text": ""
+            "deviceId": "11110001",
+            "deviceName": "1001 Classroom",
+            "date": "2025-11-10",
+            "amount": 4,
+            "data": [
+                3,
+                1
+            ],
+            "timestamp": 1762756159345,
+            "action": "place"
         },
         {
-            "id": "11110002",
-            "label": "1002 Classroom",
-            "total": 70,
-            "depo": [39, 31],
-            "text": ""
+            "deviceId": "11110004",
+            "deviceName": "1004 Classroom",
+            "date": "2025-11-10",
+            "amount": 2,
+            "data": [
+                1,
+                1
+            ],
+            "timestamp": 1762757413250,
+            "action": "fetch"
         },
         {
-            "id": "11110003",
-            "label": "1003 Classroom",
-            "total": 65,
-            "depo": [30, 35],
-            "text": ""
-        },
-        {
-            "id": "11110004",
-            "label": "1004 Classroom",
-            "total": 60,
-            "depo": [38, 22],
-            "text": ""
-        },
-        {
-            "id": "11110005",
-            "label": "1005 Classroom",
-            "total": 55,
-            "depo": [30, 25],
-            "text": ""
-        },
-        {
-            "id": "11110006",
-            "label": "1006 Classroom",
-            "total": 45,
-            "depo": [25, 20],
-            "text": ""
-        },
-        {
-            "id": "11110007",
-            "label": "1007 Classroom",
-            "total": 40,
-            "depo": [30, 10],
-            "text": ""
+            "deviceId": "11110002",
+            "deviceName": "1002 Classrom",
+            "date": "2025-11-10",
+            "amount": 1,
+            "data": [
+                1,
+                0
+            ],
+            "timestamp": 1762756693809,
+            "action": "place"
         }
     ],
     "status": 200,
-    "timestamp": 1757993072336
+    "timestamp": 1762757927224
 }

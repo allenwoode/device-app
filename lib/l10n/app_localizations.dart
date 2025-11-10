@@ -1049,13 +1049,13 @@ abstract class AppLocalizations {
   /// No description provided for @deposit.
   ///
   /// In en, this message translates to:
-  /// **'Deposit'**
+  /// **'Place'**
   String get deposit;
 
   /// No description provided for @withdraw.
   ///
   /// In en, this message translates to:
-  /// **'Withdraw'**
+  /// **'Fetch'**
   String get withdraw;
 
   /// No description provided for @other.
@@ -1537,6 +1537,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Official Website'**
   String get officialWebsite;
+
+  /// No description provided for @noMoreData.
+  ///
+  /// In en, this message translates to:
+  /// **'No more data'**
+  String get noMoreData;
 }
 
 class _AppLocalizationsDelegate

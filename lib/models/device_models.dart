@@ -113,11 +113,11 @@ class DashboardUsageDevice {
 
   factory DashboardUsageDevice.fromJson(Map<String, dynamic> json) {
     return DashboardUsageDevice(
-      id: json['id'] ?? '',
-      label: json['label'] ?? '',
-      total: json['total'] ?? 0,
-      depo: List<int>.from(json['depo'] ?? []),
-      text: json['text'] ?? '',
+      id: json['deviceId'] ?? json['id'] ?? '',
+      label: json['deviceName'] ?? json['label'] ?? '',
+      total: json['amount'] ?? json['total'] ?? 0,
+      depo: List<int>.from(json['data'] ?? json['depo'] ?? []),
+      text: json['action'] ?? json['text'] ?? '',
     );
   }
 }
@@ -209,6 +209,38 @@ class DeviceUsage {
     if (createTime == 0) return '';
     final dateTime = DateTime.fromMillisecondsSinceEpoch(createTime);
     return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+  }
+}
+
+class DeviceUsageCount {
+  final int port;
+  final int count;
+  final String type;
+  final int timestamp;
+  final String deviceId;
+  final String depo;
+  final int createTime;
+
+  DeviceUsageCount({
+    required this.port,
+    required this.count,
+    required this.type,
+    required this.timestamp,
+    required this.deviceId,
+    required this.depo,
+    required this.createTime,
+  });
+
+  factory DeviceUsageCount.fromJson(Map<String, dynamic> json) {
+    return DeviceUsageCount(
+      port: json['port'] ?? 0,
+      count: json['count'] ?? 0,
+      type: json['type'] ?? '',
+      timestamp: json['timestamp'] ?? 0,
+      deviceId: json['deviceId'] ?? '',
+      depo: json['depo'] ?? '',
+      createTime: json['createTime'] ?? 0,
+    );
   }
 }
 
