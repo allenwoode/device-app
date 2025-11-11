@@ -100,8 +100,13 @@ class _DashboardPageState extends State<DashboardPage> {
       int index = entry.key;
       DashboardUsage usage = entry.value;
 
+      final spaceIndex = usage.label.indexOf(' ');
+      final endIndex = spaceIndex != -1
+          ? (spaceIndex < 4 ? spaceIndex : 4)
+          : (usage.label.length > 4 ? 4 : usage.label.length);
+
       return ChartBarData(
-        label: usage.label,
+        label: usage.label.substring(0, endIndex),
         value: usage.value,
         color: colors[index % colors.length],
       );

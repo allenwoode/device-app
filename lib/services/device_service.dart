@@ -220,7 +220,42 @@ class DeviceService {
 
   static Future<List<DashboardUsage>> getDashboardUsage() async {
     try {
-      // For now, load from local JSON file (can be extended to API call)
+      // Try API first - GET request to /report/usage/top
+      final response = await ApiInterceptor.get(
+        '${ApiConfig.baseUrl}/report/usage/top',
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Dashboard Usage API Response Status: ${response.statusCode}');
+        print('Dashboard Usage API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic> && responseData['result'] is List) {
+          final List<dynamic> resultList = responseData['result'];
+          return resultList.map((item) => DashboardUsage.fromJson(item)).toList();
+        }
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
+
+      return [];
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Dashboard usage API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDashboardUsage();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<List<DashboardUsage>> _loadLocalDashboardUsage() async {
+    try {
       final String response = await rootBundle.loadString(
         'lib/assets/dashboard_usage.json',
       );
@@ -233,11 +268,7 @@ class DeviceService {
 
       return [];
     } catch (e) {
-      if (ApiConfig.enableLogging) {
-        print('Failed to load dashboard usage data: $e');
-      }
-      // Return fallback data
-      return [];
+      throw Exception('Failed to load dashboard usage data: $e');
     }
   }
 

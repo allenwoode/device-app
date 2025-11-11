@@ -89,9 +89,9 @@ class DashboardUsage {
 
   factory DashboardUsage.fromJson(Map<String, dynamic> json) {
     return DashboardUsage(
-      label: json['label'] ?? '',
-      value: json['value'] ?? 0,
-      text: json['text'] ?? '',
+      label: json['deviceName'] ?? json['label'] ?? '',
+      value: json['amount'] ?? json['value'] ?? 0,
+      text: json['date'] ?? json['text'] ?? '',
     );
   }
 }
