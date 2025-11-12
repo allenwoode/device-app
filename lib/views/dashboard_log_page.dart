@@ -16,7 +16,7 @@ class DashboardLogPage extends StatefulWidget {
 class _DashboardLogPageState extends State<DashboardLogPage> {
   bool _isLoading = true;
   String? _errorMessage;
-  List<DashboardUsageDevice> _logData = [];
+  List<Dashboard> _logData = [];
 
   AppLocalizations get _l10n {
     try {
@@ -95,10 +95,10 @@ class _DashboardLogPageState extends State<DashboardLogPage> {
           title: log.label,
           total: log.total,
           primaryLabel: _l10n.report,
-          primaryValue: log.depo.isNotEmpty ? log.depo[0] : 0,
+          primaryValue: log.data.isNotEmpty ? log.data[0] : 0,
           primaryColor: Colors.green,
           secondaryLabel: _l10n.dispatch,
-          secondaryValue: log.depo.length > 1 ? log.depo[1] : 0,
+          secondaryValue: log.data.length > 1 ? log.data[1] : 0,
           secondaryColor: Colors.red,
           shouldAnimate: true,
           onTap: () {

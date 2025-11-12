@@ -20,9 +20,9 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   User? _currentUser;
   DashboardDevices? _dashboardDevices;
-  List<DashboardUsage> _dashboardUsage = [];
-  DashboardAlerts? _dashboardAlerts;
-  DashboardMessage? _dashboardMessage;
+  List<Dashboard> _dashboardUsage = [];
+  DashboardSimple? _dashboardAlerts;
+  Dashboard? _dashboardMessage;
   bool _isLoading = true;
   bool _shouldAnimateCards = true;
 
@@ -69,16 +69,16 @@ class _DashboardPageState extends State<DashboardPage> {
         _isLoading = true;
       });
 
-      final dashboardData = await DeviceService.getDashboardDevices();
+      final deviceData = await DeviceService.getDashboardDevices();
       final usageData = await DeviceService.getDashboardUsage();
       final alertsData = await DeviceService.getDashboardAlerts();
-      final messageData = await DeviceService.getDashboardMessage();
+      final messageData = await DeviceService.getDashboardDeviceLog();
 
       setState(() {
-        _dashboardDevices = DashboardDevices.fromJson(dashboardData);
+        _dashboardDevices = deviceData;
         _dashboardUsage = usageData;
         _dashboardAlerts = alertsData;
-        _dashboardMessage = messageData;
+        _dashboardMessage = convert(messageData);
         _isLoading = false;
       });
     } catch (e) {
@@ -93,12 +93,47 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  List<ChartBarData> _convertUsageToChartData(List<DashboardUsage> usageList) {
+  Dashboard convert(List<Dashboard> data) {
+    if (data.isEmpty) {
+      return Dashboard(
+        id: '',
+        label: 'Operation Logs',
+        total: 0,
+        data: [0, 0],
+        text: '',
+      );
+    }
+
+    // Aggregate all counts from the list
+    int totalReportCount = 0;
+    int totalFunctionCount = 0;
+
+    for (var dashboard in data) {
+      if (dashboard.data.isNotEmpty) {
+        totalReportCount += dashboard.data[0];
+        if (dashboard.data.length > 1) {
+          totalFunctionCount += dashboard.data[1];
+        }
+      }
+    }
+
+    int grandTotal = totalReportCount + totalFunctionCount;
+
+    return Dashboard(
+      id: 'dashboard-message',
+      label: 'Operation Logs',
+      total: grandTotal,
+      data: [totalReportCount, totalFunctionCount],
+      text: '',
+    );
+  }
+
+  List<ChartBarData> _convertUsageToChartData(List<Dashboard> usageList) {
     final colors = [Colors.blue, Colors.green, Colors.orange, Colors.purple, Colors.red];
 
     return usageList.asMap().entries.map((entry) {
       int index = entry.key;
-      DashboardUsage usage = entry.value;
+      Dashboard usage = entry.value;
 
       final spaceIndex = usage.label.indexOf(' ');
       final endIndex = spaceIndex != -1
@@ -107,7 +142,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
       return ChartBarData(
         label: usage.label.substring(0, endIndex),
-        value: usage.value,
+        value: usage.total,
         color: colors[index % colors.length],
       );
     }).toList();
@@ -176,10 +211,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 title: _l10n.todayAlerts,
                 total: _dashboardAlerts?.total,
                 primaryLabel: _l10n.notice,
-                primaryValue: _dashboardAlerts?.alarmCount ?? 0,
+                primaryValue: 0,
                 primaryColor: Colors.green,
                 secondaryLabel: _l10n.severe,
-                secondaryValue: _dashboardAlerts?.severeCount ?? 0,
+                secondaryValue: 0,
                 secondaryColor: Colors.red,
                 shouldAnimate: _shouldAnimateCards,
                 onTap: () {
@@ -191,10 +226,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 title: _l10n.operationLogs,
                 total: _dashboardMessage?.total,
                 primaryLabel: _l10n.report,
-                primaryValue: _dashboardMessage?.reportCount ?? 0,
+                primaryValue: _dashboardMessage?.data[0] ?? 0,
                 primaryColor: Colors.green,
                 secondaryLabel: _l10n.dispatch,
-                secondaryValue: _dashboardMessage?.functionCount ?? 0,
+                secondaryValue: _dashboardMessage?.data[1] ?? 0,
                 secondaryColor: Colors.red,
                 shouldAnimate: _shouldAnimateCards,
                 onTap: () {

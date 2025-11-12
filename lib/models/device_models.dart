@@ -76,117 +76,108 @@ class DashboardDevices {
   }
 }
 
-class DashboardUsage {
-  final String label;
-  final int value;
-  final String text;
-
-  DashboardUsage({
-    required this.label,
-    required this.value,
-    required this.text,
-  });
-
-  factory DashboardUsage.fromJson(Map<String, dynamic> json) {
-    return DashboardUsage(
-      label: json['deviceName'] ?? json['label'] ?? '',
-      value: json['amount'] ?? json['value'] ?? 0,
-      text: json['date'] ?? json['text'] ?? '',
-    );
-  }
-}
-
-class DashboardUsageDevice {
+class Dashboard {
   final String id;
   final String label;
   final int total;
-  final List<int> depo;
+  final List<int> data;
   final String text;
 
-  DashboardUsageDevice({
+  Dashboard({
     required this.id,
     required this.label,
     required this.total,
-    required this.depo,
+    required this.data,
     required this.text,
   });
 
-  factory DashboardUsageDevice.fromJson(Map<String, dynamic> json) {
-    return DashboardUsageDevice(
+  factory Dashboard.fromJson(Map<String, dynamic> json) {
+    return Dashboard(
       id: json['deviceId'] ?? json['id'] ?? '',
       label: json['deviceName'] ?? json['label'] ?? '',
       total: json['amount'] ?? json['total'] ?? 0,
-      depo: List<int>.from(json['data'] ?? json['depo'] ?? []),
+      data: List<int>.from(json['data'] ?? []),
       text: json['action'] ?? json['text'] ?? '',
     );
   }
 }
 
-class DashboardAlerts {
-  final int total;
-  final int alarmCount;
-  final int severeCount;
+class DashboardSimple {
 
-  DashboardAlerts({
+  final int total;
+  final List<int> data;
+  final String label;
+
+  DashboardSimple({
     required this.total,
-    required this.alarmCount,
-    required this.severeCount,
+    required this.data,
+    required this.label,
   });
 
-  factory DashboardAlerts.fromJson(Map<String, dynamic> json) {
-    return DashboardAlerts(
-      total: json['total'] ?? 0,
-      alarmCount: json['alarmCount'] ?? 0,
-      severeCount: json['severeCount'] ?? 0,
+  factory DashboardSimple.fromJson(Map<String, dynamic> json) {
+    return DashboardSimple(
+      label: json['deviceName'] ?? json['label'] ?? '',
+      total: json['amount'] ?? json['total'] ?? 0,
+      data: List<int>.from(json['data'] ?? []),
     );
   }
 }
 
-class DashboardMessage {
-  final int total;
-  final int reportCount;
-  final int functionCount;
+// class DashboardAlerts {
+//   final int total;
+//   final int alarmCount;
+//   final int severeCount;
 
-  DashboardMessage({
-    required this.total,
-    required this.reportCount,
-    required this.functionCount,
-  });
+//   DashboardAlerts({
+//     required this.total,
+//     required this.alarmCount,
+//     required this.severeCount,
+//   });
 
-  factory DashboardMessage.fromJson(Map<String, dynamic> json) {
-    return DashboardMessage(
-      total: json['total'] ?? 0,
-      reportCount: json['reportCount'] ?? 0,
-      functionCount: json['functionCount'] ?? 0,
-    );
-  }
-}
+//   factory DashboardAlerts.fromJson(Map<String, dynamic> json) {
+//     return DashboardAlerts(
+//       total: json['total'] ?? 0,
+//       alarmCount: json['alarmCount'] ?? 0,
+//       severeCount: json['severeCount'] ?? 0,
+//     );
+//   }
+// }
+
+// class DashboardMessage {
+//   final int total;
+//   final int reportCount;
+//   final int functionCount;
+
+//   DashboardMessage({
+//     required this.total,
+//     required this.reportCount,
+//     required this.functionCount,
+//   });
+
+//   factory DashboardMessage.fromJson(Map<String, dynamic> json) {
+//     return DashboardMessage(
+//       total: json['total'] ?? 0,
+//       reportCount: json['reportCount'] ?? 0,
+//       functionCount: json['functionCount'] ?? 0,
+//     );
+//   }
+// }
 
 class DeviceUsage {
   final int port;
   final String type;
   final int timestamp;
-  final String typeFormat;
-  final String portFormat;
-  final int timestampFormat;
   final String deviceId;
   final String depo;
-  final String depoFormat;
   final int createTime;
-  final int createTimeFormat;
 
   DeviceUsage({
     required this.port,
     required this.type,
     required this.timestamp,
-    required this.typeFormat,
-    required this.portFormat,
-    required this.timestampFormat,
     required this.deviceId,
     required this.depo,
-    required this.depoFormat,
     required this.createTime,
-    required this.createTimeFormat,
   });
 
   factory DeviceUsage.fromJson(Map<String, dynamic> json) {
@@ -194,14 +185,9 @@ class DeviceUsage {
       port: json['port'] ?? 0,
       type: json['type'] ?? '',
       timestamp: json['timestamp'] ?? 0,
-      typeFormat: json['type_format'] ?? '',
-      portFormat: json['port_format'] ?? '',
-      timestampFormat: json['timestamp_format'] ?? 0,
       deviceId: json['deviceId'] ?? '',
       depo: json['depo'] ?? '',
-      depoFormat: json['depo_format'] ?? '',
       createTime: json['createTime'] ?? 0,
-      createTimeFormat: json['createTime_format'] ?? 0,
     );
   }
 
@@ -278,28 +264,34 @@ class DeviceAlert {
   String get alertInfo => port > 0 ? 'C$port $text' : text;
 }
 
-class DeviceLog {
+class DeviceOperateLog {
   final String category;
   final String text;
-  final String createTime;
   final String deviceId;
   final int timestamp;
+  final String createTime;
 
-  DeviceLog({
+  DeviceOperateLog({
     required this.category,
     required this.text,
-    required this.createTime,
     required this.deviceId,
     required this.timestamp,
+    required this.createTime,
   });
 
-  factory DeviceLog.fromJson(Map<String, dynamic> json) {
-    return DeviceLog(
-      category: json['category'] ?? '',
-      text: json['text'] ?? '',
-      createTime: json['createTime'] ?? '',
+  factory DeviceOperateLog.fromJson(Map<String, dynamic> json) {
+    final timestamp = json['timestamp'] ?? 0;
+    final dateTime = timestamp != 0
+        ? DateTime.fromMillisecondsSinceEpoch(timestamp)
+        : DateTime.now();
+    final formattedTime = '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+
+    return DeviceOperateLog(
+      category: json['action'] ?? '',
+      text: json['content'] ?? '',
       deviceId: json['deviceId'] ?? '',
-      timestamp: json['timestamp'] ?? 0,
+      timestamp: timestamp,
+      createTime: formattedTime,
     );
   }
 

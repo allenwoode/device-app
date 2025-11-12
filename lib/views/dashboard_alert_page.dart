@@ -16,7 +16,7 @@ class DashboardAlertPage extends StatefulWidget {
 class _DashboardAlertPageState extends State<DashboardAlertPage> {
   bool _isLoading = true;
   String? _errorMessage;
-  List<DashboardUsageDevice> _alertData = [];
+  List<Dashboard> _alertData = [];
 
   AppLocalizations get _l10n {
     try {
@@ -95,10 +95,10 @@ class _DashboardAlertPageState extends State<DashboardAlertPage> {
           title: alert.label,
           total: alert.total,
           primaryLabel: _l10n.notice,
-          primaryValue: alert.depo.isNotEmpty ? alert.depo[0] : 0,
+          primaryValue: alert.data.isNotEmpty ? alert.data[0] : 0,
           primaryColor: Colors.green,
           secondaryLabel: _l10n.severe,
-          secondaryValue: alert.depo.length > 1 ? alert.depo[1] : 0,
+          secondaryValue: alert.data.length > 1 ? alert.data[1] : 0,
           secondaryColor: Colors.red,
           shouldAnimate: true,
           onTap: () {

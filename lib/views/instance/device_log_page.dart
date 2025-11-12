@@ -21,8 +21,17 @@ class DeviceLogPage extends StatefulWidget {
 
 class _DeviceLogPageState extends State<DeviceLogPage> {
   bool _isLoading = true;
+  bool _isLoadingMore = false;
   String? _errorMessage;
-  List<DeviceLog> _logData = [];
+  List<DeviceOperateLog> _logData = [];
+  List<Dashboard> _logCountData = [];
+
+  // Pagination state
+  int _currentPage = 0;
+  final int _pageSize = 12;
+  bool _hasMoreData = true;
+
+  final ScrollController _scrollController = ScrollController();
 
   AppLocalizations get _l10n {
     try {
@@ -36,6 +45,24 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
   void initState() {
     super.initState();
     _loadLogData();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // Load more data when scrolling near bottom (within 100 pixels)
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100) {
+      if (!_isLoadingMore && _hasMoreData) {
+        _loadMoreData();
+      }
+    }
   }
 
   Future<void> _loadLogData() async {
@@ -43,20 +70,58 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
       setState(() {
         _isLoading = true;
         _errorMessage = null;
+        _currentPage = 0;
+        _hasMoreData = true;
       });
 
       final logs = await DeviceService.getDeviceLogs(
+        deviceId: widget.deviceId,
+        pageIndex: _currentPage,
+        pageSize: _pageSize,
+      );
+
+      final logCounts = await DeviceService.getDeviceLogCount(
         deviceId: widget.deviceId,
       );
 
       setState(() {
         _logData = logs;
+        _logCountData = logCounts;
         _isLoading = false;
+        _hasMoreData = logs.length >= _pageSize;
       });
     } catch (e) {
       setState(() {
         _isLoading = false;
         _errorMessage = _getErrorMessage(e.toString());
+      });
+    }
+  }
+
+  Future<void> _loadMoreData() async {
+    if (_isLoadingMore || !_hasMoreData) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final nextPage = _currentPage + 1;
+      final logs = await DeviceService.getDeviceLogs(
+        deviceId: widget.deviceId,
+        pageIndex: nextPage,
+        pageSize: _pageSize,
+      );
+
+      setState(() {
+        _logData.addAll(logs);
+        _currentPage = nextPage;
+        _hasMoreData = logs.length >= _pageSize;
+        _isLoadingMore = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingMore = false;
       });
     }
   }
@@ -70,16 +135,19 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
   }
 
   Widget _buildTopBar() {
-    // Calculate alert statistics by level
-    Map<String, int> levelCounts = {};
-    for (var log in _logData) {
-      String levelKey = log.category;
-      levelCounts[levelKey] = (levelCounts[levelKey] ?? 0) + 1;
+    // Use API count data instead of manually counting
+    int dispatchCount = 0;
+    int reportCount = 0;
+
+    for (var count in _logCountData) {
+      if (count.text == 'function') {
+        dispatchCount = count.total;
+      } else if (count.text == 'report') {
+        reportCount = count.total;
+      }
     }
 
-    int dispatchCount = levelCounts['下发'] ?? 0;
-    int normalCount = _logData.length - dispatchCount;
-    int totalCount = _logData.length;
+    int totalCount = dispatchCount + reportCount;
 
     return Container(
       margin: const EdgeInsets.only(left: 8, top: 16, right: 8, bottom: 0),
@@ -88,7 +156,7 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
               title: _l10n.operationLogs,
               total: totalCount,
               primaryLabel: _l10n.report,
-              primaryValue: normalCount,
+              primaryValue: reportCount,
               primaryColor: Colors.green,
               secondaryLabel: _l10n.dispatch,
               secondaryValue: dispatchCount,
@@ -302,12 +370,10 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
 
   Color _getCategoryColor(String category) {
     switch (category) {
-      case '属性上报':
+      case 'report':
         return Colors.green;
-      case '平台下发':
+      case 'function':
         return Colors.red;
-      case '事件上报':
-        return Colors.orange;
       default:
         return Colors.grey;
     }
@@ -315,11 +381,11 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
 
   String _getCategoryName(String category) {
     switch (category) {
-      case '属性上报':
+      case 'report':
         return _l10n.report;
-      case '平台下发':
+      case 'function':
         return _l10n.dispatch;
-      case '事件上报':
+      case 'event':
         return _l10n.event;
       default:
         return '';
@@ -386,12 +452,31 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
               : RefreshIndicator(
                   onRefresh: _loadLogData,
                   child: SingleChildScrollView(
+                    controller: _scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(
                       children: [
                         _buildTopBar(),
                         const SizedBox(height: 8),
                         _buildLogTable(),
+                        if (_isLoadingMore)
+                          const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        if (!_hasMoreData && _logData.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              _l10n.noMoreData,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

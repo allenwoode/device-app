@@ -1,0 +1,36 @@
+POST /report/operate/count
+
+# request body
+{
+    "terms": [
+        {
+            "column":"deviceId", 
+            "term":"eq", 
+            "value":"11110001"
+        }
+    ],
+    "sorts": [
+
+    ]
+}
+
+# response
+{
+    "message": "success",
+    "result": [
+        {
+            "deviceId": "11110001",
+            "deviceName": "1001 Classroom",
+            "action": "function",
+            "amount": 2
+        },
+        {
+            "deviceId": "11110001",
+            "deviceName": "1001 Classroom",
+            "action": "report",
+            "amount": 12
+        }
+    ],
+    "status": 200,
+    "timestamp": 1762918476847
+}

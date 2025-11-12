@@ -1,145 +1,82 @@
+POST /report/operate/_query
+
+# request body
+{
+    "pageIndex": 0,
+    "pageSize": 12,
+    "terms": [
+        {
+            "column":"date", 
+            "term":"eq", 
+            "value":"2025-11-12"
+        }
+    ],
+    "sorts": [
+        {
+            "name": "timestamp",
+            "order": "desc"
+        }
+    ]
+}
+
+# response
 {
     "message": "success",
     "result": {
         "pageIndex": 0,
         "pageSize": 12,
-        "total": 10,
+        "total": 6,
         "data": [
             {
-                "category": "属性上报",
-                "text": "锁状态上报",
-                "createTime": "2025-10-05 09:20:20",
                 "deviceId": "11110001",
-                "timestamp": 1757396628209
+                "deviceName": "1001 Classroom",
+                "date": "2025-11-12",
+                "timestamp": 1762912950529,
+                "action": "report",
+                "content": "设备正在充电"
             },
             {
-                "category": "属性上报",
-                "text": "充电状态上报",
-                "createTime": "2025-10-05 09:20:30",
                 "deviceId": "11110001",
-                "timestamp": 1757396628209
+                "deviceName": "1001 Classroom",
+                "date": "2025-11-12",
+                "timestamp": 1762911487027,
+                "action": "function",
+                "content": "开启报警"
             },
             {
-                "category": "属性上报",
-                "text": "充电状态上报",
-                "createTime": "2025-10-05 10:30:20",
                 "deviceId": "11110001",
-                "timestamp": 1757396628209
+                "deviceName": "1001 Classroom",
+                "date": "2025-11-12",
+                "timestamp": 1762911454646,
+                "action": "function",
+                "content": "远程开锁"
             },
             {
-                "category": "属性上报",
-                "text": "充电状态上报",
-                "createTime": "2025-10-05 10:39:20",
                 "deviceId": "11110001",
-                "timestamp": 1757396628209
+                "deviceName": "1001 Classroom",
+                "date": "2025-11-12",
+                "timestamp": 1762911331345,
+                "action": "report",
+                "content": "设备使用中"
             },
             {
-                "category": "属性上报",
-                "text": "锁状态上报",
-                "createTime": "2025-10-05 10:50:20",
                 "deviceId": "11110001",
-                "timestamp": 1757396628209
+                "deviceName": "1001 Classroom",
+                "date": "2025-11-12",
+                "timestamp": 1762911009947,
+                "action": "report",
+                "content": "开启柜门"
             },
             {
-                "category": "平台下发",
-                "text": "柜门 C1 开锁",
-                "createTime": "2025-10-05 11:05:30",
                 "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "平台下发",
-                "text": "柜门 C2 开锁",
-                "createTime": "2025-10-05 13:10:20",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "锁状态上报",
-                "createTime": "2025-10-05 09:20:20",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "充电状态上报",
-                "createTime": "2025-10-05 09:20:30",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "充电状态上报",
-                "createTime": "2025-10-05 10:30:20",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "充电状态上报",
-                "createTime": "2025-10-05 10:39:20",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "锁状态上报",
-                "createTime": "2025-10-05 10:50:20",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "锁状态上报",
-                "createTime": "2025-10-05 11:05:30",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "锁状态上报",
-                "createTime": "2025-10-05 09:20:20",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "充电状态上报",
-                "createTime": "2025-10-05 09:20:30",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "充电状态上报",
-                "createTime": "2025-10-05 10:30:20",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "充电状态上报",
-                "createTime": "2025-10-05 10:39:20",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "锁状态上报",
-                "createTime": "2025-10-05 10:50:20",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
-            },
-            {
-                "category": "属性上报",
-                "text": "锁状态上报",
-                "createTime": "2025-10-05 11:05:30",
-                "deviceId": "11110001",
-                "timestamp": 1757396628209
+                "deviceName": "1001 Classroom",
+                "date": "2025-11-12",
+                "timestamp": 1762910950888,
+                "action": "report",
+                "content": "设备充电"
             }
         ]
     },
     "status": 200,
-    "timestamp": 1758092153550
+    "timestamp": 1762912952997
 }

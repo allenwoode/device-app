@@ -16,7 +16,7 @@ class DashboardUsagePage extends StatefulWidget {
 class _DashboardUsagePageState extends State<DashboardUsagePage> {
   bool _isLoading = true;
   String? _errorMessage;
-  List<DashboardUsageDevice> _usageData = [];
+  List<Dashboard> _usageData = [];
 
   AppLocalizations get _l10n {
     try {
@@ -96,10 +96,10 @@ class _DashboardUsagePageState extends State<DashboardUsagePage> {
           title: usage.label,
           total: usage.total,
           primaryLabel: _l10n.deposit,
-          primaryValue: usage.depo.isNotEmpty ? usage.depo[0] : 0,
+          primaryValue: usage.data.isNotEmpty ? usage.data[0] : 0,
           primaryColor: Colors.green,
           secondaryLabel: _l10n.withdraw,
-          secondaryValue: usage.depo.length > 1 ? usage.depo[1] : 0,
+          secondaryValue: usage.data.length > 1 ? usage.data[1] : 0,
           secondaryColor: Colors.orange,
           shouldAnimate: true,
           onTap: () {
