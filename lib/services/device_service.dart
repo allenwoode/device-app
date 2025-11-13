@@ -1120,7 +1120,7 @@ static Future<List<DeviceAlert>> getDeviceAlerts({
       };
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/feedback/_create',
+        '${ApiConfig.baseUrl}/app/feedback/submit',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
