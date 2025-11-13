@@ -21,8 +21,17 @@ class DeviceAlertPage extends StatefulWidget {
 
 class _DeviceAlertPageState extends State<DeviceAlertPage> {
   bool _isLoading = true;
+  bool _isLoadingMore = false;
   String? _errorMessage;
   List<DeviceAlert> _alertData = [];
+  List<Dashboard> _alertCountData = [];
+
+  // Pagination state
+  int _currentPage = 0;
+  final int _pageSize = 12;
+  bool _hasMoreData = true;
+
+  final ScrollController _scrollController = ScrollController();
 
   AppLocalizations get _l10n {
     try {
@@ -36,6 +45,24 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
   void initState() {
     super.initState();
     _loadAlertData();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // Load more data when scrolling near bottom (within 100 pixels)
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100) {
+      if (!_isLoadingMore && _hasMoreData) {
+        _loadMoreData();
+      }
+    }
   }
 
   Future<void> _loadAlertData() async {
@@ -43,20 +70,58 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
       setState(() {
         _isLoading = true;
         _errorMessage = null;
+        _currentPage = 0;
+        _hasMoreData = true;
       });
 
       final alerts = await DeviceService.getDeviceAlerts(
+        deviceId: widget.deviceId,
+        pageIndex: _currentPage,
+        pageSize: _pageSize,
+      );
+
+      final alertCounts = await DeviceService.getDeviceAlertCount(
         deviceId: widget.deviceId,
       );
 
       setState(() {
         _alertData = alerts;
+        _alertCountData = alertCounts;
         _isLoading = false;
+        _hasMoreData = alerts.length >= _pageSize;
       });
     } catch (e) {
       setState(() {
         _isLoading = false;
         _errorMessage = _getErrorMessage(e.toString());
+      });
+    }
+  }
+
+  Future<void> _loadMoreData() async {
+    if (_isLoadingMore || !_hasMoreData) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final nextPage = _currentPage + 1;
+      final alerts = await DeviceService.getDeviceAlerts(
+        deviceId: widget.deviceId,
+        pageIndex: nextPage,
+        pageSize: _pageSize,
+      );
+
+      setState(() {
+        _alertData.addAll(alerts);
+        _currentPage = nextPage;
+        _hasMoreData = alerts.length >= _pageSize;
+        _isLoadingMore = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingMore = false;
       });
     }
   }
@@ -70,17 +135,19 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
   }
 
   Widget _buildTopBar() {
-    // Calculate alert statistics by level
-    Map<String, int> levelCounts = {};
-    for (var alert in _alertData) {
-      String levelKey = alert.levelFormat;
-      levelCounts[levelKey] = (levelCounts[levelKey] ?? 0) + 1;
+    // Use API count data instead of manually counting
+    int severeCount = 0;
+    int noticeCount = 0;
+
+    for (var count in _alertCountData) {
+      if (count.text == 'severe') {
+        severeCount = count.total;
+      } else if (count.text == 'notice') {
+        noticeCount = count.total;
+      }
     }
 
-    // Separate critical alerts (严重) from others
-    int criticalCount = levelCounts['严重'] ?? 0;
-    int normalCount = _alertData.length - criticalCount;
-    int totalCount = _alertData.length;
+    int totalCount = severeCount + noticeCount;
 
     return Container(
       margin: const EdgeInsets.only(left: 8, top: 16, right: 8, bottom: 0),
@@ -89,10 +156,10 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
               title: _l10n.todayAlerts,
               total: totalCount,
               primaryLabel: _l10n.notice,
-              primaryValue: normalCount,
+              primaryValue: noticeCount,
               primaryColor: Colors.green,
               secondaryLabel: _l10n.severe,
-              secondaryValue: criticalCount,
+              secondaryValue: severeCount,
               secondaryColor: Colors.red,
               shouldAnimate: true,
             )
@@ -307,9 +374,7 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
         return Colors.green; // 提醒
       case 2:
         return Colors.orange; // 警告
-      case 4:
-        return Colors.purple; // 重要
-      case 5:
+      case 3:
         return Colors.red; // 严重
       default:
         return Colors.grey;
@@ -376,12 +441,31 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
               : RefreshIndicator(
                   onRefresh: _loadAlertData,
                   child: SingleChildScrollView(
+                    controller: _scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(
                       children: [
                         _buildTopBar(),
                         const SizedBox(height: 8),
                         _buildAlertTable(),
+                        if (_isLoadingMore)
+                          const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        if (!_hasMoreData && _alertData.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              _l10n.noMoreData,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -395,8 +479,8 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
       case 1:
         text = _l10n.notice;
       case 2:
-        text = '警告';
-      case 5:
+        text = _l10n.alarm;
+      case 3:
         text = _l10n.severe;
       default:
         text = _l10n.alarm;

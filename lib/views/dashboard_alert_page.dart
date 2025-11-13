@@ -42,7 +42,9 @@ class _DashboardAlertPageState extends State<DashboardAlertPage> {
 
   Future<void> _loadDashboardAlertData() async {
     try {
-      final response = await DeviceService.getDashboardAlertDevice();
+      final response = await DeviceService.getDashboardAlertCount();
+
+      print('=====> response $response');
 
       setState(() {
         _alertData = response;

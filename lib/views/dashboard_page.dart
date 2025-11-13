@@ -21,7 +21,7 @@ class _DashboardPageState extends State<DashboardPage> {
   User? _currentUser;
   DashboardDevices? _dashboardDevices;
   List<Dashboard> _dashboardUsage = [];
-  DashboardSimple? _dashboardAlerts;
+  Dashboard? _dashboardAlerts;
   Dashboard? _dashboardMessage;
   bool _isLoading = true;
   bool _shouldAnimateCards = true;
@@ -71,13 +71,13 @@ class _DashboardPageState extends State<DashboardPage> {
 
       final deviceData = await DeviceService.getDashboardDevices();
       final usageData = await DeviceService.getDashboardUsage();
-      final alertsData = await DeviceService.getDashboardAlerts();
+      final alertsData = await DeviceService.getDashboardAlertCount();
       final messageData = await DeviceService.getDashboardDeviceLog();
 
       setState(() {
         _dashboardDevices = deviceData;
         _dashboardUsage = usageData;
-        _dashboardAlerts = alertsData;
+        _dashboardAlerts = convert(alertsData);
         _dashboardMessage = convert(messageData);
         _isLoading = false;
       });
@@ -97,7 +97,7 @@ class _DashboardPageState extends State<DashboardPage> {
     if (data.isEmpty) {
       return Dashboard(
         id: '',
-        label: 'Operation Logs',
+        label: '',
         total: 0,
         data: [0, 0],
         text: '',
@@ -105,25 +105,25 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     // Aggregate all counts from the list
-    int totalReportCount = 0;
-    int totalFunctionCount = 0;
+    int a = 0;
+    int b = 0;
 
     for (var dashboard in data) {
       if (dashboard.data.isNotEmpty) {
-        totalReportCount += dashboard.data[0];
+        a += dashboard.data[0];
         if (dashboard.data.length > 1) {
-          totalFunctionCount += dashboard.data[1];
+          b += dashboard.data[1];
         }
       }
     }
 
-    int grandTotal = totalReportCount + totalFunctionCount;
+    int grandTotal = a + b;
 
     return Dashboard(
-      id: 'dashboard-message',
-      label: 'Operation Logs',
+      id: 'dashboard-id',
+      label: 'dashboard-label',
       total: grandTotal,
-      data: [totalReportCount, totalFunctionCount],
+      data: [a, b],
       text: '',
     );
   }
@@ -211,10 +211,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 title: _l10n.todayAlerts,
                 total: _dashboardAlerts?.total,
                 primaryLabel: _l10n.notice,
-                primaryValue: 0,
+                primaryValue: _dashboardAlerts?.data[0] ?? 0,
                 primaryColor: Colors.green,
                 secondaryLabel: _l10n.severe,
-                secondaryValue: 0,
+                secondaryValue: _dashboardAlerts?.data[1] ?? 0,
                 secondaryColor: Colors.red,
                 shouldAnimate: _shouldAnimateCards,
                 onTap: () {

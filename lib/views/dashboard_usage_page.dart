@@ -99,7 +99,7 @@ class _DashboardUsagePageState extends State<DashboardUsagePage> {
           primaryValue: usage.data.isNotEmpty ? usage.data[0] : 0,
           primaryColor: Colors.green,
           secondaryLabel: _l10n.withdraw,
-          secondaryValue: usage.data.length > 1 ? usage.data[1] : 0,
+          secondaryValue: usage.data.isNotEmpty ? usage.data[1] : 0,
           secondaryColor: Colors.orange,
           shouldAnimate: true,
           onTap: () {
