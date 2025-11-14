@@ -44,8 +44,6 @@ class _DashboardAlertPageState extends State<DashboardAlertPage> {
     try {
       final response = await DeviceService.getDashboardAlertCount();
 
-      print('=====> response $response');
-
       setState(() {
         _alertData = response;
         _isLoading = false;

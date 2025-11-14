@@ -16,7 +16,7 @@ class DashboardLogPage extends StatefulWidget {
 class _DashboardLogPageState extends State<DashboardLogPage> {
   bool _isLoading = true;
   String? _errorMessage;
-  List<Dashboard> _logData = [];
+  List<Dashboard> _logCountData = [];
 
   AppLocalizations get _l10n {
     try {
@@ -45,7 +45,7 @@ class _DashboardLogPageState extends State<DashboardLogPage> {
       final response = await DeviceService.getDashboardDeviceLog();
 
       setState(() {
-        _logData = response;
+        _logCountData = response;
         _isLoading = false;
       });
     } catch (e) {
@@ -57,7 +57,7 @@ class _DashboardLogPageState extends State<DashboardLogPage> {
   }
 
   Widget _buildLogChart() {
-    if (_logData.isEmpty) {
+    if (_logCountData.isEmpty) {
       return Container(
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.all(32),
@@ -89,16 +89,16 @@ class _DashboardLogPageState extends State<DashboardLogPage> {
     }
 
     return Column(
-      children: _logData.map((log) => Container(
+      children: _logCountData.map((log) => Container(
         margin: const EdgeInsets.all(8),
         child: PieChartCard(
           title: log.label,
           total: log.total,
           primaryLabel: _l10n.report,
-          primaryValue: log.data.isNotEmpty ? log.data[0] : 0,
+          primaryValue: log.data[0],
           primaryColor: Colors.green,
           secondaryLabel: _l10n.dispatch,
-          secondaryValue: log.data.length > 1 ? log.data[1] : 0,
+          secondaryValue: log.data[1],
           secondaryColor: Colors.red,
           shouldAnimate: true,
           onTap: () {

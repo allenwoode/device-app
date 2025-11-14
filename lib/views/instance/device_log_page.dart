@@ -135,31 +135,18 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
   }
 
   Widget _buildTopBar() {
-    // Use API count data instead of manually counting
-    int dispatchCount = 0;
-    int reportCount = 0;
-
-    for (var count in _logCountData) {
-      if (count.text == 'function') {
-        dispatchCount = count.total;
-      } else if (count.text == 'report') {
-        reportCount = count.total;
-      }
-    }
-
-    int totalCount = dispatchCount + reportCount;
 
     return Container(
       margin: const EdgeInsets.only(left: 8, top: 16, right: 8, bottom: 0),
-      child: totalCount > 0
+      child: _logCountData.isNotEmpty
           ? PieChartCard(
               title: _l10n.operationLogs,
-              total: totalCount,
+              total: _logCountData.first.total,
               primaryLabel: _l10n.report,
-              primaryValue: reportCount,
+              primaryValue: _logCountData.first.data[0],
               primaryColor: Colors.green,
               secondaryLabel: _l10n.dispatch,
-              secondaryValue: dispatchCount,
+              secondaryValue: _logCountData.first.data[1],
               secondaryColor: Colors.red[400]!,
               shouldAnimate: true,
             )

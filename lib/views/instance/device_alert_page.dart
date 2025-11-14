@@ -135,31 +135,18 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
   }
 
   Widget _buildTopBar() {
-    // Use API count data instead of manually counting
-    int severeCount = 0;
-    int noticeCount = 0;
-
-    for (var count in _alertCountData) {
-      if (count.text == 'severe') {
-        severeCount = count.total;
-      } else if (count.text == 'notice') {
-        noticeCount = count.total;
-      }
-    }
-
-    int totalCount = severeCount + noticeCount;
 
     return Container(
       margin: const EdgeInsets.only(left: 8, top: 16, right: 8, bottom: 0),
-      child: totalCount > 0
+      child: _alertCountData.isNotEmpty
           ? PieChartCard(
               title: _l10n.todayAlerts,
-              total: totalCount,
+              total: _alertCountData.first.total,
               primaryLabel: _l10n.notice,
-              primaryValue: noticeCount,
+              primaryValue: _alertCountData.first.data[0],
               primaryColor: Colors.green,
               secondaryLabel: _l10n.severe,
-              secondaryValue: severeCount,
+              secondaryValue: _alertCountData.first.data[1],
               secondaryColor: Colors.red,
               shouldAnimate: true,
             )

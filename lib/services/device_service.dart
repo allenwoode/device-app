@@ -344,7 +344,9 @@ class DeviceService {
       // Prepare request body for POST request
       final requestBody = {
         'terms': [],
-        'sorts': [],
+        'sorts': [
+          {'name':'amount', 'order':'desc'}
+        ],
       };
 
       // Try API first
@@ -363,7 +365,7 @@ class DeviceService {
         if (responseData is Map<String, dynamic> &&
             responseData['result'] is List) {
           final List<dynamic> resultList = responseData['result'];
-          return _transformAlertCountsToDashboard(resultList);
+          return resultList.map((item) => Dashboard.fromJson(item)).toList();
         }
         return [];
       } else {
@@ -383,61 +385,14 @@ class DeviceService {
     }
   }
 
-  static List<Dashboard> _transformAlertCountsToDashboard(
-      List<dynamic> counts) {
-    // Group by deviceId
-    Map<String, Map<String, dynamic>> deviceMap = {};
-
-    for (var item in counts) {
-      final deviceId = item['deviceId'] ?? '';
-      final deviceName = item['deviceName'] ?? '';
-      final action = item['action'] ?? '';
-      final amount = item['amount'] ?? 0;
-
-      if (!deviceMap.containsKey(deviceId)) {
-        deviceMap[deviceId] = {
-          'id': deviceId,
-          'label': deviceName,
-          'a': 0,
-          'b': 0,
-        };
-      }
-
-      if (action == 'notice') {
-        deviceMap[deviceId]!['a'] = amount;
-      } else if (action == 'severe') {
-        deviceMap[deviceId]!['b'] = amount;
-      }
-    }
-
-    // Convert to DashboardUsageDevice list
-    List<Dashboard> result = [];
-    deviceMap.forEach((deviceId, data) {
-      final a = data['a'] as int;
-      final b = data['b'] as int;
-      final total = a + b;
-
-      result.add(Dashboard(
-        id: data['id'] as String,
-        label: data['label'] as String,
-        total: total,
-        data: [a, b],
-        text: '',
-      ));
-    });
-
-    // Sort by total in descending order
-    result.sort((a, b) => b.total.compareTo(a.total));
-
-    return result;
-  }
-
   static Future<List<Dashboard>> getDashboardDeviceLog() async {
     try {
       // Prepare request body for POST request
       final requestBody = {
         'terms': [],
-        'sorts': [],
+        'sorts': [
+          {'name':'amount', 'order':'desc'}
+        ],
       };
 
       // Try API first
@@ -458,7 +413,7 @@ class DeviceService {
           final List<dynamic> resultList = responseData['result'];
 
           // Transform DeviceLogCount list to DashboardUsageDevice list
-          return _transformLogCountsToDashboard(resultList);
+          return resultList.map((item) => Dashboard.fromJson(item)).toList();
         }
         return [];
       } else {
@@ -475,55 +430,6 @@ class DeviceService {
         rethrow;
       }
     }
-  }
-
-  static List<Dashboard> _transformLogCountsToDashboard(
-      List<dynamic> logCounts) {
-    // Group by deviceId
-    Map<String, Map<String, dynamic>> deviceMap = {};
-
-    for (var item in logCounts) {
-      final deviceId = item['deviceId'] ?? '';
-      final deviceName = item['deviceName'] ?? '';
-      final action = item['action'] ?? '';
-      final amount = item['amount'] ?? 0;
-
-      if (!deviceMap.containsKey(deviceId)) {
-        deviceMap[deviceId] = {
-          'id': deviceId,
-          'label': deviceName,
-          'reportCount': 0,
-          'functionCount': 0,
-        };
-      }
-
-      if (action == 'report') {
-        deviceMap[deviceId]!['reportCount'] = amount;
-      } else if (action == 'function') {
-        deviceMap[deviceId]!['functionCount'] = amount;
-      }
-    }
-
-    // Convert to DashboardUsageDevice list
-    List<Dashboard> result = [];
-    deviceMap.forEach((deviceId, data) {
-      final reportCount = data['reportCount'] as int;
-      final functionCount = data['functionCount'] as int;
-      final total = reportCount + functionCount;
-
-      result.add(Dashboard(
-        id: data['id'] as String,
-        label: data['label'] as String,
-        total: total,
-        data: [reportCount, functionCount],
-        text: '',
-      ));
-    });
-
-    // Sort by total in descending order
-    result.sort((a, b) => b.total.compareTo(a.total));
-
-    return result;
   }
 
   static Future<List<Dashboard>> _loadLocalDashboardDeviceLog() async {
