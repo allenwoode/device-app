@@ -896,6 +896,8 @@ static Future<List<DeviceAlert>> getDeviceAlerts({
     try {
       // Prepare request body for POST request
       final requestBody = {
+        'pageIndex': pageIndex,
+        'pageSize': pageSize,
         'terms': [
           {
             "column": "deviceId",
