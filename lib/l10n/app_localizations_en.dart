@@ -774,6 +774,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get oldPasswordIncorrect => 'Current password is incorrect';
 
   @override
+  String get passwordResetSuccess => 'Password reset successfully';
+
+  @override
+  String get passwordResetFailed => 'Password reset failed';
+
+  @override
+  String get operateCabinetDoor => 'Operate Door';
+
+  @override
+  String get deviceCharging => 'Charging';
+
+  @override
+  String get operatePanel => 'Operate Panel';
+
+  @override
+  String get deviceOnline => 'Online';
+
+  @override
+  String get deviceOffline => 'Offline';
+
+  @override
+  String get remoteOperationSuccess => 'Invoke Success';
+
+  @override
+  String get remoteOperationFailed => 'Invoke Failed';
+
+  @override
+  String get remoteOpenDoor => 'Remote Open Door';
+
+  @override
+  String get remoteOpenAlarm => 'Remote Open Alarm';
+
+  @override
   String get appVersion => 'Version';
 
   @override

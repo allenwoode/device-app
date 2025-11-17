@@ -9,6 +9,7 @@ class AuthService {
   static const String _loginEndpoint = '/auth/login';
   static const String _logoutEndpoint = '/auth/logout';
   static const String _updatePasswordEndpoint = '/user/passwd';
+  static const String _resetPasswordEndpoint = '/auth/passwd/reset';
 
   static Future<LoginResponse?> login(String username, String password) async {
     try {
@@ -131,14 +132,49 @@ class AuthService {
           print('Password update failed: ${jsonData['message']}');
           return false;
         }
-      } else {
+      } else if (ApiConfig.enableLogging) {
         print('Password update failed with status: ${response.statusCode}');
         print('Response body: ${response.data}');
         return false;
       }
+      return false;
     } catch (e) {
       print('Password update error: $e');
       return false;
+    }
+  }
+
+  static Future<String> reset(String username) async {
+    try {
+      final requestData = {
+        'username': username,
+      };
+
+      final response = await ApiInterceptor.put(
+        '${ApiConfig.baseUrl}$_resetPasswordEndpoint',
+        data: requestData,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = response.data;
+        // Check if the response indicates success
+        if (jsonData['status'] == 200) {
+          // Return the new password from result field
+          return jsonData['result'] ?? '';
+        } else {
+          print('Password reset failed: ${jsonData['message']}');
+          return '';
+        }
+      }
+
+      if (ApiConfig.enableLogging) {
+        print('Password reset failed with status: ${response.statusCode}');
+        print('Response body: ${response.data}');
+      }
+      return '';
+    } catch (e) {
+      print('Password reset error: $e');
+      return '';
     }
   }
 }

@@ -753,6 +753,39 @@ class AppLocalizationsZh extends AppLocalizations {
   String get oldPasswordIncorrect => '当前密码不正确';
 
   @override
+  String get passwordResetSuccess => '密码重置成功';
+
+  @override
+  String get passwordResetFailed => '密码重置失败';
+
+  @override
+  String get operateCabinetDoor => '操作柜门';
+
+  @override
+  String get deviceCharging => '设备充电';
+
+  @override
+  String get operatePanel => '操作面板';
+
+  @override
+  String get deviceOnline => '设备上线';
+
+  @override
+  String get deviceOffline => '设备离线';
+
+  @override
+  String get remoteOperationSuccess => '远程调用成功';
+
+  @override
+  String get remoteOperationFailed => '远程调用失败';
+
+  @override
+  String get remoteOpenDoor => '远程开启柜门';
+
+  @override
+  String get remoteOpenAlarm => '远程开启报警';
+
+  @override
   String get appVersion => '版本';
 
   @override

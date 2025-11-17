@@ -108,7 +108,7 @@ class DeviceUsage {
   final int timestamp;
   final String deviceId;
   final String depo;
-  final int createTime;
+  final String createTime;
 
   DeviceUsage({
     required this.port,
@@ -126,15 +126,10 @@ class DeviceUsage {
       timestamp: json['timestamp'] ?? 0,
       deviceId: json['deviceId'] ?? '',
       depo: json['depo'] ?? '',
-      createTime: json['createTime'] ?? 0,
+      createTime: formatDateTime(json['timestamp']),
     );
   }
 
-  String get formattedCreateTime {
-    if (createTime == 0) return '';
-    final dateTime = DateTime.fromMillisecondsSinceEpoch(createTime);
-    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
-  }
 }
 
 String formatDateTime(int timestamp) {
@@ -206,7 +201,6 @@ class DeviceAlert {
     );
   }
 
-  String get alertInfo => text;
 }
 
 class DeviceOperateLog {

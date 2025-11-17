@@ -443,7 +443,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
       // Show error dialog
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('操作失败'), backgroundColor: Colors.orange),
+        SnackBar(content: Text(_l10n.failed), backgroundColor: Colors.orange),
       );
 
       if (ApiConfig.enableLogging) {
@@ -513,14 +513,14 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: _showConfirmDialog,
-            icon: const FaIcon(
-              FontAwesomeIcons.circleMinus,
-              color: Colors.red,
-              size: 18,
-            ),
-          ),
+          // IconButton(
+          //   onPressed: _showConfirmDialog,
+          //   icon: const FaIcon(
+          //     FontAwesomeIcons.circleMinus,
+          //     color: Colors.red,
+          //     size: 18,
+          //   ),
+          // ),
         ],
       ),
       body: _isLoading

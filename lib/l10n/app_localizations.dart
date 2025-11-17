@@ -1502,6 +1502,72 @@ abstract class AppLocalizations {
   /// **'Current password is incorrect'**
   String get oldPasswordIncorrect;
 
+  /// No description provided for @passwordResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset successfully'**
+  String get passwordResetSuccess;
+
+  /// No description provided for @passwordResetFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset failed'**
+  String get passwordResetFailed;
+
+  /// No description provided for @operateCabinetDoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Operate Door'**
+  String get operateCabinetDoor;
+
+  /// No description provided for @deviceCharging.
+  ///
+  /// In en, this message translates to:
+  /// **'Charging'**
+  String get deviceCharging;
+
+  /// No description provided for @operatePanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Operate Panel'**
+  String get operatePanel;
+
+  /// No description provided for @deviceOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get deviceOnline;
+
+  /// No description provided for @deviceOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get deviceOffline;
+
+  /// No description provided for @remoteOperationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoke Success'**
+  String get remoteOperationSuccess;
+
+  /// No description provided for @remoteOperationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoke Failed'**
+  String get remoteOperationFailed;
+
+  /// No description provided for @remoteOpenDoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote Open Door'**
+  String get remoteOpenDoor;
+
+  /// No description provided for @remoteOpenAlarm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote Open Alarm'**
+  String get remoteOpenAlarm;
+
   /// No description provided for @appVersion.
   ///
   /// In en, this message translates to:

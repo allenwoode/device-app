@@ -325,7 +325,7 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              log.text,
+                              _getContent(log.text),
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black87,
@@ -469,5 +469,21 @@ class _DeviceLogPageState extends State<DeviceLogPage> {
                   ),
                 ),
     );
+  }
+  
+  String _getContent(String text) {
+    switch (text) {
+      case 'LOCK':
+        return _l10n.operateCabinetDoor;
+      case 'CHARGE':
+        return _l10n.deviceCharging;
+      case 'USED':
+        return _l10n.operatePanel;
+      case 'IVK_LOCK':
+        return _l10n.remoteOpenDoor;
+      case 'IVK_BEEP':
+        return _l10n.remoteOpenAlarm;
+    }
+    return '';
   }
 }

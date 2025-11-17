@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:device/models/device_models.dart';
 import 'package:flutter/services.dart';
@@ -533,6 +532,7 @@ class DeviceService {
         if (responseData is Map<String, dynamic>) {
           return DeviceUsageResponse.fromJson(responseData);
         }
+
         // Return empty response if data structure is invalid
         return DeviceUsageResponse(
           message: 'success',

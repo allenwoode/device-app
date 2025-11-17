@@ -325,7 +325,7 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              alert.alertInfo,
+                              _getContent(alert.text),
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black87,
@@ -366,6 +366,20 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
       default:
         return Colors.grey;
     }
+  }
+
+  String _getContent(String text) {
+    switch (text) {
+      case 'ONLINE':
+        return _l10n.deviceOnline;
+      case 'OFFLINE':
+        return _l10n.deviceOffline;
+      case 'IVK_SUCC':
+        return _l10n.remoteOperationSuccess;
+      case 'IVK_FAIL':
+        return _l10n.remoteOperationFailed;
+    }
+    return '';
   }
 
   @override

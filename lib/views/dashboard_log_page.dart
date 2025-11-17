@@ -95,10 +95,10 @@ class _DashboardLogPageState extends State<DashboardLogPage> {
           title: log.label,
           total: log.total,
           primaryLabel: _l10n.report,
-          primaryValue: log.data[0],
+          primaryValue: log.data.isNotEmpty ? log.data[0] : 0,
           primaryColor: Colors.green,
           secondaryLabel: _l10n.dispatch,
-          secondaryValue: log.data[1],
+          secondaryValue: log.data.length > 1 ? log.data[1] : 0,
           secondaryColor: Colors.red,
           shouldAnimate: true,
           onTap: () {

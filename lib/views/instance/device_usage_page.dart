@@ -315,39 +315,45 @@ class _DeviceUsagePageState extends State<DeviceUsagePage> {
                 ),
                 child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _getDepoColor(usage.depo),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        usage.depo == '1' ? _l10n.deposit : _l10n.withdraw,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    Expanded(
+                      flex: 2,
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _getDepoColor(usage.depo),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              usage.depo == '1' ? _l10n.deposit : _l10n.withdraw,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _l10n.inUse('C${usage.port}'),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 8),
                     Expanded(
                       flex: 2,
                       child: Text(
-                        _l10n.inUse('C${usage.port}'),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        usage.formattedCreateTime,
+                        usage.createTime,
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.black87,

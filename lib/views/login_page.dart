@@ -117,17 +117,52 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             _buildModalOption(
               text: _l10n.resetPassword,
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 // Handle reset password
-              },
-            ),
-            const SizedBox(height: 32),
-            _buildModalOption(
-              text: _l10n.accountAppeal,
-              onTap: () {
-                Navigator.pop(context);
-                // Handle account appeal
+                final username = _usernameController.text.trim();
+                if (username.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(_l10n.pleaseEnterUsername),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                try {
+                  final result = await AuthService.reset(username);
+                  if (result.isNotEmpty) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(_l10n.passwordResetSuccess),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      _passwordController.text = result;
+                    }
+                  } else {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(_l10n.passwordResetFailed),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(_l10n.networkError),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
               },
             ),
             const SizedBox(height: 32),
