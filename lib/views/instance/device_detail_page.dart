@@ -392,65 +392,65 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     });
   }
 
-  void _showConfirmDialog() {
-    ConfirmDialog.show(
-      context: context,
-      title: _l10n.unbindDevices,
-      message: _l10n.confirmDeviceUnbind,
-      confirmText: _l10n.unbind,
-      confirmButtonColor: AppColors.dangerColor,
-      onConfirm: () async {
-        await _performUnbindDevice();
-      },
-      onCancel: () => Navigator.of(context).pop(),
-    );
-  }
+  // void _showConfirmDialog() {
+  //   ConfirmDialog.show(
+  //     context: context,
+  //     title: _l10n.unbindDevices,
+  //     message: _l10n.confirmDeviceUnbind,
+  //     confirmText: _l10n.unbind,
+  //     confirmButtonColor: AppColors.dangerColor,
+  //     onConfirm: () async {
+  //       await _performUnbindDevice();
+  //     },
+  //     onCancel: () => Navigator.of(context).pop(),
+  //   );
+  // }
 
-  Future<void> _performUnbindDevice() async {
-    try {
-      // Show loading indicator
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Text(_l10n.processing),
-            ],
-          ),
-          duration: const Duration(seconds: 30),
-        ),
-      );
+  // Future<void> _performUnbindDevice() async {
+  //   try {
+  //     // Show loading indicator
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Row(
+  //           children: [
+  //             const SizedBox(
+  //               width: 20,
+  //               height: 20,
+  //               child: CircularProgressIndicator(
+  //                 strokeWidth: 2,
+  //                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+  //               ),
+  //             ),
+  //             const SizedBox(width: 16),
+  //             Text(_l10n.processing),
+  //           ],
+  //         ),
+  //         duration: const Duration(seconds: 30),
+  //       ),
+  //     );
 
-      final resp = await DeviceService.unbindDevice(deviceId: widget.deviceId);
+  //     final resp = await DeviceService.unbindDevice(deviceId: widget.deviceId);
 
-      // Hide loading indicator if still showing
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  //     // Hide loading indicator if still showing
+  //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-      if (resp) {
-        AppRoutes.goToMain(context);
-      }
-    } catch (err) {
-      // Hide loading indicator if still showing
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  //     if (resp) {
+  //       AppRoutes.goToMain(context);
+  //     }
+  //   } catch (err) {
+  //     // Hide loading indicator if still showing
+  //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-      // Show error dialog
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_l10n.failed), backgroundColor: Colors.orange),
-      );
+  //     // Show error dialog
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(_l10n.failed), backgroundColor: Colors.orange),
+  //     );
 
-      if (ApiConfig.enableLogging) {
-        print('Device unbind failed: $err');
-      }
-    }
-  }
+  //     if (ApiConfig.enableLogging) {
+  //       print('Device unbind failed: $err');
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

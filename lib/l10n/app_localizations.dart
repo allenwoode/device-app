@@ -1547,13 +1547,13 @@ abstract class AppLocalizations {
   /// No description provided for @remoteOperationSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Invoke Success'**
+  /// **'Remote Invoke Success'**
   String get remoteOperationSuccess;
 
   /// No description provided for @remoteOperationFailed.
   ///
   /// In en, this message translates to:
-  /// **'Invoke Failed'**
+  /// **'Remote Invoke Failed'**
   String get remoteOperationFailed;
 
   /// No description provided for @remoteOpenDoor.

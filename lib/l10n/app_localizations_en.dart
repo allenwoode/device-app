@@ -795,10 +795,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceOffline => 'Offline';
 
   @override
-  String get remoteOperationSuccess => 'Invoke Success';
+  String get remoteOperationSuccess => 'Remote Invoke Success';
 
   @override
-  String get remoteOperationFailed => 'Invoke Failed';
+  String get remoteOperationFailed => 'Remote Invoke Failed';
 
   @override
   String get remoteOpenDoor => 'Remote Open Door';

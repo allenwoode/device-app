@@ -1,4 +1,4 @@
-POST /assets/unbind/{orgId}/device
+POST /app/asset/{orgId}/unbind
 
 # body
 ["1968495383549747200"]

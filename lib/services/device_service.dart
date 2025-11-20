@@ -8,31 +8,33 @@ import 'auth_service.dart';
 
 class DeviceService {
   // Device endpoints
-  static const String devicesEndpoint = '/device/instance/query';
-  static const String dashboardDevicesEndpoint = '/device/instance/dashboard/count';
-  static const String deviceInvokeEndpoint = '/device/invoked';
+  static const String devicesEndpoint = '/app/instance/query';
+  static const String dashboardDevicesEndpoint = '/app/instance/count';
+  static const String deviceInvokeEndpoint = '/app/instance/invoked';
 
   static Future<Map<String, dynamic>> getDevices({
     int index = 0,
     int size = 10,
   }) async {
     try {
-      // First try to fetch from API
-      // Prepare request body for POST request
       final requestBody = {
         'pageIndex': index,
         'pageSize': size,
-        // Add any other required parameters here
-        'sorts': [
-          {"name": "createTime", "order": "asc"},
-        ],
         "terms": [],
+        'sorts': [
+          {"name": "createTime", "order": "desc"},
+        ]
       };
 
       final response = await ApiInterceptor.post(
         '${ApiConfig.baseUrl}$devicesEndpoint',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Devices API Response Status: ${response.statusCode}');
+        print('Devices API Response Body: ${response.data}');
+      }
 
       if (response.statusCode == 200) {
         final responseData = response.data;
@@ -128,8 +130,13 @@ class DeviceService {
     try {
       // Try API first
       final response = await ApiInterceptor.get(
-        '${ApiConfig.baseUrl}/device-instance/$deviceId/info',
+        '${ApiConfig.baseUrl}/app/instance/$deviceId/info',
       ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Detail API Response Status: ${response.statusCode}');
+        print('Device Detail API Response Body: ${response.data}');
+      }
 
       if (response.statusCode == 200) {
         return DeviceData.fromJson(response.data['result']);
@@ -139,7 +146,7 @@ class DeviceService {
     } catch (e) {
       if (ApiConfig.enableLogging) {
         print(
-          'Device detail API request failed: $e, falling back to local data',
+          'Device Detail API request failed: $e, falling back to local data',
         );
       }
 
@@ -518,7 +525,7 @@ class DeviceService {
 
       // Try API first
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/device-instance/today/$deviceId/event/LOCK_OPEN_TYPE',
+        '${ApiConfig.baseUrl}/report/usage/$deviceId/history',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
@@ -561,19 +568,6 @@ class DeviceService {
     }
   }
 
-  static Future<List<DeviceUsage>> _loadLocalDeviceUsage() async {
-    try {
-      final String response = await rootBundle.loadString(
-        'lib/assets/device_usage.json',
-      );
-      final json = jsonDecode(response);
-      List<dynamic> dataList = json['result']['data'] ?? [];
-      return dataList.map((item) => DeviceUsage.fromJson(item)).toList();
-    } catch (e) {
-      throw Exception('Failed to load device usage data: $e');
-    }
-  }
-
   static Future<DeviceUsageResponse> _loadLocalDeviceUsageResponse(
     int pageIndex,
     int pageSize,
@@ -595,7 +589,7 @@ class DeviceService {
     try {
       // Try API first
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/device-instance/today/count/$deviceId/event/LOCK_OPEN_TYPE',
+        '${ApiConfig.baseUrl}/report/usage/$deviceId/count',
         data: {},
       ).timeout(ApiConfig.timeout);
 
@@ -947,7 +941,7 @@ static Future<List<DeviceAlert>> getDeviceAlerts({
       final requestBody = [deviceId];
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/assets/bind/$orgId/device',
+        '${ApiConfig.baseUrl}/app/asset/$orgId/bind',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
@@ -987,7 +981,7 @@ static Future<List<DeviceAlert>> getDeviceAlerts({
       final requestBody = [deviceId];
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/assets/unbind/$orgId/device',
+        '${ApiConfig.baseUrl}/app/asset/$orgId/unbind',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
