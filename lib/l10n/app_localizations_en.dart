@@ -572,11 +572,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get scanningAzDevices => 'ScanningBLEdevices...';
+  String get scanningAzDevices => 'Scanning BLE devices...';
 
   @override
   String foundAzDevices(int count) {
-    return 'Found ${count}BLEdevices';
+    return 'Found $count BLE devices';
   }
 
   @override
@@ -606,7 +606,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanning => 'Scanning...';
 
   @override
-  String get scanAzDevices => 'ScanBLEDevices';
+  String get scanAzDevices => 'Scan BLED evices';
 
   @override
   String get disconnect => 'Disconnect';

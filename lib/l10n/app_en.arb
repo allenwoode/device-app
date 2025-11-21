@@ -284,8 +284,8 @@
       }
     }
   },
-  "scanningAzDevices": "ScanningBLEdevices...",
-  "foundAzDevices": "Found {count}BLEdevices",
+  "scanningAzDevices": "Scanning BLE devices...",
+  "foundAzDevices": "Found {count} BLE devices",
   "@foundAzDevices": {
     "placeholders": {
       "count": {
@@ -308,7 +308,7 @@
   "configSentFailed": "Configuration failed",
   "connecting": "Connecting...",
   "scanning": "Scanning...",
-  "scanAzDevices": "ScanBLEDevices",
+  "scanAzDevices": "Scan BLED evices",
   "disconnect": "Disconnect",
   "sendConfig": "Send Config",
   "startScanning": "Starting scan for BLE devices",

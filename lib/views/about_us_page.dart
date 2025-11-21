@@ -112,8 +112,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
                   const SizedBox(height: 60),
                   _buildAppIcon(),
                   const SizedBox(height: 20),
-                  _buildAppName(),
-                  const SizedBox(height: 10),
+                  // _buildAppName(),
+                  // const SizedBox(height: 10),
                   _buildVersionInfo(),
                   const SizedBox(height: 40),
                   _buildMenuSection(),
@@ -125,21 +125,21 @@ class _AboutUsPageState extends State<AboutUsPage> {
   }
 
   Widget _buildAppIcon() {
-    return Container(
-      width: 100,
-      height: 100,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.primaryColor.withOpacity(0.1),
-        border: Border.all(
-          color: AppColors.primaryColor.withOpacity(0.3),
-          width: 2,
-        ),
-      ),
-      child: Icon(
-        Icons.device_hub,
-        size: 50,
-        color: AppColors.primaryColor,
+    return SizedBox(
+      //width: 320,
+      //height: 60,
+      // decoration: BoxDecoration(
+      //   color: AppColors.primaryColor.withOpacity(0.1),
+      //   border: Border.all(
+      //     color: AppColors.primaryColor.withOpacity(0.3),
+      //     width: 1,
+      //   ),
+      // ),
+      child: Image.asset(
+        'lib/assets/images/jamanet.png',
+        width: 320,
+        height: 60,
+        fit: BoxFit.contain,
       ),
     );
   }

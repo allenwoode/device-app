@@ -61,8 +61,9 @@ class _AddDevicePageState extends State<AddDevicePage> {
               backgroundColor: Colors.green,
             ),
           );
-          _deviceIdController.clear();
+          //_deviceIdController.clear();
           //Navigator.of(context).pop(true);
+          AppRoutes.goToMain(context);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

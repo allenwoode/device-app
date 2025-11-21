@@ -30,5 +30,5 @@ class ApiConfig {
   
   // // Environment-specific configurations
   static bool get useLocalFallback => true;
-  static bool get enableLogging => true;
+  static bool get enableLogging => false;
 }

@@ -237,7 +237,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     await AppRoutes.goToDeviceSearch(context, _devices);
   }
 
-  void _onScanDevice() async {
+  void _onAddDevice() async {
     // Navigate to Add Device page
     final result = await AppRoutes.goToDeviceBind(context);
 
@@ -281,7 +281,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             ),
           ),
           IconButton(
-            onPressed: _onScanDevice,
+            onPressed: _onAddDevice,
             icon: const FaIcon(
               FontAwesomeIcons.circlePlus,
               color: AppColors.primaryColor,
