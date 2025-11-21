@@ -357,12 +357,12 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
 
   Color _getAlertLevelColor(int level) {
     switch (level) {
-      case 1:
-        return Colors.green; // 提醒
-      case 2:
-        return Colors.orange; // 警告
       case 3:
         return Colors.red; // 严重
+      case 4:
+        return Colors.orange; // 一般
+      case 5:
+        return Colors.green; // 提醒
       default:
         return Colors.grey;
     }
@@ -477,12 +477,12 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
   String _getAlertBlade(int level) {
     String text = '';
     switch (level) {
-      case 1:
-        text = _l10n.notice;
-      case 2:
-        text = _l10n.alarm;
       case 3:
         text = _l10n.severe;
+      case 4:
+        text = _l10n.alarm;
+      case 5:
+        text = _l10n.notice;
       default:
         text = _l10n.alarm;
     }
