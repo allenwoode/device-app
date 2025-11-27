@@ -186,32 +186,36 @@ class _AddDevicePageState extends State<AddDevicePage> {
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _bindDevice,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+              child: Material(
+                color: _isLoading ? Colors.grey[300] : AppColors.primaryColor,
+                borderRadius: BorderRadius.circular(8),
+                child: InkWell(
+                  onTap: _isLoading ? null : _bindDevice,
+                  borderRadius: BorderRadius.circular(8),
+                  splashColor: Colors.white.withValues(alpha: 0.3),
+                  highlightColor: Colors.white.withValues(alpha: 0.1),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    alignment: Alignment.center,
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : Text(
+                            _l10n.bindDevice,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                   ),
                 ),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : Text(
-                        _l10n.bindDevice,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
               ),
             ),
             const SizedBox(height: 32),
@@ -227,16 +231,33 @@ class _AddDevicePageState extends State<AddDevicePage> {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: _onScanQR,
-                icon: const Icon(Icons.qr_code_scanner),
-                label: Text(_l10n.scanDeviceQRCode, style: const TextStyle(fontSize: 14),),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primaryColor,
+              child: Material(
+                color: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                   side: BorderSide(color: AppColors.primaryColor),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                ),
+                child: InkWell(
+                  onTap: _onScanQR,
+                  borderRadius: BorderRadius.circular(8),
+                  splashColor: AppColors.primaryColor.withValues(alpha: 0.1),
+                  highlightColor: AppColors.primaryColor.withValues(alpha: 0.05),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.qr_code_scanner, color: AppColors.primaryColor),
+                        const SizedBox(width: 8),
+                        Text(
+                          _l10n.scanDeviceQRCode,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

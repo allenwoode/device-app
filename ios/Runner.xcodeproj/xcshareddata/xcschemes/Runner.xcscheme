@@ -75,24 +75,14 @@
       </BuildableProductRunnable>
       <AdditionalOptions>
          <AdditionalOption
-            key = "NSZombieEnabled"
-            value = "NO"
-            isEnabled = "YES">
-         </AdditionalOption>
-         <AdditionalOption
-            key = "MallocStackLogging"
-            value = ""
-            isEnabled = "NO">
-         </AdditionalOption>
-         <AdditionalOption
-            key = "DYLD_PRINT_STATISTICS"
-            value = ""
-            isEnabled = "NO">
-         </AdditionalOption>
-         <AdditionalOption
             key = "DYLD_PRINT_STATISTICS_DETAILS"
             value = ""
             isEnabled = "NO">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "NSZombieEnabled"
+            value = "NO"
+            isEnabled = "YES">
          </AdditionalOption>
       </AdditionalOptions>
    </LaunchAction>

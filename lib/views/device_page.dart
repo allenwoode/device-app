@@ -25,6 +25,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   List<DeviceData> _filteredDevices = [];
   bool _isLoading = true;
   bool _isLoadingMore = false;
+  bool _isRefreshing = false;
   bool _hasMoreData = true;
   int _currentPage = 0;
   final int _pageSize = 10;
@@ -59,10 +60,9 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   }
 
   void _scrollListener() {
-
     // 当滚动到距离底部100像素时开始预加载
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100) {
-      if (!_isLoadingMore && _hasMoreData) {
+      if (!_isLoadingMore && _hasMoreData && !_isLoading && !_isRefreshing) {
         _loadMoreDevices();
       }
     }
@@ -104,6 +104,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     try {
       if (isRefresh) {
         setState(() {
+          _isRefreshing = true;
           _currentPage = 0;
           _hasMoreData = true;
           _errorMessage = null;
@@ -115,7 +116,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         });
       }
 
-      final data = await DeviceService.getDevices(index: _currentPage, size: _pageSize);
+      final data = await DeviceService.getDevices(index: 0, size: _pageSize);
 
       if (data['devices'] != null) {
         final List<DeviceData> devices = (data['devices'] as List)
@@ -124,12 +125,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
         if (mounted) {
           setState(() {
-            if (isRefresh) {
-              _devices = devices;
-              _currentPage = 0;
-            } else {
-              _devices = devices;
-            }
+            _devices = devices;
+            _currentPage = 0;
 
             // 更新过滤后的设备列表
             _onSearchChanged();
@@ -140,6 +137,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             }
 
             _isLoading = false;
+            _isRefreshing = false;
             _errorMessage = null;
 
             // 使用总数判断是否还有更多数据
@@ -156,6 +154,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             _devices = [];
             _filteredDevices = [];
             _isLoading = false;
+            _isRefreshing = false;
             _errorMessage = null;
             _hasMoreData = false;
           });
@@ -165,6 +164,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       if (mounted) {
         setState(() {
           _isLoading = false;
+          _isRefreshing = false;
           _errorMessage = _l10n.loadingDevicesFailed;
         });
       }
