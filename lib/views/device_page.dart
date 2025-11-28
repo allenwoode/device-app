@@ -300,7 +300,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                     child: _errorMessage != null
                         ? SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
-                            child: Container(
+                            child: SizedBox(
                               height: MediaQuery.of(context).size.height * 0.6,
                               child: Center(
                                 child: Column(
@@ -332,7 +332,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                         : _filteredDevices.isEmpty
                         ? SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
-                            child: Container(
+                            child: SizedBox(
                               height: MediaQuery.of(context).size.height * 0.6,
                               child: Center(
                                 child: Column(

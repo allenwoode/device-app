@@ -77,12 +77,8 @@ class _PieChartCardState extends State<PieChartCard>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: Container(
-      padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
+    return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -93,7 +89,15 @@ class _PieChartCardState extends State<PieChartCard>
           ),
         ],
       ),
-      child: Column(
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
+            child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -203,8 +207,10 @@ class _PieChartCardState extends State<PieChartCard>
             ],
           ),
         ],
+            ),
+          ),
+        ),
       ),
-    ),
     );
   }
 
