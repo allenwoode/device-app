@@ -374,6 +374,8 @@ class _DeviceAlertPageState extends State<DeviceAlertPage> {
         return _l10n.deviceOnline;
       case 'OFFLINE':
         return _l10n.deviceOffline;
+      case 'LOCK_TIMEOUT':
+        return _l10n.lockTimeout;
       case 'IVK_SUCC':
         return _l10n.remoteOperationSuccess;
       case 'IVK_FAIL':

@@ -91,7 +91,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
   void _onScanQR() async {
     final result = await AppRoutes.goToQRScanner(context);
 
-    if (result == true) {
+    if (result == true && mounted) {
       Navigator.of(context).pop(true);
     }
   }

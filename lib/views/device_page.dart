@@ -1,13 +1,16 @@
 import 'package:device/config/app_colors.dart';
 import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:convert';
 import 'package:device/models/device_models.dart';
 import 'package:device/services/device_service.dart';
+import 'package:device/services/notification_service.dart';
 import 'package:device/widgets/device_card.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/models/login_models.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:device/events/event_bus.dart';
 import '../l10n/app_localizations.dart';
 
 class DevicePage extends StatefulWidget {
@@ -17,7 +20,7 @@ class DevicePage extends StatefulWidget {
   State<DevicePage> createState() => _DevicePageState();
 }
 
-class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
+class _DevicePageState extends State<DevicePage> {
   User? _currentUser;
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -31,6 +34,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   final int _pageSize = 10;
   int? _totalDevices;
   String? _errorMessage;
+  int _notificationCount = 0;
+  late final NotificationService _notificationService;
 
   AppLocalizations get _l10n {
     try {
@@ -44,18 +49,73 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+
+    //WidgetsBinding.instance.addObserver(this);
     _loadDevices();
     _loadUserInfo();
+
+    _initializeNotificationCount();
+
     _scrollController.addListener(_scrollListener);
     _searchController.addListener(_performSearch);
   }
 
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   super.didChangeAppLifecycleState(state);
+
+  //   // Reconnect WebSocket when app comes to foreground
+  //   if (state == AppLifecycleState.resumed) {
+  //     if (!WebSocketService.isConnected) {
+  //       _initializeWebSocket();
+  //     }
+  //   }
+  // }
+
+  Future<void> _initializeNotificationCount() async {
+    try {
+      _notificationService = NotificationService();
+      //await _notificationService.initialize();
+      //await _notificationService.requestPermission();
+
+      // Listen to notification events via EventBus (supports multiple pages)
+      EventBus.instance.addListener(
+        EventKeys.notificationCountChanged,
+        _onNotificationCountChanged,
+      );
+
+      // Initialize badge count
+      setState(() {
+        _notificationCount = _notificationService.unreadCount;
+      });
+    } catch (e) {
+      // Silent fail - notifications are optional
+    }
+  }
+
+  // Callback for notification count changes
+  void _onNotificationCountChanged(int count) {
+    if (mounted) {
+      setState(() {
+        _notificationCount = count;
+      });
+    }
+  }
+
   @override
   void dispose() {
+    //WidgetsBinding.instance.removeObserver(this);
     _scrollController.removeListener(_scrollListener);
     _searchController.removeListener(_performSearch);
     _scrollController.dispose();
     _searchController.dispose();
+
+    // Clean up EventBus listener
+    EventBus.instance.removeListener(
+      EventKeys.notificationCountChanged,
+      _onNotificationCountChanged,
+    );
+
     super.dispose();
   }
 
@@ -247,6 +307,16 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     }
   }
 
+  void _onNotificationPressed() async {
+    // Navigate to notifications page
+    await AppRoutes.goToNotifications(context);
+
+    // Update badge count after returning from notifications page
+    setState(() {
+      _notificationCount = _notificationService.unreadCount;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -273,11 +343,16 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             ),
           ),
           IconButton(
-            onPressed: () {},
-            icon: FaIcon(
-              FontAwesomeIcons.bell,
-              color: Colors.black,
-              size: 20,
+            onPressed: _onNotificationPressed,
+            icon: Badge(
+              isLabelVisible: _notificationCount > 0,
+              label: Text(_notificationCount.toString()),
+              backgroundColor: Colors.red,
+              child: FaIcon(
+                FontAwesomeIcons.bell,
+                color: Colors.black,
+                size: 20,
+              ),
             ),
           ),
           IconButton(

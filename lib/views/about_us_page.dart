@@ -1,6 +1,4 @@
-import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:device/config/app_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -144,16 +142,16 @@ class _AboutUsPageState extends State<AboutUsPage> {
     );
   }
 
-  Widget _buildAppName() {
-    return Text(
-      _l10n.appTitle,
-      style: const TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        color: Colors.black87,
-      ),
-    );
-  }
+  // Widget _buildAppName() {
+  //   return Text(
+  //     _l10n.appTitle,
+  //     style: const TextStyle(
+  //       fontSize: 24,
+  //       fontWeight: FontWeight.w600,
+  //       color: Colors.black87,
+  //     ),
+  //   );
+  // }
 
   Widget _buildVersionInfo() {
     return Container(

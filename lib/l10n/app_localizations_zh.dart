@@ -774,6 +774,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deviceOffline => '设备离线';
 
   @override
+  String get lockTimeout => '柜门开启超时';
+
+  @override
   String get remoteOperationSuccess => '远程调用成功';
 
   @override
@@ -805,4 +808,93 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noMoreData => '没有更多数据';
+
+  @override
+  String get notifications => '通知';
+
+  @override
+  String get markAllAsRead => '全部标记为已读';
+
+  @override
+  String get clearAll => '全部清除';
+
+  @override
+  String get noNotificationsYet => '暂无通知';
+
+  @override
+  String get youllSeeNotificationsHere => '您的通知将显示在这里';
+
+  @override
+  String get clearAllNotifications => '清除所有通知';
+
+  @override
+  String get clearAllNotificationsConfirm => '确定要清除所有通知吗？';
+
+  @override
+  String get justNow => '刚刚';
+
+  @override
+  String minutesAgo(int minutes) {
+    return '$minutes分钟前';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return '$hours小时前';
+  }
+
+  @override
+  String daysAgo(int days) {
+    return '$days天前';
+  }
+
+  @override
+  String get general => '通用';
+
+  @override
+  String get enableNotifications => '启用通知';
+
+  @override
+  String get receiveDeviceAlertsAndUpdates => '接收设备警报和更新';
+
+  @override
+  String get deviceAlerts => '设备警报';
+
+  @override
+  String get getNotifiedAboutDeviceIssues => '获取设备问题通知';
+
+  @override
+  String get backgroundService => '后台服务';
+
+  @override
+  String get backgroundMonitoring => '后台监控';
+
+  @override
+  String serviceRunningMonitoringDevices(int count) {
+    return '服务运行中 • 监控 $count 台设备';
+  }
+
+  @override
+  String get enableToReceiveAlertsWhenAppClosed => '启用后台接收警报，即使应用关闭';
+
+  @override
+  String get preferences => '偏好设置';
+
+  @override
+  String get sound => '声音';
+
+  @override
+  String get playSoundForNotifications => '通知时播放声音';
+
+  @override
+  String get vibration => '振动';
+
+  @override
+  String get vibrateOnNotification => '通知时振动';
+
+  @override
+  String get notificationPermissionRequired => '需要通知权限。请在系统设置中启用。';
+
+  @override
+  String get backgroundServiceInfo => '后台服务允许您在应用关闭时也能接收设备警报。耗电量极低。';
 }

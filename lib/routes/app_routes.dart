@@ -10,6 +10,7 @@ import 'package:device/views/dashboard_alert_page.dart';
 import 'package:device/views/dashboard_log_page.dart';
 import 'package:device/views/about_us_page.dart';
 import 'package:device/views/device_search_page.dart';
+import 'package:device/views/notification_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import '../views/main_page.dart';
@@ -23,6 +24,7 @@ import '../models/device_models.dart';
 
 class AppRoutes {
   static final FluroRouter router = FluroRouter();
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   // Route paths
   static const String root = '/';
@@ -45,6 +47,7 @@ class AppRoutes {
   static const String dashboardDeviceLog = '/dashboard-device-log';
   static const String aboutUs = '/about-us';
   static const String deviceSearch = '/device-search';
+  static const String notifications = '/notifications';
 
   // Route handlers
   static final Handler _rootHandler = Handler(
@@ -217,6 +220,11 @@ class AppRoutes {
       return const AboutUsPage();
   });
 
+  static final Handler _notificationsHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      return const NotificationPage();
+  });
+
   // Configure routes
   static void configureRoutes() {
 
@@ -331,6 +339,12 @@ class AppRoutes {
     router.define(
       aboutUs,
       handler: _aboutUsHandler,
+      transitionType: TransitionType.cupertino,
+    );
+
+    router.define(
+      notifications,
+      handler: _notificationsHandler,
       transitionType: TransitionType.cupertino,
     );
 
@@ -510,5 +524,9 @@ class AppRoutes {
         builder: (context) => DeviceSearchPage(allDevices: allDevices),
       ),
     );
+  }
+
+  static Future<dynamic> goToNotifications(BuildContext context) {
+    return navigateTo(context, notifications);
   }
 }

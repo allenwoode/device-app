@@ -1544,6 +1544,12 @@ abstract class AppLocalizations {
   /// **'Offline'**
   String get deviceOffline;
 
+  /// No description provided for @lockTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Open timeout'**
+  String get lockTimeout;
+
   /// No description provided for @remoteOperationSuccess.
   ///
   /// In en, this message translates to:
@@ -1609,6 +1615,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No more data'**
   String get noMoreData;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @markAllAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllAsRead;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get clearAll;
+
+  /// No description provided for @noNotificationsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get noNotificationsYet;
+
+  /// No description provided for @youllSeeNotificationsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll see notifications here'**
+  String get youllSeeNotificationsHere;
+
+  /// No description provided for @clearAllNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All Notifications'**
+  String get clearAllNotifications;
+
+  /// No description provided for @clearAllNotificationsConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear all notifications?'**
+  String get clearAllNotificationsConfirm;
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}m ago'**
+  String minutesAgo(int minutes);
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h ago'**
+  String hoursAgo(int hours);
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d ago'**
+  String daysAgo(int days);
+
+  /// No description provided for @general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
+  /// No description provided for @enableNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Notifications'**
+  String get enableNotifications;
+
+  /// No description provided for @receiveDeviceAlertsAndUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive device alerts and updates'**
+  String get receiveDeviceAlertsAndUpdates;
+
+  /// No description provided for @deviceAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Alerts'**
+  String get deviceAlerts;
+
+  /// No description provided for @getNotifiedAboutDeviceIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified about device issues'**
+  String get getNotifiedAboutDeviceIssues;
+
+  /// No description provided for @backgroundService.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Service'**
+  String get backgroundService;
+
+  /// No description provided for @backgroundMonitoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Monitoring'**
+  String get backgroundMonitoring;
+
+  /// No description provided for @serviceRunningMonitoringDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Service running • Monitoring {count} devices'**
+  String serviceRunningMonitoringDevices(int count);
+
+  /// No description provided for @enableToReceiveAlertsWhenAppClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable to receive alerts when app is closed'**
+  String get enableToReceiveAlertsWhenAppClosed;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound'**
+  String get sound;
+
+  /// No description provided for @playSoundForNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Play sound for notifications'**
+  String get playSoundForNotifications;
+
+  /// No description provided for @vibration.
+  ///
+  /// In en, this message translates to:
+  /// **'Vibration'**
+  String get vibration;
+
+  /// No description provided for @vibrateOnNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Vibrate on notification'**
+  String get vibrateOnNotification;
+
+  /// No description provided for @notificationPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permission is required. Please enable it in system settings.'**
+  String get notificationPermissionRequired;
+
+  /// No description provided for @backgroundServiceInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Background service allows you to receive device alerts even when the app is closed. It uses minimal battery.'**
+  String get backgroundServiceInfo;
 }
 
 class _AppLocalizationsDelegate

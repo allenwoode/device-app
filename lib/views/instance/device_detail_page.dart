@@ -1,11 +1,9 @@
-import 'package:device/config/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/api/api_config.dart';
 import 'package:device/routes/app_routes.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../l10n/app_localizations.dart';
-import '../../widgets/confirm_dialog.dart';
 import '../../services/websocket_service.dart';
 import 'dart:async';
 
@@ -129,7 +127,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         WebSocketService.subscribe(id, topic, parameter: parameter).listen(
           (message) {
             if (mounted) {
-              //print('===>listen device status: $message');
               _handleDeviceStatusUpdate(message);
             }
           },
@@ -180,7 +177,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   void _handleDeviceStatusUpdate(Map<String, dynamic> message) {
     try {
-      // Extract payload from WebSocket message based on assets/device_status_message.json structure
       final payload = message['payload'];
       if (payload != null && payload['value'] != null) {
         final value = payload['value'];
