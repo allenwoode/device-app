@@ -94,6 +94,10 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   void _subscribeToDeviceAlerts() {
+    // Cancel existing subscription to avoid duplicates
+    _deviceAlertSubscription?.cancel();
+    WebSocketService.unsubscribe(id, topic);
+
     _deviceAlertSubscription = WebSocketService.subscribe(id, topic).listen(
       (message) {
         if (mounted) {
