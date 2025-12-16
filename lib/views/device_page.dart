@@ -60,18 +60,6 @@ class _DevicePageState extends State<DevicePage> {
     _searchController.addListener(_performSearch);
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   super.didChangeAppLifecycleState(state);
-
-  //   // Reconnect WebSocket when app comes to foreground
-  //   if (state == AppLifecycleState.resumed) {
-  //     if (!WebSocketService.isConnected) {
-  //       _initializeWebSocket();
-  //     }
-  //   }
-  // }
-
   Future<void> _initializeNotificationCount() async {
     try {
       _notificationService = NotificationService();
@@ -346,8 +334,8 @@ class _DevicePageState extends State<DevicePage> {
             onPressed: _onNotificationPressed,
             icon: Badge(
               isLabelVisible: _notificationCount > 0,
-              label: Text(_notificationCount.toString()),
               backgroundColor: Colors.red,
+              smallSize: 8,
               child: FaIcon(
                 FontAwesomeIcons.bell,
                 color: Colors.black,

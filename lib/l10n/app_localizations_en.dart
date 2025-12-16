@@ -921,6 +921,5 @@ class AppLocalizationsEn extends AppLocalizations {
       'Notification permission is required. Please enable it in system settings.';
 
   @override
-  String get backgroundServiceInfo =>
-      'Background service allows you to receive device alerts even when the app is closed. It uses minimal battery.';
+  String get channelName => 'Alert Notifications';
 }

@@ -209,9 +209,9 @@ class _FunctionPageState extends State<FunctionPage> {
   }
 
   void _showLockControlDialog(bool isUnlocking, String slotId) {
-    final TextEditingController passwordController = TextEditingController();
-    bool isPasswordVisible = false;
-    String? passwordError;
+    //final TextEditingController passwordController = TextEditingController();
+    //bool isPasswordVisible = false;
+    //String? passwordError;
 
     showDialog(
       context: context,

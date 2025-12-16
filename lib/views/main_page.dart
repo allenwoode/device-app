@@ -22,6 +22,9 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   int _selectedIndex = 0;
 
+  final id = 'device-page-alert';
+  final topic = '/alarm/device/alert/publish';
+
   late final NotificationService _notificationService;
 
   StreamSubscription? _deviceAlertSubscription;
@@ -91,8 +94,6 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   void _subscribeToDeviceAlerts() {
-    final id = 'device-page-alert';
-    final topic = '/alarm/device/alert/publish';
     _deviceAlertSubscription = WebSocketService.subscribe(id, topic).listen(
       (message) {
         if (mounted) {
@@ -108,6 +109,9 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   void _handleDeviceAlert(Map<String, dynamic> message) {
     try {
+      final timestamp = message['timestamp'] as int? ?? DateTime.now().millisecondsSinceEpoch;
+      final notificationId = timestamp % 1000000; // Use timestamp for unique ID
+
       final payload = message['payload'];
       if (payload == null) return;
 
@@ -120,7 +124,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
       // Show notification
       _notificationService.showDeviceAlert(
-        id: DateTime.now().millisecondsSinceEpoch % 1000000,
+        id: notificationId,
         deviceId: deviceId,
         productId: productId,
         deviceName: deviceName,
@@ -145,10 +149,8 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   void _unsubscribeFromWebSocket() {
-    //_deviceStatusSubscription?.cancel();
     _deviceAlertSubscription?.cancel();
-    
-    WebSocketService.unsubscribe('device-page-alerts', '/alarm/device/alert/publish');
+    WebSocketService.unsubscribe(id, topic);
   }
 
   void _setupEventListeners() {
@@ -188,20 +190,6 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.grey[50],
-      // appBar: _selectedIndex == 2 ? null : AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 0,
-      //   title: Text(
-      //     '浙江杰马电子科技',
-      //     style: const TextStyle(
-      //       color: Colors.black,
-      //       fontSize: 16,
-      //       fontWeight: FontWeight.w600,
-      //     ),
-      //   ),
-      //   centerTitle: false,
-      // ),
       body: _getCurrentPage(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

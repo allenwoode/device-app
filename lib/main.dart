@@ -18,7 +18,7 @@ void main() async {
 
   // Note: Background service will be started when user enables it in settings
   // or when monitoring is needed. You can optionally start it here:
-  await notificationService.startBackgroundService();
+  //await notificationService.startBackgroundService();
 
   runApp(RouteComponent());
 }

@@ -1772,11 +1772,11 @@ abstract class AppLocalizations {
   /// **'Notification permission is required. Please enable it in system settings.'**
   String get notificationPermissionRequired;
 
-  /// No description provided for @backgroundServiceInfo.
+  /// No description provided for @channelName.
   ///
   /// In en, this message translates to:
-  /// **'Background service allows you to receive device alerts even when the app is closed. It uses minimal battery.'**
-  String get backgroundServiceInfo;
+  /// **'Alert Notifications'**
+  String get channelName;
 }
 
 class _AppLocalizationsDelegate

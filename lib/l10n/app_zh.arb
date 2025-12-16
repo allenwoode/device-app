@@ -343,5 +343,6 @@
   "vibration": "振动",
   "vibrateOnNotification": "通知时振动",
   "notificationPermissionRequired": "需要通知权限。请在系统设置中启用。",
-  "backgroundServiceInfo": "后台服务允许您在应用关闭时也能接收设备警报。耗电量极低。"
+  "backgroundServiceInfo": "后台服务允许您在应用关闭时也能接收设备警报。耗电量极低。",
+  "channelName": "告警通知"
 }

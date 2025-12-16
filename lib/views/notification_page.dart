@@ -1,6 +1,7 @@
 import 'package:device/config/app_colors.dart';
 import 'package:device/models/notification_models.dart';
 import 'package:device/services/notification_service.dart';
+import 'package:device/events/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // ignore: depend_on_referenced_packages
@@ -22,9 +23,48 @@ class _NotificationPageState extends State<NotificationPage> {
   void initState() {
     super.initState();
     _loadNotifications();
+
+    EventBus.instance.addListener(
+      EventKeys.notificationReceived,
+      _onNotificationReceived,
+    );
+
+    EventBus.instance.addListener(
+      EventKeys.notificationCountChanged,
+      _onNotificationCountChanged,
+    );
+  }
+
+  @override
+  void dispose() {
+    // Remove event listeners
+    EventBus.instance.removeListener(
+      EventKeys.notificationReceived,
+      _onNotificationReceived,
+    );
+
+    EventBus.instance.removeListener(
+      EventKeys.notificationCountChanged,
+      _onNotificationCountChanged,
+    );
+
+    super.dispose();
+  }
+
+  void _onNotificationReceived(NotificationItem notification) {
+    if (mounted) {
+      _loadNotifications();
+    }
+  }
+
+  void _onNotificationCountChanged(int count) {
+    if (mounted) {
+      _loadNotifications();
+    }
   }
 
   void _loadNotifications() {
+    if (!mounted) return;
     setState(() {
       _notifications = _notificationService.notifications;
     });
@@ -210,6 +250,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 final color = _getNotificationColor(notification.payload);
 
                 return Container(
+                  key: ValueKey('notification_${notification.id}'), // Unique key to prevent duplicates
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
                     color: notification.isRead
@@ -223,70 +264,94 @@ class _NotificationPageState extends State<NotificationPage> {
                       width: 1,
                     ),
                   ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    leading: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: color.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        icon,
-                        color: color,
-                        size: 24,
-                      ),
-                    ),
-                    title: Text(
-                      notification.title,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: notification.isRead
-                            ? FontWeight.w500
-                            : FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 4),
-                        Text(
-                          notification.body,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          _formatTimestamp(notification.timestamp),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                      ],
-                    ),
-                    trailing: !notification.isRead
-                        ? Container(
-                            width: 8,
-                            height: 8,
-                            decoration: const BoxDecoration(
-                              color: AppColors.primaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                          )
-                        : null,
+                  child: InkWell(
                     onTap: () {
                       // Always mark as read to ensure state consistency
                       _notificationService.markAsRead(notification.id);
                       _loadNotifications();
                       // TODO: Handle navigation based on payload
                     },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Icon
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: color.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Icon(
+                              icon,
+                              color: color,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          // Content
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Title
+                                Text(
+                                  notification.title,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: notification.isRead
+                                        ? FontWeight.w500
+                                        : FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                // Body
+                                Text(
+                                  notification.body,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          // Timestamp and red point on right top
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    _formatTimestamp(notification.timestamp),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey[500],
+                                    ),
+                                  ),
+                                  if (!notification.isRead) ...[
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.primaryColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },

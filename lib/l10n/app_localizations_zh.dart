@@ -896,5 +896,5 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notificationPermissionRequired => '需要通知权限。请在系统设置中启用。';
 
   @override
-  String get backgroundServiceInfo => '后台服务允许您在应用关闭时也能接收设备警报。耗电量极低。';
+  String get channelName => '告警通知';
 }
