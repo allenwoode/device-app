@@ -115,7 +115,8 @@ class NotificationService {
   //final Map<String, _MonitoredDevice> _monitoredDevices = {};
 
   /// Get all notifications
-  List<NotificationItem> get notifications => List.unmodifiable(_notifications_list);
+  List<NotificationItem> get notifications =>
+      List.unmodifiable(_notifications_list);
 
   /// Get unread notification count
   int get unreadCount => _notifications_list.where((n) => !n.isRead).length;
@@ -141,7 +142,9 @@ class NotificationService {
   void markAsRead(int id) {
     final index = _notifications_list.indexWhere((n) => n.id == id);
     if (index != -1) {
-      _notifications_list[index] = _notifications_list[index].copyWith(isRead: true);
+      _notifications_list[index] = _notifications_list[index].copyWith(
+        isRead: true,
+      );
       // Notify all pages about count change
       EventBus.instance.commit(EventKeys.notificationCountChanged, unreadCount);
     }
@@ -174,10 +177,10 @@ class NotificationService {
     // iOS initialization settings
     const DarwinInitializationSettings iosSettings =
         DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
 
     // Combined initialization settings
     const InitializationSettings initSettings = InitializationSettings(
@@ -227,7 +230,9 @@ class NotificationService {
   Future<bool> requestPermission() async {
     // iOS-specific permission request using flutter_local_notifications
     final iosImplementation = _notifications
-        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
 
     if (iosImplementation != null) {
       // For iOS, request permissions using the native implementation
@@ -252,7 +257,9 @@ class NotificationService {
   Future<bool> hasPermission() async {
     // iOS-specific permission check using flutter_local_notifications
     final iosImplementation = _notifications
-        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
 
     if (iosImplementation != null) {
       // For iOS, request permissions (won't show dialog if already determined)
@@ -523,14 +530,14 @@ class NotificationService {
 
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-      'default_channel', // channel id
-      'Default Notifications', // channel name
-      channelDescription: 'Default notification channel',
-      importance: Importance.high,
-      priority: Priority.high,
-      showWhen: true,
-      icon: '@mipmap/app_launcher',
-    );
+          'default_channel', // channel id
+          'Default Notifications', // channel name
+          channelDescription: 'Default notification channel',
+          importance: Importance.high,
+          priority: Priority.high,
+          showWhen: true,
+          icon: '@mipmap/app_launcher',
+        );
 
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
       presentAlert: true,
@@ -593,16 +600,16 @@ class NotificationService {
 
     final AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-      'alert_channel', // channel id
-      'Alert Notifications', // channel name
-      channelDescription: 'Important alert notifications',
-      importance: Importance.max,
-      priority: Priority.max,
-      showWhen: true,
-      enableVibration: enableVibration,
-      playSound: playSound,
-      icon: '@mipmap/app_launcher',
-    );
+          'alert_channel', // channel id
+          'Alert Notifications', // channel name
+          channelDescription: 'Important alert notifications',
+          importance: Importance.max,
+          priority: Priority.max,
+          showWhen: true,
+          enableVibration: enableVibration,
+          playSound: playSound,
+          icon: '@mipmap/app_launcher',
+        );
 
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
       presentAlert: true,
@@ -768,181 +775,179 @@ class NotificationService {
   // }
 
   /// Handle incoming alert message from WebSocket
-//   void _handleAlertMessage(
-//     Map<String, dynamic> message,
-//     String deviceId,
-//     String productId,
-//     String deviceName,
-//   ) {
-//     try {
-//       print('Received alert message: $message');
+  //   void _handleAlertMessage(
+  //     Map<String, dynamic> message,
+  //     String deviceId,
+  //     String productId,
+  //     String deviceName,
+  //   ) {
+  //     try {
+  //       print('Received alert message: $message');
 
-//       // Extract alert data from WebSocket message
-//       final result = message['result'];
-//       if (result == null) return;
+  //       // Extract alert data from WebSocket message
+  //       final result = message['result'];
+  //       if (result == null) return;
 
-//       final content = result['content'] as String?;
-//       final level = result['level'] as int? ?? 0;
-//       final timestamp = result['timestamp'] as int? ?? DateTime.now().millisecondsSinceEpoch;
+  //       final content = result['content'] as String?;
+  //       final level = result['level'] as int? ?? 0;
+  //       final timestamp = result['timestamp'] as int? ?? DateTime.now().millisecondsSinceEpoch;
 
-//       if (content == null || content.isEmpty) return;
+  //       if (content == null || content.isEmpty) return;
 
-//       // Determine severity based on level
-//       // 0 = info, 1 = warning, 2 = severe/critical
-//       final severity = level >= 2 ? 'severe' : (level == 1 ? 'warning' : 'info');
+  //       // Determine severity based on level
+  //       // 0 = info, 1 = warning, 2 = severe/critical
+  //       final severity = level >= 2 ? 'severe' : (level == 1 ? 'warning' : 'info');
 
-//       // Show notification
-//       final notificationId = timestamp % 1000000; // Use timestamp for unique ID
-//       showDeviceAlert(
-//         id: notificationId,
-//         deviceId: deviceId,
-//         productId: productId,
-//         deviceName: deviceName,
-//         message: content,
-//         severity: severity,
-//       );
+  //       // Show notification
+  //       final notificationId = timestamp % 1000000; // Use timestamp for unique ID
+  //       showDeviceAlert(
+  //         id: notificationId,
+  //         deviceId: deviceId,
+  //         productId: productId,
+  //         deviceName: deviceName,
+  //         message: content,
+  //         severity: severity,
+  //       );
 
-//       print('Processed alert for device $deviceName: $content (level: $level)');
-//     } catch (e) {
-//       print('Failed to handle alert message: $e');
-//     }
-//   }
+  //       print('Processed alert for device $deviceName: $content (level: $level)');
+  //     } catch (e) {
+  //       print('Failed to handle alert message: $e');
+  //     }
+  //   }
 
-//   /// Get monitoring status
-//   bool get isMonitoringAlerts => _isMonitoringAlerts;
+  //   /// Get monitoring status
+  //   bool get isMonitoringAlerts => _isMonitoringAlerts;
 
-//   /// Get monitored device IDs
-//   Set<String> get monitoredDeviceIds => Set.unmodifiable(_monitoredDevices.keys);
-// }
+  //   /// Get monitored device IDs
+  //   Set<String> get monitoredDeviceIds => Set.unmodifiable(_monitoredDevices.keys);
+  // }
 
-// Background service entry point
-// @pragma('vm:entry-point')
-// void onStart(ServiceInstance service) async {
-//   DartPluginRegistrant.ensureInitialized();
+  // Background service entry point
+  // @pragma('vm:entry-point')
+  // void onStart(ServiceInstance service) async {
+  //   DartPluginRegistrant.ensureInitialized();
 
-//   // Initialize notification service
-//   final notificationService = NotificationService();
-//   try {
-//     await notificationService.initialize();
-//     // Ensure channel is created in the background service context too
-//     await notificationService.createBackgroundServiceChannel();
-//   } catch (e) {
-//     print('Background service: Failed to initialize notifications: $e');
-//   }
+  //   // Initialize notification service
+  //   final notificationService = NotificationService();
+  //   try {
+  //     await notificationService.initialize();
+  //     // Ensure channel is created in the background service context too
+  //     await notificationService.createBackgroundServiceChannel();
+  //   } catch (e) {
+  //     print('Background service: Failed to initialize notifications: $e');
+  //   }
 
-//   // Connect to WebSocket
-//   bool wsConnected = false;
-//   try {
-//     wsConnected = await WebSocketService.connect();
-//     print('Background service: WebSocket connected: $wsConnected');
-//   } catch (e) {
-//     print('Background service: Failed to connect WebSocket: $e');
-//   }
+  //   // Connect to WebSocket
+  //   bool wsConnected = false;
+  //   try {
+  //     wsConnected = await WebSocketService.connect();
+  //     print('Background service: WebSocket connected: $wsConnected');
+  //   } catch (e) {
+  //     print('Background service: Failed to connect WebSocket: $e');
+  //   }
 
-//   if (service is AndroidServiceInstance) {
-//     service.on('setAsForeground').listen((event) {
-//       service.setAsForegroundService();
-//     });
+  //   if (service is AndroidServiceInstance) {
+  //     service.on('setAsForeground').listen((event) {
+  //       service.setAsForegroundService();
+  //     });
 
-//     service.on('setAsBackground').listen((event) {
-//       service.setAsBackgroundService();
-//     });
-//   }
+  //     service.on('setAsBackground').listen((event) {
+  //       service.setAsBackgroundService();
+  //     });
+  //   }
 
-//   service.on('stopService').listen((event) async {
-//     // Cleanup before stopping
-//     await notificationService.stopMonitoringAllAlerts();
-//     await WebSocketService.disconnect();
-//     service.stopSelf();
-//   });
+  //   service.on('stopService').listen((event) async {
+  //     // Cleanup before stopping
+  //     await notificationService.stopMonitoringAllAlerts();
+  //     await WebSocketService.disconnect();
+  //     service.stopSelf();
+  //   });
 
-//   // Handle device monitoring requests
-//   service.on('startMonitoring').listen((event) async {
-//     if (event != null && event is Map) {
-//       final deviceId = event['deviceId'] as String?;
-//       final productId = event['productId'] as String?;
-//       final deviceName = event['deviceName'] as String?;
-//       if (deviceId != null && productId != null && deviceName != null) {
-//         await notificationService.startMonitoringAlerts(deviceId, productId, deviceName);
-//         print('Background service: Started monitoring $deviceName');
-//       }
-//     }
-//   });
+  //   // Handle device monitoring requests
+  //   service.on('startMonitoring').listen((event) async {
+  //     if (event != null && event is Map) {
+  //       final deviceId = event['deviceId'] as String?;
+  //       final productId = event['productId'] as String?;
+  //       final deviceName = event['deviceName'] as String?;
+  //       if (deviceId != null && productId != null && deviceName != null) {
+  //         await notificationService.startMonitoringAlerts(deviceId, productId, deviceName);
+  //         print('Background service: Started monitoring $deviceName');
+  //       }
+  //     }
+  //   });
 
-//   service.on('stopMonitoring').listen((event) async {
-//     if (event != null && event is Map) {
-//       final deviceId = event['deviceId'] as String?;
-//       if (deviceId != null) {
-//         await notificationService.stopMonitoringAlerts(deviceId);
-//         print('Background service: Stopped monitoring device $deviceId');
-//       }
-//     }
-//   });
+  //   service.on('stopMonitoring').listen((event) async {
+  //     if (event != null && event is Map) {
+  //       final deviceId = event['deviceId'] as String?;
+  //       if (deviceId != null) {
+  //         await notificationService.stopMonitoringAlerts(deviceId);
+  //         print('Background service: Stopped monitoring device $deviceId');
+  //       }
+  //     }
+  //   });
 
-//   // Periodic task to keep service alive and maintain WebSocket connection
-//   Timer.periodic(const Duration(seconds: 30), (timer) async {
-//     if (service is AndroidServiceInstance) {
-//       if (await service.isForegroundService()) {
-//         // Update notification with monitoring status
-//         final monitoringCount = notificationService.monitoredDeviceIds.length;
-//         final wsStatus = WebSocketService.isConnected ? 'Connected' : 'Disconnected';
-//         service.setForegroundNotificationInfo(
-//           title: "Device Monitor",
-//           content: "Monitoring $monitoringCount devices • $wsStatus",
-//         );
-//       }
-//     }
+  //   // Periodic task to keep service alive and maintain WebSocket connection
+  //   Timer.periodic(const Duration(seconds: 30), (timer) async {
+  //     if (service is AndroidServiceInstance) {
+  //       if (await service.isForegroundService()) {
+  //         // Update notification with monitoring status
+  //         final monitoringCount = notificationService.monitoredDeviceIds.length;
+  //         final wsStatus = WebSocketService.isConnected ? 'Connected' : 'Disconnected';
+  //         service.setForegroundNotificationInfo(
+  //           title: "Device Monitor",
+  //           content: "Monitoring $monitoringCount devices • $wsStatus",
+  //         );
+  //       }
+  //     }
 
-//     // Check WebSocket connection and reconnect if needed
-//     if (!WebSocketService.isConnected) {
-//       print('Background service: WebSocket disconnected, attempting to reconnect...');
-//       try {
-//         await WebSocketService.connect();
-//       } catch (e) {
-//         print('Background service: Reconnection failed: $e');
-//       }
-//     }
+  //     // Check WebSocket connection and reconnect if needed
+  //     if (!WebSocketService.isConnected) {
+  //       print('Background service: WebSocket disconnected, attempting to reconnect...');
+  //       try {
+  //         await WebSocketService.connect();
+  //       } catch (e) {
+  //         print('Background service: Reconnection failed: $e');
+  //       }
+  //     }
 
-//     print('Background service running: ${DateTime.now()}');
-//     service.invoke('update');
-//   });
-// }
+  //     print('Background service running: ${DateTime.now()}');
+  //     service.invoke('update');
+  //   });
+  // }
 
-// iOS background handler
-// @pragma('vm:entry-point')
-// Future<bool> onIosBackground(ServiceInstance service) async {
-//   //WidgetsFlutterBinding.ensureInitialized();
-//   DartPluginRegistrant.ensureInitialized();
+  // iOS background handler
+  // @pragma('vm:entry-point')
+  // Future<bool> onIosBackground(ServiceInstance service) async {
+  //   //WidgetsFlutterBinding.ensureInitialized();
+  //   DartPluginRegistrant.ensureInitialized();
 
-//   return true;
-// }
+  //   return true;
+  // }
 
-// Foreground task callback for Android
-// @pragma('vm:entry-point')
-// void foregroundTaskCallback() {
-//   // This callback is called periodically (interval defined in ForegroundTaskOptions)
-//   FlutterForegroundTask.setTaskHandler(ForegroundTaskHandler());
-// }
+  // Foreground task callback for Android
+  // @pragma('vm:entry-point')
+  // void foregroundTaskCallback() {
+  //   // This callback is called periodically (interval defined in ForegroundTaskOptions)
+  //   FlutterForegroundTask.setTaskHandler(ForegroundTaskHandler());
+  // }
 
-// class ForegroundTaskHandler extends TaskHandler {
-  
+  // class ForegroundTaskHandler extends TaskHandler {
 
-//   @override
-//   Future<void> onStart(DateTime timestamp, TaskStarter starter) {
-//     // TODO: implement onStart
-//     throw UnimplementedError();
-//   }
-  
-//   @override
-//   void onRepeatEvent(DateTime timestamp) {
-//     // This is called at the interval specified in ForegroundTaskOptions
-//     print('Foreground task event at $timestamp');
-//   }
-  
-//   @override
-//   Future<void> onDestroy(DateTime timestamp) {
-//     // TODO: implement onDestroy
-//     throw UnimplementedError();
-//   }
-  
+  //   @override
+  //   Future<void> onStart(DateTime timestamp, TaskStarter starter) {
+  //     // TODO: implement onStart
+  //     throw UnimplementedError();
+  //   }
+
+  //   @override
+  //   void onRepeatEvent(DateTime timestamp) {
+  //     // This is called at the interval specified in ForegroundTaskOptions
+  //     print('Foreground task event at $timestamp');
+  //   }
+
+  //   @override
+  //   Future<void> onDestroy(DateTime timestamp) {
+  //     // TODO: implement onDestroy
+  //     throw UnimplementedError();
+  //   }
 }
