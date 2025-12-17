@@ -1187,7 +1187,7 @@ abstract class AppLocalizations {
   /// No description provided for @scanAzDevices.
   ///
   /// In en, this message translates to:
-  /// **'Scan BLED evices'**
+  /// **'Scan BLE evices'**
   String get scanAzDevices;
 
   /// No description provided for @disconnect.
@@ -1331,7 +1331,7 @@ abstract class AppLocalizations {
   /// No description provided for @foundAzDevicesLabel.
   ///
   /// In en, this message translates to:
-  /// **'FoundBLEDevices:'**
+  /// **'Found BLE Devices:'**
   String get foundAzDevicesLabel;
 
   /// No description provided for @wifiConfig.

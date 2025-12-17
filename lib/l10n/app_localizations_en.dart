@@ -606,7 +606,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanning => 'Scanning...';
 
   @override
-  String get scanAzDevices => 'Scan BLED evices';
+  String get scanAzDevices => 'Scan BLE evices';
 
   @override
   String get disconnect => 'Disconnect';
@@ -684,7 +684,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Device response timeout, please check WiFi password';
 
   @override
-  String get foundAzDevicesLabel => 'FoundBLEDevices:';
+  String get foundAzDevicesLabel => 'Found BLE Devices:';
 
   @override
   String get wifiConfig => 'WiFi Configuration';
