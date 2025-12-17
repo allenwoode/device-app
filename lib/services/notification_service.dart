@@ -223,8 +223,23 @@ class NotificationService {
     }
   }
 
-  /// Request notification permission (Android 13+)
+  /// Request notification permission (Android 13+ and iOS)
   Future<bool> requestPermission() async {
+    // iOS-specific permission request using flutter_local_notifications
+    final iosImplementation = _notifications
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+    if (iosImplementation != null) {
+      // For iOS, request permissions using the native implementation
+      final granted = await iosImplementation.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      return granted ?? false;
+    }
+
+    // Android permission request using permission_handler
     if (await Permission.notification.isGranted) {
       return true;
     }
@@ -235,6 +250,22 @@ class NotificationService {
 
   /// Check if notification permission is granted
   Future<bool> hasPermission() async {
+    // iOS-specific permission check using flutter_local_notifications
+    final iosImplementation = _notifications
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+    if (iosImplementation != null) {
+      // For iOS, request permissions (won't show dialog if already determined)
+      // This returns the current permission status
+      final granted = await iosImplementation.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      return granted ?? false;
+    }
+
+    // Android check using permission_handler
     return await Permission.notification.isGranted;
   }
 
