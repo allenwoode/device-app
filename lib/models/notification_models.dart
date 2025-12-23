@@ -2,7 +2,7 @@ class NotificationItem {
   final int id;
   final String title;
   final String body;
-  final String? payload;
+  final Map<String, dynamic>? payload;
   final DateTime timestamp;
   final bool isRead;
 
@@ -19,7 +19,7 @@ class NotificationItem {
     int? id,
     String? title,
     String? body,
-    String? payload,
+    Map<String, dynamic>? payload,
     DateTime? timestamp,
     bool? isRead,
   }) {
@@ -49,7 +49,7 @@ class NotificationItem {
       id: json['id'] as int,
       title: json['title'] as String,
       body: json['body'] as String,
-      payload: json['payload'] as String?,
+      payload: json['payload'],
       timestamp: DateTime.parse(json['timestamp'] as String),
       isRead: json['isRead'] as bool? ?? false,
     );

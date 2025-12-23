@@ -1,6 +1,7 @@
 import 'package:device/config/app_colors.dart';
 import 'package:device/models/notification_models.dart';
-import 'package:device/services/notification_service.dart';
+//import 'package:device/services/notification_service.dart';
+import 'package:device/services/firebase_service.dart';
 import 'package:device/events/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,7 +17,8 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  final NotificationService _notificationService = NotificationService();
+  //final NotificationService _notificationService = NotificationService();
+  final FirebaseService _firebaseService = FirebaseService();
   List<NotificationItem> _notifications = [];
 
   @override
@@ -66,15 +68,21 @@ class _NotificationPageState extends State<NotificationPage> {
   void _loadNotifications() {
     if (!mounted) return;
     setState(() {
-      _notifications = _notificationService.notifications;
+      // Merge notifications from both services
+      //final localNotifications = _notificationService.notifications;
+      final firebaseNotifications = _firebaseService.notifications;
+
+      // Combine and sort by timestamp (most recent first)
+      _notifications = [...firebaseNotifications]
+        ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
     });
   }
 
   void _markAllAsRead() {
-    _notificationService.markAllAsRead();
-    setState(() {
-      _notifications = _notificationService.notifications;
-    });
+    // Mark all as read in both services
+    //_notificationService.markAllAsRead();
+    _firebaseService.markAllAsRead();
+    _loadNotifications();
   }
 
   void _clearAll() {
@@ -91,11 +99,11 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
           TextButton(
             onPressed: () {
-              _notificationService.clearAllNotifications();
+              // Clear notifications from both services
+              //_notificationService.clearAllNotifications();
+              _firebaseService.clearAllNotifications();
               Navigator.pop(context);
-              setState(() {
-                _notifications = [];
-              });
+              _loadNotifications();
             },
             child: Text(
               l10n.clearAll,
@@ -125,24 +133,24 @@ class _NotificationPageState extends State<NotificationPage> {
     }
   }
 
-  IconData _getNotificationIcon(String? payload) {
+  IconData _getNotificationIcon(Map<String, dynamic>? payload) {
     if (payload == null) return Icons.notifications;
 
-    if (payload.startsWith('device_severe:')) {
+    if (payload['level'] == 'severe') {
       return Icons.warning_amber_rounded;
-    } else if (payload.startsWith('device_alert:')) {
+    } else if (payload['level'] == 'notice') {
       return Icons.sms;
     }
 
     return Icons.notifications;
   }
 
-  Color _getNotificationColor(String? payload) {
+  Color _getNotificationColor(Map<String, dynamic>? payload) {
     if (payload == null) return AppColors.primaryColor;
 
-    if (payload.startsWith('device_severe:')) {
+    if (payload['level'] == 'severe') {
       return Colors.red;
-    } else if (payload.startsWith('device_alert:')) {
+    } else if (payload['level'] == 'notice') {
       return Colors.green;
     }
 
@@ -266,8 +274,9 @@ class _NotificationPageState extends State<NotificationPage> {
                   ),
                   child: InkWell(
                     onTap: () {
-                      // Always mark as read to ensure state consistency
-                      _notificationService.markAsRead(notification.id);
+                      // Mark as read in both services (only one will have the ID)
+                      //_notificationService.markAsRead(notification.id);
+                      _firebaseService.markAsRead(notification.id);
                       _loadNotifications();
                       // TODO: Handle navigation based on payload
                     },

@@ -5,7 +5,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:device/models/device_models.dart';
 import 'package:device/services/device_service.dart';
-import 'package:device/services/notification_service.dart';
+import 'package:device/services/firebase_service.dart';
 import 'package:device/widgets/device_card.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/models/login_models.dart';
@@ -35,7 +35,8 @@ class _DevicePageState extends State<DevicePage> {
   int? _totalDevices;
   String? _errorMessage;
   int _notificationCount = 0;
-  late final NotificationService _notificationService;
+  //late final NotificationService _notificationService;
+  late final FirebaseService _firebaseService;
 
   AppLocalizations get _l10n {
     try {
@@ -54,17 +55,19 @@ class _DevicePageState extends State<DevicePage> {
     _loadDevices();
     _loadUserInfo();
 
-    _initializeNotificationCount();
+    _initializeNotification();
 
     _scrollController.addListener(_scrollListener);
     _searchController.addListener(_performSearch);
   }
 
-  Future<void> _initializeNotificationCount() async {
+  Future<void> _initializeNotification() async {
     try {
-      _notificationService = NotificationService();
-      //await _notificationService.initialize();
-      //await _notificationService.requestPermission();
+      //_notificationService = NotificationService();
+      _firebaseService = FirebaseService();
+
+      // Initialize Firebase messaging
+      await _firebaseService.initialize();
 
       // Listen to notification events via EventBus (supports multiple pages)
       EventBus.instance.addListener(
@@ -74,7 +77,7 @@ class _DevicePageState extends State<DevicePage> {
 
       // Initialize badge count
       setState(() {
-        _notificationCount = _notificationService.unreadCount;
+        _notificationCount = _firebaseService.unreadCount;
       });
     } catch (e) {
       // Silent fail - notifications are optional
@@ -301,7 +304,7 @@ class _DevicePageState extends State<DevicePage> {
 
     // Update badge count after returning from notifications page
     setState(() {
-      _notificationCount = _notificationService.unreadCount;
+      _notificationCount = _firebaseService.unreadCount;
     });
   }
 
