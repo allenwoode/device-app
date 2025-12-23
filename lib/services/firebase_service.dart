@@ -3,6 +3,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device/models/notification_models.dart';
 import 'package:device/events/event_bus.dart';
 import 'package:device/routes/app_routes.dart';
+import 'package:device/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 
 // Top-level function to handle background messages
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -29,6 +31,19 @@ class FirebaseService {
 
   // Track processed message IDs to prevent duplicates
   final Set<String> _processedMessageIds = {};
+
+  AppLocalizations get _l10n {
+    try {
+      final context = AppRoutes.navigatorKey.currentContext;
+      if (context != null) {
+        return AppLocalizations.of(context)!;
+      }
+      return lookupAppLocalizations(const Locale('zh'));
+    } catch (e) {
+      // Fallback when context is not ready
+      return lookupAppLocalizations(const Locale('zh'));
+    }
+  }
 
   /// Get all notifications
   List<NotificationItem> get notifications =>
@@ -66,7 +81,7 @@ class FirebaseService {
   }
 
   /// Add notification to list (with duplicate prevention)
-  void _addNotification(RemoteMessage message) {
+  void _addNotification(RemoteMessage message, {String? title, String? body}) {
     // Prevent duplicates using message ID
     final messageId = message.messageId;
     if (messageId != null && _processedMessageIds.contains(messageId)) {
@@ -76,8 +91,8 @@ class FirebaseService {
 
     final notificationItem = NotificationItem(
       id: _notificationIdCounter++,
-      title: message.notification?.title ?? 'Notification',
-      body: message.notification?.body ?? '',
+      title: title ?? message.notification?.title ?? 'Notification',
+      body: body ?? message.notification?.body ?? '',
       payload: message.data,
       timestamp: DateTime.now(),
       isRead: false,
@@ -95,11 +110,11 @@ class FirebaseService {
   }
 
   /// Handle notification tap
-  void _onNotificationTapped(RemoteMessage message) {
+  void _onNotificationTapped(RemoteMessage message, {String? title, String? body}) {
     print('Notification tapped: ${message.messageId}');
 
     // Add to notification list if not already added
-    _addNotification(message);
+    _addNotification(message, title: title, body: body);
 
     // Handle navigation based on data payload
     final data = message.data;
@@ -124,6 +139,18 @@ class FirebaseService {
     }
   }
 
+  String _getBody(String code) {
+      switch (code) {
+        case '1001':
+          return _l10n.deviceOnline;
+        case '1002':
+          return _l10n.deviceOffline;
+        case '1003':
+          return _l10n.lockTimeout;
+      }
+      return '';
+    }
+
   Future<void> initialize() async {
     if (_initialized) return;
 
@@ -140,8 +167,12 @@ class FirebaseService {
       print("Message Body: ${message.notification?.body}");
       print("Message Data: ${message.data}");
 
-      // Add to notification list
-      _addNotification(message);
+      // Transform title and body
+      final title = '🔔 ${message.notification?.title}';
+      final body = _getBody(message.data['code'] ?? '');
+
+      // Add to notification list with transformed values
+      _addNotification(message, title: title, body: body);
     });
 
     // Handle when user taps on notification when app is in background
@@ -151,8 +182,12 @@ class FirebaseService {
       print("Message Body: ${message.notification?.body}");
       print("Message Data: ${message.data}");
 
+      // Transform title and body
+      final title = '🔔 ${message.notification?.title}';
+      final body = _getBody(message.data['code'] ?? '');
+
       // Handle tap (adds notification and navigates)
-      _onNotificationTapped(message);
+      _onNotificationTapped(message, title: title, body: body);
     });
 
     // Check if app was opened from a terminated state via notification
@@ -162,9 +197,6 @@ class FirebaseService {
       print("Message Title: ${initialMessage.notification?.title}");
       print("Message Body: ${initialMessage.notification?.body}");
       print("Message Data: ${initialMessage.data}");
-
-      // Handle tap (adds notification and navigates)
-      //_onNotificationTapped(initialMessage);
     }
 
     _initialized = true;

@@ -66,9 +66,6 @@ class _DevicePageState extends State<DevicePage> {
       //_notificationService = NotificationService();
       _firebaseService = FirebaseService();
 
-      // Initialize Firebase messaging
-      await _firebaseService.initialize();
-
       // Listen to notification events via EventBus (supports multiple pages)
       EventBus.instance.addListener(
         EventKeys.notificationCountChanged,
