@@ -1,6 +1,6 @@
 import 'package:device/config/app_colors.dart';
 import 'package:device/models/notification_models.dart';
-//import 'package:device/services/notification_service.dart';
+import 'package:device/services/notification_service.dart';
 import 'package:device/services/firebase_service.dart';
 import 'package:device/events/event_bus.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  //final NotificationService _notificationService = NotificationService();
+  final NotificationService _notificationService = NotificationService();
   final FirebaseService _firebaseService = FirebaseService();
   List<NotificationItem> _notifications = [];
 
@@ -69,18 +69,18 @@ class _NotificationPageState extends State<NotificationPage> {
     if (!mounted) return;
     setState(() {
       // Merge notifications from both services
-      //final localNotifications = _notificationService.notifications;
+      final localNotifications = _notificationService.notifications;
       final firebaseNotifications = _firebaseService.notifications;
 
       // Combine and sort by timestamp (most recent first)
-      _notifications = [...firebaseNotifications]
+      _notifications = [...localNotifications, ...firebaseNotifications]
         ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
     });
   }
 
   void _markAllAsRead() {
     // Mark all as read in both services
-    //_notificationService.markAllAsRead();
+    _notificationService.markAllAsRead();
     _firebaseService.markAllAsRead();
     _loadNotifications();
   }
@@ -100,7 +100,7 @@ class _NotificationPageState extends State<NotificationPage> {
           TextButton(
             onPressed: () {
               // Clear notifications from both services
-              //_notificationService.clearAllNotifications();
+              _notificationService.clearAllNotifications();
               _firebaseService.clearAllNotifications();
               Navigator.pop(context);
               _loadNotifications();
@@ -275,7 +275,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   child: InkWell(
                     onTap: () {
                       // Mark as read in both services (only one will have the ID)
-                      //_notificationService.markAsRead(notification.id);
+                      _notificationService.markAsRead(notification.id);
                       _firebaseService.markAsRead(notification.id);
                       _loadNotifications();
                       // TODO: Handle navigation based on payload

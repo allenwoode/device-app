@@ -1,6 +1,6 @@
 import 'package:device/services/firebase_service.dart';
+import 'package:device/services/notification_service.dart';
 import 'package:device/views/route_component.dart';
-//import 'package:device/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -12,14 +12,14 @@ void main() async {
   await FirebaseService().initialize();
 
   // Initialize notification service
-  // final notificationService = NotificationService();
-  // await notificationService.initialize();
+  final notificationService = NotificationService();
+  await notificationService.initialize();
 
-  // // Request notification permission
-  // final hasPermission = await notificationService.hasPermission();
-  // if (!hasPermission) {
-  //   await notificationService.requestPermission();
-  // }
+  // Request notification permission
+  final hasPermission = await notificationService.hasPermission();
+  if (!hasPermission) {
+     await notificationService.requestPermission();
+  }
 
   // // Note: Background service will be started when user enables it in settings
   // // or when monitoring is needed. You can optionally start it here:

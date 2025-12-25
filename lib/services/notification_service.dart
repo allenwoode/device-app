@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
 import 'package:device/services/websocket_service.dart';
 import 'package:flutter/widgets.dart';
@@ -9,21 +10,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:device/models/notification_models.dart';
 import 'package:device/events/event_bus.dart';
 import 'package:device/routes/app_routes.dart';
-
-/// Notification service for managing local notifications and background service.
-
-/// Internal class to store monitored device information
-// class _MonitoredDevice {
-//   final String deviceId;
-//   final String productId;
-//   final String deviceName;
-
-//   _MonitoredDevice({
-//     required this.deviceId,
-//     required this.productId,
-//     required this.deviceName,
-//   });
-// }
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -129,27 +115,32 @@ class NotificationService {
     );
 
     // Check and sync background service state on initialization (optional)
-    try {
-      await checkBackgroundServiceState();
-    } catch (e) {
-      print('Background service check failed during initialization: $e');
-      // Continue initialization even if background service is not available
-    }
+    // try {
+    //   await checkBackgroundServiceState();
+    // } catch (e) {
+    //   print('Background service check failed during initialization: $e');
+    //   // Continue initialization even if background service is not available
+    // }
 
     _initialized = true;
   }
 
-  /// Handle notification tap
+  // Handle notification tap
   void _onNotificationTapped(NotificationResponse response) {
-    final payload = response.payload;
-    if (payload == null || payload.isEmpty) return;
+    try {
+      final payload = response.payload;
+      if (payload == null || payload.isEmpty) return;
 
-    // Parse payload format: "device_alert:deviceId:productId" or "device_severe:deviceId:productId"
-    final parts = payload.split(':');
-    if (parts.length >= 3) {
-      //final type = parts[0]; // device_alert or device_severe
-      final deviceId = parts[1];
-      final productId = parts[2];
+      // Parse JSON payload
+      final data = jsonDecode(payload) as Map<String, dynamic>;
+
+      final deviceId = data['deviceId'] as String?;
+      final productId = data['productId'] as String?;
+
+      if (deviceId == null || productId == null) {
+        print('Invalid payload: missing deviceId or productId');
+        return;
+      }
 
       // Get the current context for navigation
       // We need to use a global navigator key to navigate from background
@@ -160,8 +151,8 @@ class NotificationService {
       } else {
         print('Cannot navigate: no context available');
       }
-    } else {
-      print('Invalid notification payload format: $payload');
+    } catch (e) {
+      print('Error handling notification tap: $e');
     }
   }
 
@@ -294,76 +285,6 @@ class NotificationService {
 
     print('Background service notification channel created');
   }
-
-  // Request background service to start monitoring a device
-  // Future<void> requestMonitoringDevice(
-  //   String deviceId,
-  //   String productId,
-  //   String deviceName,
-  // ) async {
-  //   try {
-  //     // Check actual service state
-  //     final isRunning = await checkBackgroundServiceState();
-
-  //     if (!isRunning) {
-  //       print('Background service not running, starting it first...');
-  //       await startBackgroundService();
-  //       // Wait a bit for service to initialize
-  //       await Future.delayed(const Duration(seconds: 2));
-
-  //       // Verify service started
-  //       final started = await checkBackgroundServiceState();
-  //       if (!started) {
-  //         print('Failed to start background service for monitoring');
-  //         return;
-  //       }
-  //     }
-
-  //     final service = FlutterBackgroundService();
-  //     service.invoke('startMonitoring', {
-  //       'deviceId': deviceId,
-  //       'productId': productId,
-  //       'deviceName': deviceName,
-  //     });
-  //     print('Requested background service to monitor device: $deviceName');
-  //   } catch (e) {
-  //     print('Failed to request monitoring: $e');
-  //   }
-  // }
-
-  /// Request background service to stop monitoring a device
-  // Future<void> requestStopMonitoringDevice(String deviceId) async {
-  //   try {
-  //     // Check actual service state
-  //     final isRunning = await checkBackgroundServiceState();
-  //     if (!isRunning) {
-  //       print('Background service not running, cannot stop monitoring');
-  //       return;
-  //     }
-
-  //     final service = FlutterBackgroundService();
-  //     service.invoke('stopMonitoring', {
-  //       'deviceId': deviceId,
-  //     });
-  //     print('Requested background service to stop monitoring device: $deviceId');
-  //   } catch (e) {
-  //     print('Failed to request stop monitoring: $e');
-  //   }
-  // }
-
-  /// Request monitoring for multiple devices
-  // Future<void> requestMonitoringMultipleDevices(List<Map<String, String>> devices) async {
-  //   for (var device in devices) {
-  //     final deviceId = device['id'];
-  //     final productId = device['productId'];
-  //     final deviceName = device['name'];
-  //     if (deviceId != null && productId != null && deviceName != null) {
-  //       await requestMonitoringDevice(deviceId, productId, deviceName);
-  //       // Small delay between requests
-  //       await Future.delayed(const Duration(milliseconds: 100));
-  //     }
-  //   }
-  // }
 
   // Stop background service
   Future<void> stopBackgroundService() async {
@@ -567,13 +488,13 @@ class NotificationService {
       title,
       body,
       notificationDetails,
-      payload: payload.toString(),
+      payload: payload != null ? jsonEncode(payload) : null,
     );
 
     // Add to notifications list
     final notificationItem = NotificationItem(
       id: id,
-      title: title,
+      title: '🔔 $title',
       body: body,
       payload: payload,
       timestamp: DateTime.now(),
@@ -596,12 +517,10 @@ class NotificationService {
     required String body,
     Map<String, dynamic>? payload,
   }) async {
-    //final title = '🔔' + title;
-    // Format: "type:deviceId:productId"
-
     await showNotificationWithSound(
       id: id,
-      title: '🔔 $title',
+      //title: '🔔 $title',
+      title: title,
       body: body,
       payload: payload,
       enableVibration: true,

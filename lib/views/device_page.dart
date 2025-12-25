@@ -1,11 +1,13 @@
 import 'package:device/config/app_colors.dart';
 import 'package:device/routes/app_routes.dart';
+import 'package:device/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:device/models/device_models.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/services/firebase_service.dart';
+import 'package:device/services/websocket_service.dart';
 import 'package:device/widgets/device_card.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/models/login_models.dart';
@@ -20,7 +22,7 @@ class DevicePage extends StatefulWidget {
   State<DevicePage> createState() => _DevicePageState();
 }
 
-class _DevicePageState extends State<DevicePage> {
+class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   User? _currentUser;
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -35,8 +37,9 @@ class _DevicePageState extends State<DevicePage> {
   int? _totalDevices;
   String? _errorMessage;
   int _notificationCount = 0;
-  //late final NotificationService _notificationService;
+
   late final FirebaseService _firebaseService;
+  late final NotificationService _notificationService;
 
   AppLocalizations get _l10n {
     try {
@@ -51,7 +54,8 @@ class _DevicePageState extends State<DevicePage> {
   void initState() {
     super.initState();
 
-    //WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
+
     _loadDevices();
     _loadUserInfo();
 
@@ -63,7 +67,7 @@ class _DevicePageState extends State<DevicePage> {
 
   Future<void> _initializeNotification() async {
     try {
-      //_notificationService = NotificationService();
+      _notificationService = NotificationService();
       _firebaseService = FirebaseService();
 
       // Listen to notification events via EventBus (supports multiple pages)
@@ -74,10 +78,11 @@ class _DevicePageState extends State<DevicePage> {
 
       // Initialize badge count
       setState(() {
-        _notificationCount = _firebaseService.unreadCount;
+        _notificationCount = _firebaseService.unreadCount + _notificationService.unreadCount;
       });
     } catch (e) {
       // Silent fail - notifications are optional
+      print('Initialize notification error: $e');
     }
   }
 
@@ -92,7 +97,7 @@ class _DevicePageState extends State<DevicePage> {
 
   @override
   void dispose() {
-    //WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.removeListener(_scrollListener);
     _searchController.removeListener(_performSearch);
     _scrollController.dispose();

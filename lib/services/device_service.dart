@@ -929,12 +929,12 @@ static Future<List<DeviceAlert>> getDeviceAlerts({
       // Get current user to retrieve orgId
       final currentUser = await AuthService.getCurrentUser();
       if (currentUser == null) {
-        throw Exception('无法获取用户信息');
+        throw Exception('Failed to get user information');
       }
 
       final orgId = currentUser.orgId;
       if (orgId.isEmpty) {
-        throw Exception('无法获取用户组织信息');
+        throw Exception('Failed to get user organization information');
       }
 
       // Prepare request body - array of device IDs

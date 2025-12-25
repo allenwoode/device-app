@@ -111,7 +111,6 @@ class FirebaseService {
 
   /// Handle notification tap
   void _onNotificationTapped(RemoteMessage message, {String? title, String? body}) {
-    print('Notification tapped: ${message.messageId}');
 
     // Add to notification list if not already added
     _addNotification(message, title: title, body: body);
@@ -149,7 +148,7 @@ class FirebaseService {
           return _l10n.lockTimeout;
       }
       return '';
-    }
+  }
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -183,7 +182,7 @@ class FirebaseService {
       print("Message Data: ${message.data}");
 
       // Transform title and body
-      final title = '🔔 ${message.notification?.title}';
+      final title = message.notification?.title;
       final body = _getBody(message.data['code'] ?? '');
 
       // Handle tap (adds notification and navigates)
@@ -204,8 +203,6 @@ class FirebaseService {
 
 
   Future<void> requestPermission() async {
-    //FirebaseMessaging messaging = FirebaseMessaging.instance;
-
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       announcement: false,

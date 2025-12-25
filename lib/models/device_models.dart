@@ -22,8 +22,9 @@ class DeviceData {
   });
 
   factory DeviceData.fromJson(Map<String, dynamic> json) {
-    final extraData = json['extraData'];
-    final spec = extraData == "" ? 16 : ExtraData.decode(extraData).gateNum;
+    String extraDataString = json['extraData'] ?? "";
+    final extraData = extraDataString.isEmpty ? {} :jsonDecode(extraDataString);
+
     return DeviceData(
       id: json['id'] ?? '',
       state: json['state']?['value'] == 'online' ? 1 : 0,
@@ -31,30 +32,30 @@ class DeviceData {
       productId: json['productId'] ?? '',
       productName: json['productName'] ?? '',
       description: json['description'] ?? '',
-      spec: spec,
+      spec: extraData['gate_num'] ?? 16,
       lastUpdated: json['createTime']?.toString() ?? json['lastUpdated'] ?? '',
     );
   }
 }
 
-class ExtraData {
-  final int chargeNum;
-  final int gateNum;
-  final String organization;
-  final String power;
+// class ExtraData {
+//   final int chargeNum;
+//   final int gateNum;
+//   final String organization;
+//   final String power;
 
-  ExtraData({
-    required this.chargeNum,
-    required this.gateNum,
-    required this.organization,
-    required this.power,
-  });
+//   ExtraData({
+//     required this.chargeNum,
+//     required this.gateNum,
+//     required this.organization,
+//     required this.power,
+//   });
 
-  factory ExtraData.decode(String str) {
-    Map<String, dynamic> obj = jsonDecode(str);
-    return ExtraData(chargeNum: obj['charge_num'], gateNum: obj['gate_num'], organization: obj['organization'], power: obj['power']);
-  }
-}
+//   factory ExtraData.decode(String str) {
+//     Map<String, dynamic> obj = jsonDecode(str);
+//     return ExtraData(chargeNum: obj['charge_num'], gateNum: obj['gate_num'], organization: obj['organization'], power: obj['power']);
+//   }
+// }
 
 class DashboardDevices {
   final int total;
