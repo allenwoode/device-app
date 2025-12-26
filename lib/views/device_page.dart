@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'package:device/models/device_models.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/services/firebase_service.dart';
-import 'package:device/services/websocket_service.dart';
 import 'package:device/widgets/device_card.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/models/login_models.dart';
@@ -78,7 +77,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
       // Initialize badge count
       setState(() {
-        _notificationCount = _firebaseService.unreadCount + _notificationService.unreadCount;
+        _notificationCount =
+            _firebaseService.unreadCount + _notificationService.unreadCount;
       });
     } catch (e) {
       // Silent fail - notifications are optional
@@ -114,7 +114,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
   void _scrollListener() {
     // 当滚动到距离底部100像素时开始预加载
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100) {
       if (!_isLoadingMore && _hasMoreData && !_isLoading && !_isRefreshing) {
         _loadMoreDevices();
       }
@@ -127,8 +128,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       _filteredDevices = _devices;
     } else {
       _filteredDevices = _devices.where((device) {
-        return device.id.contains(query) ||
-               device.name.contains(query);
+        return device.id.contains(query) || device.name.contains(query);
       }).toList();
     }
   }
@@ -233,7 +233,10 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
     try {
       final nextPage = _currentPage + 1;
-      final data = await DeviceService.getDevices(index: nextPage, size: _pageSize);
+      final data = await DeviceService.getDevices(
+        index: nextPage,
+        size: _pageSize,
+      );
 
       if (data['devices'] != null) {
         final List<DeviceData> newDevices = (data['devices'] as List)
@@ -306,7 +309,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
     // Update badge count after returning from notifications page
     setState(() {
-      _notificationCount = _firebaseService.unreadCount;
+      _notificationCount =
+          _firebaseService.unreadCount + _notificationService.unreadCount;
     });
   }
 
@@ -431,18 +435,21 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                               SliverPadding(
                                 padding: const EdgeInsets.all(16),
                                 sliver: SliverGrid(
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 12,
-                                    mainAxisSpacing: 12,
-                                    childAspectRatio: 0.85,
-                                  ),
-                                  delegate: SliverChildBuilderDelegate(
-                                    (context, index) {
-                                      return DeviceCard(device: _filteredDevices[index]);
-                                    },
-                                    childCount: _filteredDevices.length,
-                                  ),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 12,
+                                        mainAxisSpacing: 12,
+                                        childAspectRatio: 0.85,
+                                      ),
+                                  delegate: SliverChildBuilderDelegate((
+                                    context,
+                                    index,
+                                  ) {
+                                    return DeviceCard(
+                                      device: _filteredDevices[index],
+                                    );
+                                  }, childCount: _filteredDevices.length),
                                 ),
                               ),
                               if (_isLoadingMore)
@@ -470,12 +477,15 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                     ),
                                   ),
                                 ),
-                              if (!_hasMoreData && _filteredDevices.isNotEmpty && !_isLoading)
+                              if (!_hasMoreData &&
+                                  _filteredDevices.isNotEmpty &&
+                                  !_isLoading)
                                 SliverToBoxAdapter(
                                   child: Container(
                                     padding: const EdgeInsets.all(10.0),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Icons.check_circle_outline,
@@ -484,7 +494,10 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          _l10n.allDevicesLoaded(_totalDevices ?? _filteredDevices.length),
+                                          _l10n.allDevicesLoaded(
+                                            _totalDevices ??
+                                                _filteredDevices.length,
+                                          ),
                                           style: TextStyle(
                                             color: Colors.grey[600],
                                             fontSize: 12,
@@ -494,7 +507,6 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                     ),
                                   ),
                                 ),
-
                             ],
                           ),
                   ),
