@@ -226,7 +226,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   ) {
     final stateString = stateValue['state'] as String?;
     if (stateString == null) return;
-
     // Update the specific property state
     if (property == 'CHARGE_STATE') {
       _updateChargeState(stateString);
@@ -323,9 +322,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   void _parseDeviceStateData(Map<String, dynamic> stateData) {
     // Initialize with default empty states
-    String lockStateString = '0000000000000000';
-    String chargeStateString = '0000000000000000';
-    String usedStateString = '0000000000000000';
+    String lockStateString = '00000000000000000000000000000000';
+    String chargeStateString = '00000000000000000000000000000000';
+    String usedStateString = '00000000000000000000000000000000';
 
     // Parse state data
     if (stateData['result'] != null && stateData['result'] is List) {
@@ -338,7 +337,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
           if (property == 'LOCK_STATE') {
             lockStateString = state;
-            print('===============> parse LOCK state: $lockStateString');
           } else if (property == 'CHARGE_STATE') {
             chargeStateString = state;
           } else if (property == 'USED_STATE') {
@@ -349,7 +347,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
 
     // Generate lock slots from state data
-    lockSlots = List.generate(16, (index) {
+    lockSlots = List.generate(_num ?? 16, (index) {
       final slotId = 'C${index + 1}';
 
       // Parse lock state (0 = locked, 1 = unlocked)
