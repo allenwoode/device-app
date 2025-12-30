@@ -72,7 +72,7 @@ class _FunctionPageState extends State<FunctionPage> {
 
   void _parseDeviceStateData(Map<String, dynamic> stateData) {
     // Initialize with default empty states
-    String lockStateString = '0000000000000000';
+    String lockStateString = '00000000000000000000000000000000';
 
     // Parse state data
     if (stateData['result'] != null && stateData['result'] is List) {
@@ -91,7 +91,7 @@ class _FunctionPageState extends State<FunctionPage> {
     }
 
     // Generate lock slots from state data
-    lockSlots = List.generate(16, (index) {
+    lockSlots = List.generate(widget.num ?? 16, (index) {
       final slotId = 'C${index + 1}';
 
       // Parse lock state (0 = locked, 1 = unlocked)
