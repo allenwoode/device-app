@@ -148,7 +148,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deviceUnlock => '设备开锁';
 
   @override
-  String get notPowered => '未通电';
+  String get uncharged => '未充电';
 
   @override
   String get charging => '充电中';

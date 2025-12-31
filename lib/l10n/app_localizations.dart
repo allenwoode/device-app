@@ -368,11 +368,11 @@ abstract class AppLocalizations {
   /// **'Device Unlock'**
   String get deviceUnlock;
 
-  /// No description provided for @notPowered.
+  /// No description provided for @uncharged.
   ///
   /// In en, this message translates to:
-  /// **'Not Powered'**
-  String get notPowered;
+  /// **'Not Charged'**
+  String get uncharged;
 
   /// No description provided for @charging.
   ///

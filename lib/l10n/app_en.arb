@@ -59,7 +59,7 @@
   "deviceOfflineCannotRemoteSet": "Device offline, cannot perform remote settings",
   "deviceLock": "Device Lock",
   "deviceUnlock": "Device Unlock",
-  "notPowered": "Not Powered",
+  "uncharged": "Not Charged",
   "charging": "Charging",
   "fullyCharged": "Fully Charged",
   "organizationUnitEmpty": "Organization unit is empty",

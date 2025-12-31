@@ -150,7 +150,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceUnlock => 'Device Unlock';
 
   @override
-  String get notPowered => 'Not Powered';
+  String get uncharged => 'Not Charged';
 
   @override
   String get charging => 'Charging';

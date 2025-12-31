@@ -45,7 +45,7 @@
   "deviceOfflineCannotRemoteSet": "设备离线，无法进行远程设置",
   "deviceLock": "设备关锁",
   "deviceUnlock": "设备开锁",
-  "notPowered": "未通电",
+  "uncharged": "未充电",
   "charging": "充电中",
   "fullyCharged": "已充满",
   "organizationUnitEmpty": "所属组织单位暂无",

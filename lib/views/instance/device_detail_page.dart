@@ -874,7 +874,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(_l10n.notPowered, style: const TextStyle(fontSize: 12)),
+              Text(_l10n.uncharged, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 16),
               Container(
                 width: 12,
@@ -1033,7 +1033,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(_l10n.notPowered, style: const TextStyle(fontSize: 12)),
+                    Text(_l10n.uncharged, style: const TextStyle(fontSize: 12)),
           ],
         );
       case LockState.charging:
