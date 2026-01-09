@@ -8,6 +8,8 @@ class DeviceData {
   final String productName;
   final String description;
   final int spec;
+  final int indicator;
+  final String category;
   final String lastUpdated;
 
   DeviceData({
@@ -18,6 +20,8 @@ class DeviceData {
     required this.productName,
     required this.description,
     required this.spec,
+    required this.indicator,
+    required this.category,
     required this.lastUpdated,
   });
 
@@ -33,6 +37,8 @@ class DeviceData {
       productName: json['productName'] ?? '',
       description: json['description'] ?? '',
       spec: extraData['gate_num'] ?? 16,
+      indicator: extraData['charge_num'] ?? 16,
+      category: extraData['category'] ?? '',
       lastUpdated: json['createTime']?.toString() ?? json['lastUpdated'] ?? '',
     );
   }

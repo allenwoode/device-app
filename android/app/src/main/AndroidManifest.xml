@@ -65,20 +65,20 @@
             android:value="2" />
 
         <!-- Flutter Background Service -->
-        <service
+        <!-- <service
             android:name="id.flutter.flutter_background_service.BackgroundService"
             android:exported="false"
             android:foregroundServiceType="dataSync"
             android:enabled="true"
-            tools:replace="android:exported" />
+            tools:replace="android:exported" /> -->
 
         <!-- Flutter Foreground Task Service -->
-        <service
+        <!-- <service
             android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
             android:exported="false"
             android:foregroundServiceType="dataSync"
             android:stopWithTask="true"
-            tools:replace="android:exported" />
+            tools:replace="android:exported" /> -->
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

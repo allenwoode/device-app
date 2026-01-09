@@ -103,7 +103,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   }
 
   Future<void> _getCurrentSsid() async {
-    print('=================get current ssid ===============');
+    //print('=================get current ssid ===============');
     // Try to get current WiFi SSID
     String? currentSSID;
 
@@ -126,7 +126,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       }
     } catch (e) {
       // Ignore errors, just won't pre-fill SSID
-      print('===== current ssid no found!');
+      //print('===== current ssid no found!');
       return;
     }
 
