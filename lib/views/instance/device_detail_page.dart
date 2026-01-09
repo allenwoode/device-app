@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/api/api_config.dart';
@@ -706,7 +704,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         ),
         const SizedBox(height: 8),
         // Charging status indicator
-        _buildLuxuryIndicator(slot.chargingState),
+        _buildIndicator(slot.chargingState),
       ],
     );
   }
@@ -844,12 +842,12 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         ),
         const SizedBox(height: 8),
         // Charging status indicator
-        _buildLockerIndicator(slot.chargingState),
+        _buildIndicator(slot.chargingState),
       ],
     );
   }
 
-  Widget _buildLuxuryIndicator(ChargeState state) {
+  Widget _buildIndicator(ChargeState state) {
     if (_state == 0) {
       return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14));
     }
@@ -859,7 +857,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           width: 12,
           height: 12,
           decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
+            shape: BoxShape.circle,
             color: Color(0xFF00a0e9),
             boxShadow: [
               BoxShadow(
@@ -876,7 +874,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           width: 12,
           height: 12,
           decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
+            shape: BoxShape.circle,
             color: Color(0xFF55bf4f),
             boxShadow: [
               BoxShadow(
@@ -893,7 +891,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           width: 12,
           height: 12,
           decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
+            shape: BoxShape.circle,
             color: Colors.white,
             boxShadow: [
               BoxShadow(
@@ -908,64 +906,64 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
   }
 
-  Widget _buildLockerIndicator(ChargeState state) {
-    if (_state == 0) {
-      return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14));
-    }
-    switch (state) {
-      case ChargeState.charging:
-        return Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xFF00a0e9),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 0,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-        );
-      case ChargeState.charged:
-        return Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xFF55bf4f),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 0,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-        );
-      case ChargeState.empty:
-        return Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 0,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-        );
-    }
-  }
+  // Widget _buildLockerIndicator(ChargeState state) {
+  //   if (_state == 0) {
+  //     return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14));
+  //   }
+  //   switch (state) {
+  //     case ChargeState.charging:
+  //       return Container(
+  //         width: 12,
+  //         height: 12,
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //           color: Color(0xFF00a0e9),
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.grey.withOpacity(0.5),
+  //               spreadRadius: 0,
+  //               blurRadius: 4,
+  //               offset: const Offset(0, 2),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     case ChargeState.charged:
+  //       return Container(
+  //         width: 12,
+  //         height: 12,
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //           color: Color(0xFF55bf4f),
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.grey.withOpacity(0.5),
+  //               spreadRadius: 0,
+  //               blurRadius: 4,
+  //               offset: const Offset(0, 2),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     case ChargeState.empty:
+  //       return Container(
+  //         width: 12,
+  //         height: 12,
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //           color: Colors.white,
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.grey.withOpacity(0.5),
+  //               spreadRadius: 0,
+  //               blurRadius: 4,
+  //               offset: const Offset(0, 2),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //   }
+  // }
 
   Widget _buildLegend() {
     return Container(
@@ -998,7 +996,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 height: 12,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  shape: _category == 'luxury' ? BoxShape.rectangle : BoxShape.circle,
+                  shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
@@ -1017,7 +1015,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 height: 12,
                 decoration: BoxDecoration(
                   color: Color(0xFF00a0e9),
-                  shape: _category == 'luxury' ? BoxShape.rectangle : BoxShape.circle,
+                  shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
@@ -1036,7 +1034,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 height: 12,
                 decoration: BoxDecoration(
                   color: Color(0xFF55bf4f),
-                  shape: _category == 'luxury' ? BoxShape.rectangle : BoxShape.circle,
+                  shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
