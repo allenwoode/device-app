@@ -34,13 +34,13 @@ class DeviceCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top row with server icon and WiFi status
+                // Top row device icon and WiFi status
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Device Icon
-                    _buildServerIcon(),
+                    _buildDeviceIcon(),
                     // Online status indicator
                     _buildStatusIcon(),
                   ],
@@ -97,12 +97,14 @@ class DeviceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildServerIcon() {
+  Widget _buildDeviceIcon() {
+    String imageName = device.category == 'luxury' ? 'LUX-DC.jpg' : 'ELLITE-DC.jpg';
+
     return SizedBox(
       width: 68,
       height: 68,
       child: Image.asset(
-        'lib/assets/images/ELLTE-MAX-${device.spec}.png',
+        'lib/assets/images/$imageName',
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           // Fallback to default image if specific device image not found
