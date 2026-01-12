@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/api/api_config.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../l10n/app_localizations.dart';
 
 enum LockState { locked, unlocked }
@@ -165,12 +166,11 @@ class _FunctionPageState extends State<FunctionPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                slot.lockState == LockState.unlocked
-                    ? Icons.lock_open
-                    : Icons.lock,
-                size: 24,
-                color: Colors.grey[600],
+              FaIcon(slot.lockState == LockState.unlocked
+                        ? FontAwesomeIcons.lockOpen
+                        : FontAwesomeIcons.lock,
+                    size: 20, 
+                    color: Colors.grey[600],
               ),
               const SizedBox(height: 4),
               // Slot ID
