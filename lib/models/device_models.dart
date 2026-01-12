@@ -7,6 +7,7 @@ class DeviceData {
   final String productId;
   final String productName;
   final String description;
+  final String photoUrl;
   final int spec;
   final int indicator;
   final String category;
@@ -19,6 +20,7 @@ class DeviceData {
     required this.productId,
     required this.productName,
     required this.description,
+    required this.photoUrl,
     required this.spec,
     required this.indicator,
     required this.category,
@@ -36,6 +38,7 @@ class DeviceData {
       productId: json['productId'] ?? '',
       productName: json['productName'] ?? '',
       description: json['description'] ?? '',
+      photoUrl: json['photoUrl'] ?? '',
       spec: extraData['gate_num'] ?? 16,
       indicator: extraData['charge_num'] ?? 16,
       category: extraData['category'] ?? '',

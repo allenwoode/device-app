@@ -98,18 +98,16 @@ class DeviceCard extends StatelessWidget {
   }
 
   Widget _buildDeviceIcon() {
-    String imageName = device.category == 'luxury' ? 'LUX-DC.jpg' : 'ELLITE-DC.jpg';
-
     return SizedBox(
       width: 68,
       height: 68,
-      child: Image.asset(
-        'lib/assets/images/$imageName',
+      child: Image.network(
+        device.photoUrl,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           // Fallback to default image if specific device image not found
           return Image.asset(
-            'lib/assets/images/default-device-logo.png',
+            'lib/assets/images/ELLITE-DC.jpg',
             fit: BoxFit.contain,
           );
         },
