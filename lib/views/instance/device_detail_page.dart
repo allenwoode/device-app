@@ -650,10 +650,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: (_indicator ?? 16) < 12 ? 3 : 6,
+          crossAxisCount: 6,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: (_indicator ?? 16) < 12 ? 0.9 : 0.6,
+          childAspectRatio: 0.6,
         ),
         itemCount: _indicator ?? lockSlots.length,
         itemBuilder: (context, index) {
@@ -768,10 +768,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: (_indicator ?? 16) < 12 ? 3 : 4,
+          crossAxisCount: 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: (_indicator ?? 16) < 12 ? 0.9 : 0.6,
+          childAspectRatio: 0.6,
         ),
         itemCount: _indicator ?? lockSlots.length,
         itemBuilder: (context, index) {
