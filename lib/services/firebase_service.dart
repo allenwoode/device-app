@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 // Top-level function to handle background messages
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
+  print("Background Message ID: ${message.messageId}");
   print("Background Message Title: ${message.notification?.title}");
   print("Background Message Body: ${message.notification?.body}");
   print("Background Message Data: ${message.data}");
@@ -24,7 +24,7 @@ class FirebaseService {
   bool _initialized = false;
 
   // Store notifications
-  final List<NotificationItem> _notifications_list = [];
+  final List<NotificationItem> _notifications = [];
 
   // Counter for generating notification IDs
   int _notificationIdCounter = 1000;
@@ -47,16 +47,16 @@ class FirebaseService {
 
   /// Get all notifications
   List<NotificationItem> get notifications =>
-      List.unmodifiable(_notifications_list);
+      List.unmodifiable(_notifications);
 
   /// Get unread notification count
-  int get unreadCount => _notifications_list.where((n) => !n.isRead).length;
+  int get unreadCount => _notifications.where((n) => !n.isRead).length;
 
   /// Mark notification as read
   void markAsRead(int id) {
-    final index = _notifications_list.indexWhere((n) => n.id == id);
+    final index = _notifications.indexWhere((n) => n.id == id);
     if (index != -1) {
-      _notifications_list[index] = _notifications_list[index].copyWith(
+      _notifications[index] = _notifications[index].copyWith(
         isRead: true,
       );
       // Notify all pages about count change
@@ -66,8 +66,8 @@ class FirebaseService {
 
   /// Mark all notifications as read
   void markAllAsRead() {
-    for (int i = 0; i < _notifications_list.length; i++) {
-      _notifications_list[i] = _notifications_list[i].copyWith(isRead: true);
+    for (int i = 0; i < _notifications.length; i++) {
+      _notifications[i] = _notifications[i].copyWith(isRead: true);
     }
     // Notify all pages about count change
     EventBus.instance.commit(EventKeys.notificationCountChanged, unreadCount);
@@ -75,7 +75,7 @@ class FirebaseService {
 
   /// Clear all notifications
   void clearAllNotifications() {
-    _notifications_list.clear();
+    _notifications.clear();
     // Notify all pages about count change
     EventBus.instance.commit(EventKeys.notificationCountChanged, unreadCount);
   }
@@ -97,7 +97,8 @@ class FirebaseService {
       timestamp: DateTime.now(),
       isRead: false,
     );
-    _notifications_list.insert(0, notificationItem);
+
+    _notifications.insert(0, notificationItem);
 
     // Track this message ID
     if (messageId != null) {
@@ -154,7 +155,7 @@ class FirebaseService {
     if (_initialized) return;
 
     await requestPermission();
-    //getToken();
+    getToken();
 
     // Register the background message handler
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
@@ -168,7 +169,7 @@ class FirebaseService {
 
       // Transform title and body
       final title = '🔔 ${message.notification?.title}';
-      final body = _getBody(message.data['code'] ?? '');
+      final body = _getBody(message.data['code'] ?? '${message.notification?.body}');
 
       // Add to notification list with transformed values
       _addNotification(message, title: title, body: body);
@@ -226,4 +227,14 @@ class FirebaseService {
     String? token = await messaging.getToken();
     print("FCM Token: $token");
   }
+
+  Future<void> subscribeToTopic(String topic) async {
+    await messaging.subscribeToTopic(topic);
+  }
+
+  Future<void> unsubscribeFromTopic(String topic) async {
+    await messaging.unsubscribeFromTopic(topic);
+  }
+
+  
 }

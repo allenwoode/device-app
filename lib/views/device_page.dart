@@ -60,6 +60,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
     _initializeNotification();
 
+    //_firebaseService.subscribeToTopic('app-alert-publish');
+
     _scrollController.addListener(_scrollListener);
     _searchController.addListener(_performSearch);
   }
@@ -68,7 +70,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     try {
       _notificationService = NotificationService();
       _firebaseService = FirebaseService();
-
+    
       // Listen to notification events via EventBus (supports multiple pages)
       EventBus.instance.addListener(
         EventKeys.notificationCountChanged,
@@ -108,6 +110,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       EventKeys.notificationCountChanged,
       _onNotificationCountChanged,
     );
+
+    //_firebaseService.subscribeToTopic('app-alert-publish');
 
     super.dispose();
   }
