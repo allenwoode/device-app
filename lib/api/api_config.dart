@@ -1,6 +1,6 @@
 class ApiConfig {
   //static const String baseUrl = 'http://192.168.2.137:8848';
-  //static const String baseUrl = 'https://feenod.top/api';
+  //static const String baseUrl = 'https://feenod.xyz/api';
   static const String baseUrl = 'https://gam-net.com/api';
   static const Duration timeout = Duration(seconds: 10);
 
@@ -30,5 +30,5 @@ class ApiConfig {
 
   // // Environment-specific configurations
   static bool get useLocalFallback => true;
-  static bool get enableLogging => false;
+  static bool get enableLogging => true;
 }
