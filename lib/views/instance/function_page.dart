@@ -128,10 +128,10 @@ class _FunctionPageState extends State<FunctionPage> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: (widget.num ?? 16) < 12 ? 3 : 4,
+          crossAxisCount: 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: (widget.num ?? 16) < 12 ? 0.7 : 0.5,
+          childAspectRatio: 0.65,
         ),
         itemCount: widget.num ?? lockSlots.length,
         itemBuilder: (context, index) {
@@ -148,8 +148,8 @@ class _FunctionPageState extends State<FunctionPage> {
       children: [
         // Circular background with lock icon
         Container(
-          width: 64,
-          height: 64,
+          width: 52,
+          height: 52,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: slot.lockState == LockState.unlocked ? Colors.white : Colors.grey[300],
@@ -185,7 +185,7 @@ class _FunctionPageState extends State<FunctionPage> {
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         // Charging status indicator
         _buildLockSelector(slot.lockState, slot.id),
       ],

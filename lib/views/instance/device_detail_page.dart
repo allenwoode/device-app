@@ -771,7 +771,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           crossAxisCount: 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 0.6,
+          childAspectRatio: 0.7,
         ),
         itemCount: _indicator ?? lockSlots.length,
         itemBuilder: (context, index) {
@@ -849,7 +849,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   Widget _buildIndicator(ChargeState state) {
     if (_state == 0) {
-      return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14));
+      return SizedBox(
+        width: 12,
+        height: 12,
+        child: const Text('--', style: TextStyle(color: Colors.grey, fontSize: 14))
+      );
     }
     switch (state) {
       case ChargeState.charging:
