@@ -57,9 +57,7 @@ class _DashboardPageState extends State<DashboardPage> {
         });
       }
     } catch (e) {
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
@@ -87,21 +85,16 @@ class _DashboardPageState extends State<DashboardPage> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load dashboard data: $e')),
+          SnackBar(content: Text('Failed to load dashboard data')),
         );
       }
+      print('Error loading dashboard data: $e');
     }
   }
 
   Dashboard convert(List<Dashboard> data) {
     if (data.isEmpty) {
-      return Dashboard(
-        id: '',
-        label: '',
-        total: 0,
-        data: [0, 0],
-        text: '',
-      );
+      return Dashboard(id: '', label: '', total: 0, data: [0, 0], text: '');
     }
 
     // Aggregate all counts from the list
@@ -129,7 +122,13 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   List<ChartBarData> _convertUsageToChartData(List<Dashboard> usageList) {
-    final colors = [Colors.blue, Colors.green, Colors.orange, Colors.purple, Colors.red];
+    final colors = [
+      Colors.blue,
+      Colors.green,
+      Colors.orange,
+      Colors.purple,
+      Colors.red,
+    ];
 
     return usageList.asMap().entries.map((entry) {
       int index = entry.key;
@@ -164,8 +163,8 @@ class _DashboardPageState extends State<DashboardPage> {
         elevation: 0,
         title: Text(
           _currentUser?.orgList.isNotEmpty == true
-                ? _currentUser!.orgList.first.name
-                : _l10n.organizationUnitEmpty,
+              ? _currentUser!.orgList.first.name
+              : _l10n.organizationUnitEmpty,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
@@ -183,59 +182,59 @@ class _DashboardPageState extends State<DashboardPage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-              BarChartCard(
-                title: _l10n.todayUsageTop5,
-                shouldAnimate: _shouldAnimateCards,
-                data: _convertUsageToChartData(_dashboardUsage),
-                onTap: () {
-                  AppRoutes.goToDashboardUsage(context);
-                },
-              ),
-              const SizedBox(height: 16),
-              PieChartCard(
-                title: _l10n.devices,
-                total: _dashboardDevices?.total,
-                primaryLabel: _l10n.online,
-                primaryValue: _dashboardDevices?.onlineCount ?? 0,
-                primaryColor: Colors.green,
-                secondaryLabel: _l10n.offline,
-                secondaryValue: _dashboardDevices?.offlineCount ?? 0,
-                secondaryColor: Colors.grey,
-                shouldAnimate: _shouldAnimateCards,
-                onTap: () {
-                  AppRoutes.goToMain(context);
-                },
-              ),
-              const SizedBox(height: 16),
-              PieChartCard(
-                title: _l10n.todayAlerts,
-                total: _dashboardAlerts?.total,
-                primaryLabel: _l10n.notice,
-                primaryValue: _dashboardAlerts?.data[0] ?? 0,
-                primaryColor: Colors.green,
-                secondaryLabel: _l10n.severe,
-                secondaryValue: _dashboardAlerts?.data[1] ?? 0,
-                secondaryColor: Colors.red,
-                shouldAnimate: _shouldAnimateCards,
-                onTap: () {
-                  AppRoutes.goToDashboardAlert(context);
-                },
-              ),
-              const SizedBox(height: 16),
-              PieChartCard(
-                title: _l10n.operationLogs,
-                total: _dashboardMessage?.total,
-                primaryLabel: _l10n.report,
-                primaryValue: _dashboardMessage?.data[0] ?? 0,
-                primaryColor: Colors.green,
-                secondaryLabel: _l10n.dispatch,
-                secondaryValue: _dashboardMessage?.data[1] ?? 0,
-                secondaryColor: Colors.red,
-                shouldAnimate: _shouldAnimateCards,
-                onTap: () {
-                  AppRoutes.goToDashboardDeviceLog(context);
-                },
-              ),
+                    BarChartCard(
+                      title: _l10n.todayUsageTop5,
+                      shouldAnimate: _shouldAnimateCards,
+                      data: _convertUsageToChartData(_dashboardUsage),
+                      onTap: () {
+                        AppRoutes.goToDashboardUsage(context);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    PieChartCard(
+                      title: _l10n.devices,
+                      total: _dashboardDevices?.total,
+                      primaryLabel: _l10n.online,
+                      primaryValue: _dashboardDevices?.onlineCount ?? 0,
+                      primaryColor: Colors.green,
+                      secondaryLabel: _l10n.offline,
+                      secondaryValue: _dashboardDevices?.offlineCount ?? 0,
+                      secondaryColor: Colors.grey,
+                      shouldAnimate: _shouldAnimateCards,
+                      onTap: () {
+                        AppRoutes.goToMain(context);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    PieChartCard(
+                      title: _l10n.todayAlerts,
+                      total: _dashboardAlerts?.total,
+                      primaryLabel: _l10n.notice,
+                      primaryValue: _dashboardAlerts?.data[0] ?? 0,
+                      primaryColor: Colors.green,
+                      secondaryLabel: _l10n.severe,
+                      secondaryValue: _dashboardAlerts?.data[1] ?? 0,
+                      secondaryColor: Colors.red,
+                      shouldAnimate: _shouldAnimateCards,
+                      onTap: () {
+                        AppRoutes.goToDashboardAlert(context);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    PieChartCard(
+                      title: _l10n.operationLogs,
+                      total: _dashboardMessage?.total,
+                      primaryLabel: _l10n.report,
+                      primaryValue: _dashboardMessage?.data[0] ?? 0,
+                      primaryColor: Colors.green,
+                      secondaryLabel: _l10n.dispatch,
+                      secondaryValue: _dashboardMessage?.data[1] ?? 0,
+                      secondaryColor: Colors.red,
+                      shouldAnimate: _shouldAnimateCards,
+                      onTap: () {
+                        AppRoutes.goToDashboardDeviceLog(context);
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -243,4 +242,3 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 }
-
