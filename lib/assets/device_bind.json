@@ -1,4 +1,4 @@
-POST /assets/bind/{orgId}/device
+POST /app/asset/{orgId}/bind
 
 # body
 ["1968495383549747200"]

@@ -62,12 +62,8 @@ class _BarChartCardState extends State<BarChartCard>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-        color: Colors.white,
+    return Container(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -78,7 +74,15 @@ class _BarChartCardState extends State<BarChartCard>
           ),
         ],
       ),
-        child: Column(
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -205,6 +209,8 @@ class _BarChartCardState extends State<BarChartCard>
               ),
             ),
           ],
+            ),
+          ),
         ),
       ),
     );

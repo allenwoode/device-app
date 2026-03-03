@@ -7,7 +7,10 @@ class DeviceData {
   final String productId;
   final String productName;
   final String description;
+  final String photoUrl;
   final int spec;
+  final int indicator;
+  final String category;
   final String lastUpdated;
 
   DeviceData({
@@ -17,13 +20,17 @@ class DeviceData {
     required this.productId,
     required this.productName,
     required this.description,
+    required this.photoUrl,
     required this.spec,
+    required this.indicator,
+    required this.category,
     required this.lastUpdated,
   });
 
   factory DeviceData.fromJson(Map<String, dynamic> json) {
-    final extraData = json['extraData'];
-    final spec = extraData == "" ? 16 : ExtraData.decode(extraData).gateNum;
+    String extraDataString = json['extraData'] ?? "";
+    final extraData = extraDataString.isEmpty ? {} :jsonDecode(extraDataString);
+
     return DeviceData(
       id: json['id'] ?? '',
       state: json['state']?['value'] == 'online' ? 1 : 0,
@@ -31,30 +38,33 @@ class DeviceData {
       productId: json['productId'] ?? '',
       productName: json['productName'] ?? '',
       description: json['description'] ?? '',
-      spec: spec,
+      photoUrl: json['photoUrl'] ?? '',
+      spec: extraData['gate_num'] ?? 16,
+      indicator: extraData['charge_num'] ?? 16,
+      category: extraData['category'] ?? '',
       lastUpdated: json['createTime']?.toString() ?? json['lastUpdated'] ?? '',
     );
   }
 }
 
-class ExtraData {
-  final int chargeNum;
-  final int gateNum;
-  final String organization;
-  final String power;
+// class ExtraData {
+//   final int chargeNum;
+//   final int gateNum;
+//   final String organization;
+//   final String power;
 
-  ExtraData({
-    required this.chargeNum,
-    required this.gateNum,
-    required this.organization,
-    required this.power,
-  });
+//   ExtraData({
+//     required this.chargeNum,
+//     required this.gateNum,
+//     required this.organization,
+//     required this.power,
+//   });
 
-  factory ExtraData.decode(String str) {
-    Map<String, dynamic> obj = jsonDecode(str);
-    return ExtraData(chargeNum: obj['charge_num'], gateNum: obj['gate_num'], organization: obj['organization'], power: obj['power']);
-  }
-}
+//   factory ExtraData.decode(String str) {
+//     Map<String, dynamic> obj = jsonDecode(str);
+//     return ExtraData(chargeNum: obj['charge_num'], gateNum: obj['gate_num'], organization: obj['organization'], power: obj['power']);
+//   }
+// }
 
 class DashboardDevices {
   final int total;
@@ -76,88 +86,28 @@ class DashboardDevices {
   }
 }
 
-class DashboardUsage {
-  final String label;
-  final int value;
-  final String text;
-
-  DashboardUsage({
-    required this.label,
-    required this.value,
-    required this.text,
-  });
-
-  factory DashboardUsage.fromJson(Map<String, dynamic> json) {
-    return DashboardUsage(
-      label: json['label'] ?? '',
-      value: json['value'] ?? 0,
-      text: json['text'] ?? '',
-    );
-  }
-}
-
-class DashboardUsageDevice {
+class Dashboard {
   final String id;
   final String label;
   final int total;
-  final List<int> depo;
+  final List<int> data;
   final String text;
 
-  DashboardUsageDevice({
+  Dashboard({
     required this.id,
     required this.label,
     required this.total,
-    required this.depo,
+    required this.data,
     required this.text,
   });
 
-  factory DashboardUsageDevice.fromJson(Map<String, dynamic> json) {
-    return DashboardUsageDevice(
-      id: json['id'] ?? '',
-      label: json['label'] ?? '',
-      total: json['total'] ?? 0,
-      depo: List<int>.from(json['depo'] ?? []),
-      text: json['text'] ?? '',
-    );
-  }
-}
-
-class DashboardAlerts {
-  final int total;
-  final int alarmCount;
-  final int severeCount;
-
-  DashboardAlerts({
-    required this.total,
-    required this.alarmCount,
-    required this.severeCount,
-  });
-
-  factory DashboardAlerts.fromJson(Map<String, dynamic> json) {
-    return DashboardAlerts(
-      total: json['total'] ?? 0,
-      alarmCount: json['alarmCount'] ?? 0,
-      severeCount: json['severeCount'] ?? 0,
-    );
-  }
-}
-
-class DashboardMessage {
-  final int total;
-  final int reportCount;
-  final int functionCount;
-
-  DashboardMessage({
-    required this.total,
-    required this.reportCount,
-    required this.functionCount,
-  });
-
-  factory DashboardMessage.fromJson(Map<String, dynamic> json) {
-    return DashboardMessage(
-      total: json['total'] ?? 0,
-      reportCount: json['reportCount'] ?? 0,
-      functionCount: json['functionCount'] ?? 0,
+  factory Dashboard.fromJson(Map<String, dynamic> json) {
+    return Dashboard(
+      id: json['deviceId'] ?? json['id'] ?? '',
+      label: json['deviceName'] ?? json['label'] ?? '',
+      total: json['amount'] ?? json['total'] ?? 0,
+      data: List<int>.from(json['data'] ?? []),
+      text: json['action'] ?? json['text'] ?? '',
     );
   }
 }
@@ -166,27 +116,17 @@ class DeviceUsage {
   final int port;
   final String type;
   final int timestamp;
-  final String typeFormat;
-  final String portFormat;
-  final int timestampFormat;
   final String deviceId;
   final String depo;
-  final String depoFormat;
-  final int createTime;
-  final int createTimeFormat;
+  final String createTime;
 
   DeviceUsage({
     required this.port,
     required this.type,
     required this.timestamp,
-    required this.typeFormat,
-    required this.portFormat,
-    required this.timestampFormat,
     required this.deviceId,
     required this.depo,
-    required this.depoFormat,
     required this.createTime,
-    required this.createTimeFormat,
   });
 
   factory DeviceUsage.fromJson(Map<String, dynamic> json) {
@@ -194,80 +134,113 @@ class DeviceUsage {
       port: json['port'] ?? 0,
       type: json['type'] ?? '',
       timestamp: json['timestamp'] ?? 0,
-      typeFormat: json['type_format'] ?? '',
-      portFormat: json['port_format'] ?? '',
-      timestampFormat: json['timestamp_format'] ?? 0,
       deviceId: json['deviceId'] ?? '',
       depo: json['depo'] ?? '',
-      depoFormat: json['depo_format'] ?? '',
-      createTime: json['createTime'] ?? 0,
-      createTimeFormat: json['createTime_format'] ?? 0,
+      createTime: formatDateTime(json['timestamp']),
     );
   }
 
-  String get formattedCreateTime {
-    if (createTime == 0) return '';
-    final dateTime = DateTime.fromMillisecondsSinceEpoch(createTime);
+}
+
+String formatDateTime(int timestamp) {
+  if (timestamp == 0) return '';
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
     return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+}
+
+class DeviceUsageCount {
+  final int port;
+  final int count;
+  final String type;
+  final int timestamp;
+  final String deviceId;
+  final String depo;
+  final int createTime;
+
+  DeviceUsageCount({
+    required this.port,
+    required this.count,
+    required this.type,
+    required this.timestamp,
+    required this.deviceId,
+    required this.depo,
+    required this.createTime,
+  });
+
+  factory DeviceUsageCount.fromJson(Map<String, dynamic> json) {
+    return DeviceUsageCount(
+      port: json['port'] ?? 0,
+      count: json['count'] ?? 0,
+      type: json['type'] ?? '',
+      timestamp: json['timestamp'] ?? 0,
+      deviceId: json['deviceId'] ?? '',
+      depo: json['depo'] ?? '',
+      createTime: json['createTime'] ?? 0,
+    );
   }
 }
 
 class DeviceAlert {
+  final String id;
   final int level;
-  final String levelFormat;
+  final String label;
   final String text;
   final String createTime;
   final String deviceId;
-  final int port;
   final int timestamp;
 
   DeviceAlert({
+    required this.id,
     required this.level,
-    required this.levelFormat,
+    required this.label,
     required this.text,
     required this.createTime,
     required this.deviceId,
-    required this.port,
     required this.timestamp,
   });
 
   factory DeviceAlert.fromJson(Map<String, dynamic> json) {
     return DeviceAlert(
+      id: json['deviceId'] ?? '',
       level: json['level'] ?? 0,
-      levelFormat: json['level_format'] ?? '',
-      text: json['text'] ?? '',
-      createTime: json['createTime'] ?? '',
+      label: json['deviceName'] ?? '',
+      text: json['content'] ?? '',
+      createTime: formatDateTime(json['timestamp'] ?? 0),
       deviceId: json['deviceId'] ?? '',
-      port: json['port'] ?? 0,
       timestamp: json['timestamp'] ?? 0,
     );
   }
 
-  String get alertInfo => port > 0 ? 'C$port $text' : text;
 }
 
-class DeviceLog {
+class DeviceOperateLog {
   final String category;
   final String text;
-  final String createTime;
   final String deviceId;
   final int timestamp;
+  final String createTime;
 
-  DeviceLog({
+  DeviceOperateLog({
     required this.category,
     required this.text,
-    required this.createTime,
     required this.deviceId,
     required this.timestamp,
+    required this.createTime,
   });
 
-  factory DeviceLog.fromJson(Map<String, dynamic> json) {
-    return DeviceLog(
-      category: json['category'] ?? '',
-      text: json['text'] ?? '',
-      createTime: json['createTime'] ?? '',
+  factory DeviceOperateLog.fromJson(Map<String, dynamic> json) {
+    final timestamp = json['timestamp'] ?? 0;
+    final dateTime = timestamp != 0
+        ? DateTime.fromMillisecondsSinceEpoch(timestamp)
+        : DateTime.now();
+    final formattedTime = '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+
+    return DeviceOperateLog(
+      category: json['action'] ?? '',
+      text: json['content'] ?? '',
       deviceId: json['deviceId'] ?? '',
-      timestamp: json['timestamp'] ?? 0,
+      timestamp: timestamp,
+      createTime: formattedTime,
     );
   }
 

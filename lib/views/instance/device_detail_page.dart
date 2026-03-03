@@ -1,20 +1,20 @@
-import 'package:device/config/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/api/api_config.dart';
 import 'package:device/routes/app_routes.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../l10n/app_localizations.dart';
-import '../../widgets/confirm_dialog.dart';
 import '../../services/websocket_service.dart';
 import 'dart:async';
 
-enum LockState { locked, unlocked, charging, charged, empty }
+enum LockState { locked, unlocked }
+
+enum ChargeState { charging, charged, empty }
 
 class LockSlot {
   final String id;
   final LockState lockState;
-  final LockState chargingState;
+  final ChargeState chargingState;
   final bool isUsed;
 
   LockSlot({
@@ -44,8 +44,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   bool _isLoading = true;
   String? _errorMessage;
   //String _deviceName = '';
+  String _category = '';
   int _state = 0;
   int? _num;
+  int? _indicator;
 
   StreamSubscription<Map<String, dynamic>>? _deviceStatusSubscription;
   StreamSubscription<Map<String, dynamic>>? _deviceStateSubscription;
@@ -91,13 +93,16 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     try {
       final device = await DeviceService.getDeviceDetail(widget.deviceId);
       //_deviceName = device.name;
+      _category = device.category;
       _state = device.state;
       _num = device.spec;
+      _indicator = device.indicator;
 
       final deviceStateData = await DeviceService.getDeviceState(
         widget.deviceId,
         widget.productId,
       );
+
       _parseDeviceStateData(deviceStateData);
 
       setState(() {
@@ -129,7 +134,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         WebSocketService.subscribe(id, topic, parameter: parameter).listen(
           (message) {
             if (mounted) {
-              //print('===>listen device status: $message');
               _handleDeviceStatusUpdate(message);
             }
           },
@@ -180,7 +184,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   void _handleDeviceStatusUpdate(Map<String, dynamic> message) {
     try {
-      // Extract payload from WebSocket message based on assets/device_status_message.json structure
       final payload = message['payload'];
       if (payload != null && payload['value'] != null) {
         final value = payload['value'];
@@ -229,7 +232,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   ) {
     final stateString = stateValue['state'] as String?;
     if (stateString == null) return;
-
     // Update the specific property state
     if (property == 'CHARGE_STATE') {
       _updateChargeState(stateString);
@@ -248,23 +250,23 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     for (int index = 0; index < lockSlots.length; index++) {
       if (index < chargeStateString.length) {
         final chargeChar = chargeStateString[index];
-        LockState chargingState;
+        ChargeState state;
 
         switch (chargeChar) {
           case '1':
-            chargingState = LockState.charged;
+            state = ChargeState.charged;
             break;
           case '2':
-            chargingState = LockState.charging;
+            state = ChargeState.charging;
             break;
           default:
-            chargingState = LockState.empty;
+            state = ChargeState.empty;
         }
 
         lockSlots[index] = LockSlot(
           id: lockSlots[index].id,
           lockState: lockSlots[index].lockState,
-          chargingState: chargingState,
+          chargingState: state,
           isUsed: lockSlots[index].isUsed,
         );
       }
@@ -307,7 +309,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   void _regenerateLockSlots() {
     // Ensure we have the right number of slots based on device spec
-    final targetSlotCount = _num ?? 16;
+    final targetSlotCount = _indicator ?? 16;
     if (lockSlots.length != targetSlotCount) {
       // Regenerate slots if count doesn't match
       lockSlots = List.generate(targetSlotCount, (index) {
@@ -317,7 +319,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             : LockSlot(
                 id: slotId,
                 lockState: LockState.locked,
-                chargingState: LockState.empty,
+                chargingState: ChargeState.empty,
                 isUsed: false,
               );
       });
@@ -326,9 +328,9 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   void _parseDeviceStateData(Map<String, dynamic> stateData) {
     // Initialize with default empty states
-    String lockStateString = '0000000000000000';
-    String chargeStateString = '0000000000000000';
-    String usedStateString = '0000000000000000';
+    String lockStateString = '00000000000000000000000000000000';
+    String chargeStateString = '00000000000000000000000000000000';
+    String usedStateString = '00000000000000000000000000000000';
 
     // Parse state data
     if (stateData['result'] != null && stateData['result'] is List) {
@@ -351,7 +353,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     }
 
     // Generate lock slots from state data
-    lockSlots = List.generate(16, (index) {
+    lockSlots = List.generate(_indicator ?? 16, (index) {
       final slotId = 'C${index + 1}';
 
       // Parse lock state (0 = locked, 1 = unlocked)
@@ -364,7 +366,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       final chargeChar = index < chargeStateString.length
           ? chargeStateString[index]
           : '0';
-      LockState chargingState;
+      ChargeState chargingState;
 
       // Parse used state (1 = used, 0 = default)
       final usedChar = index < usedStateString.length
@@ -374,13 +376,13 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
       switch (chargeChar) {
         case '1':
-          chargingState = LockState.charged;
+          chargingState = ChargeState.charged;
           break;
         case '2':
-          chargingState = LockState.charging;
+          chargingState = ChargeState.charging;
           break;
         default:
-          chargingState = LockState.empty;
+          chargingState = ChargeState.empty;
       }
 
       return LockSlot(
@@ -390,66 +392,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         isUsed: isUsed,
       );
     });
-  }
-
-  void _showConfirmDialog() {
-    ConfirmDialog.show(
-      context: context,
-      title: _l10n.unbindDevices,
-      message: _l10n.confirmDeviceUnbind,
-      confirmText: _l10n.unbind,
-      confirmButtonColor: AppColors.dangerColor,
-      onConfirm: () async {
-        await _performUnbindDevice();
-      },
-      onCancel: () => Navigator.of(context).pop(),
-    );
-  }
-
-  Future<void> _performUnbindDevice() async {
-    try {
-      // Show loading indicator
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Text(_l10n.processing),
-            ],
-          ),
-          duration: const Duration(seconds: 30),
-        ),
-      );
-
-      final resp = await DeviceService.unbindDevice(deviceId: widget.deviceId);
-
-      // Hide loading indicator if still showing
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-      if (resp) {
-        AppRoutes.goToMain(context);
-      }
-    } catch (err) {
-      // Hide loading indicator if still showing
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-      // Show error dialog
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('操作失败'), backgroundColor: Colors.orange),
-      );
-
-      if (ApiConfig.enableLogging) {
-        print('Device unbind failed: $err');
-      }
-    }
   }
 
   @override
@@ -513,14 +455,14 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: _showConfirmDialog,
-            icon: const FaIcon(
-              FontAwesomeIcons.circleMinus,
-              color: Colors.red,
-              size: 18,
-            ),
-          ),
+          // IconButton(
+          //   onPressed: _showConfirmDialog,
+          //   icon: const FaIcon(
+          //     FontAwesomeIcons.circleMinus,
+          //     color: Colors.red,
+          //     size: 18,
+          //   ),
+          // ),
         ],
       ),
       body: _isLoading
@@ -563,9 +505,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   children: [
                     _buildTopMenu(),
                     const SizedBox(height: 8),
-                    _buildLockGrid(),
-                    const SizedBox(height: 8),
-                    _buildLegend(),
+                    (_category == 'luxury'
+                        ? _buildLuxuryBody()
+                        : _buildLockerBody()
+                    ),
                   ],
                 ),
               ),
@@ -684,42 +627,161 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     );
   }
 
-  Widget _buildLockGrid() {
+  Widget _buildLuxuryBody() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildLuxuryLock(lockSlots[0]),    
+          const SizedBox(height: 8),
+          _buildLuxuryGrid(),
+          const SizedBox(height: 8),
+          _buildLegend(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLuxuryGrid() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   borderRadius: BorderRadius.circular(12),
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.grey.withOpacity(0.1),
-      //       spreadRadius: 0,
-      //       blurRadius: 4,
-      //       offset: const Offset(0, 2),
-      //     ),
-      //   ],
-      // ),
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: (_num ?? 16) < 12 ? 3 : 4,
+          crossAxisCount: 6,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: (_num ?? 16) < 12 ? 0.9 : 0.6,
+          childAspectRatio: 0.6,
         ),
-        itemCount: _num ?? lockSlots.length,
+        itemCount: _indicator ?? lockSlots.length,
         itemBuilder: (context, index) {
-          return _state == 1
-              ? _buildOnlineLockSlot(lockSlots[index])
-              : _buildOfflineLockSlot(lockSlots[index]);
+          return _buildLuxuryIndicatorSlot(lockSlots[index]);
         },
       ),
     );
   }
 
-  Widget _buildOnlineLockSlot(LockSlot slot) {
+  Widget _buildLuxuryIndicatorSlot(LockSlot slot) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Circular background with lock icon
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey[300],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              //FaIcon(FontAwesomeIcons.lock, size: 20, color: Colors.grey[600]),
+              //const SizedBox(height: 4),
+              // Slot ID
+              Text(
+                slot.id,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        // Charging status indicator
+        _buildIndicator(slot.chargingState),
+      ],
+    );
+  }
+
+  Widget _buildLuxuryLock(LockSlot slot) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Circular background with lock icon
+        Container(
+          width: 64,
+          height: 64,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _state == 0 ? Colors.grey[300] : slot.isUsed ? Colors.white : Colors.grey[300],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 0,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FaIcon( _state == 0 ? FontAwesomeIcons.lock : 
+                      slot.lockState == LockState.unlocked
+                        ? FontAwesomeIcons.lockOpen
+                        : FontAwesomeIcons.lock,
+                    size: 20, color: Colors.grey[600]),
+              //const SizedBox(height: 4),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLockerBody() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildLockerGrid(),
+          const SizedBox(height: 8),
+          _buildLegend(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLockerGrid() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 0.7,
+        ),
+        itemCount: _indicator ?? lockSlots.length,
+        itemBuilder: (context, index) {
+          return _buildLockerSlot(lockSlots[index]);
+        },
+      ),
+    );
+  }
+
+  Widget _buildLockerSlot(LockSlot slot) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -729,6 +791,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           color: Colors.transparent,
           child: InkWell(
             onTap: () {
+              _state == 0 ? null : 
               _showLockSlotDialog(slot);
             },
             borderRadius: BorderRadius.circular(32),
@@ -740,7 +803,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: slot.isUsed ? Colors.white : Colors.grey[300],
+                color: _state == 0 ? Colors.grey[300] : slot.isUsed ? Colors.white : Colors.grey[300],
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.1),
@@ -755,9 +818,10 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FaIcon(
-                    slot.lockState == LockState.unlocked
-                        ? FontAwesomeIcons.lockOpen
-                        : FontAwesomeIcons.lock,
+                      _state == 0 ? FontAwesomeIcons.lock : 
+                        slot.lockState == LockState.unlocked
+                          ? FontAwesomeIcons.lockOpen
+                          : FontAwesomeIcons.lock,
                     size: 20,
                     color: Colors.grey[600],
                   ),
@@ -778,60 +842,21 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         ),
         const SizedBox(height: 8),
         // Charging status indicator
-        _buildChargingStatusIndicator(slot.chargingState),
+        _buildIndicator(slot.chargingState),
       ],
     );
   }
 
-  Widget _buildOfflineLockSlot(LockSlot slot) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Circular background with lock icon
-        Container(
-          width: 64,
-          height: 64,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey[300],
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FaIcon(FontAwesomeIcons.lock, size: 20, color: Colors.grey[600]),
-              const SizedBox(height: 4),
-              // Slot ID
-              Text(
-                slot.id,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        // Charging status indicator
-        Text('--', style: TextStyle(color: Colors.grey, fontSize: 14)),
-      ],
-    );
-  }
-
-  Widget _buildChargingStatusIndicator(LockState state) {
+  Widget _buildIndicator(ChargeState state) {
+    if (_state == 0) {
+      return SizedBox(
+        width: 12,
+        height: 12,
+        child: const Text('--', style: TextStyle(color: Colors.grey, fontSize: 14))
+      );
+    }
     switch (state) {
-      case LockState.charging:
+      case ChargeState.charging:
         return Container(
           width: 12,
           height: 12,
@@ -848,7 +873,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             ],
           ),
         );
-      case LockState.charged:
+      case ChargeState.charged:
         return Container(
           width: 12,
           height: 12,
@@ -865,7 +890,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             ],
           ),
         );
-      case LockState.empty:
+      case ChargeState.empty:
         return Container(
           width: 12,
           height: 12,
@@ -882,33 +907,82 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             ],
           ),
         );
-      default:
-        return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14));
     }
   }
+
+  // Widget _buildLockerIndicator(ChargeState state) {
+  //   if (_state == 0) {
+  //     return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14));
+  //   }
+  //   switch (state) {
+  //     case ChargeState.charging:
+  //       return Container(
+  //         width: 12,
+  //         height: 12,
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //           color: Color(0xFF00a0e9),
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.grey.withOpacity(0.5),
+  //               spreadRadius: 0,
+  //               blurRadius: 4,
+  //               offset: const Offset(0, 2),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     case ChargeState.charged:
+  //       return Container(
+  //         width: 12,
+  //         height: 12,
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //           color: Color(0xFF55bf4f),
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.grey.withOpacity(0.5),
+  //               spreadRadius: 0,
+  //               blurRadius: 4,
+  //               offset: const Offset(0, 2),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     case ChargeState.empty:
+  //       return Container(
+  //         width: 12,
+  //         height: 12,
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //           color: Colors.white,
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.grey.withOpacity(0.5),
+  //               spreadRadius: 0,
+  //               blurRadius: 4,
+  //               offset: const Offset(0, 2),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //   }
+  // }
 
   Widget _buildLegend() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   borderRadius: BorderRadius.circular(12),
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.grey.withOpacity(0.1),
-      //       spreadRadius: 0,
-      //       blurRadius: 4,
-      //       offset: const Offset(0, 2),
-      //     ),
-      //   ],
-      // ),
       child: Column(
         children: [
           // Lock status legend
           Row(
             children: [
-              FaIcon(FontAwesomeIcons.lockOpen, color: Colors.grey[600], size: 14),
+              FaIcon(
+                FontAwesomeIcons.lockOpen,
+                color: Colors.grey[600],
+                size: 14,
+              ),
               const SizedBox(width: 8),
               Text(_l10n.deviceUnlock, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 24),
@@ -938,7 +1012,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(_l10n.notPowered, style: const TextStyle(fontSize: 12)),
+              Text(_l10n.uncharged, style: const TextStyle(fontSize: 12)),
               const SizedBox(width: 16),
               Container(
                 width: 12,
@@ -997,17 +1071,24 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                Text(_l10n.usageStatus),
-                const SizedBox(width: 8),
-                Text(slot.isUsed ? _l10n.inUse(slot.id) : _l10n.inIdel(slot.id), style: const TextStyle(fontSize: 12)),
-              ],),
+              Row(
+                children: [
+                  Text(_l10n.usageStatus),
+                  const SizedBox(width: 8),
+                  Text(
+                    slot.isUsed ? _l10n.inUse(slot.id) : _l10n.inIdel(slot.id),
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
               const SizedBox(height: 8),
-              Row(children: [
-                Text(_l10n.lockStatus),
-                const SizedBox(width: 8),
-                _getLockedInicator(slot.lockState),
-                ]),
+              Row(
+                children: [
+                  Text(_l10n.lockStatus),
+                  const SizedBox(width: 8),
+                  _getLockedInicator(slot.lockState),
+                ],
+              ),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -1060,92 +1141,95 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   Widget _getLockedInicator(LockState state) {
     if (state == LockState.locked) {
-      return Row(children: [
-        FaIcon(FontAwesomeIcons.lock, color: Colors.grey[600], size: 14),
-        const SizedBox(width: 8),
-        Text(_l10n.deviceLock, style: const TextStyle(fontSize: 12)),
-      ],
+      return Row(
+        children: [
+          FaIcon(FontAwesomeIcons.lock, color: Colors.grey[600], size: 14),
+          const SizedBox(width: 8),
+          Text(_l10n.deviceLock, style: const TextStyle(fontSize: 12)),
+        ],
       );
     } else {
-      return Row(children: [
-        FaIcon(FontAwesomeIcons.lockOpen, color: Colors.grey[600], size: 14),
-        const SizedBox(width: 8),
-        Text(_l10n.deviceUnlock, style: const TextStyle(fontSize: 12)),
-      ],
+      return Row(
+        children: [
+          FaIcon(FontAwesomeIcons.lockOpen, color: Colors.grey[600], size: 14),
+          const SizedBox(width: 8),
+          Text(_l10n.deviceUnlock, style: const TextStyle(fontSize: 12)),
+        ],
       );
     }
   }
 
-  Widget _getChargedIndicator(LockState state) {
+  Widget _getChargedIndicator(ChargeState state) {
     switch (state) {
-      case LockState.empty:
-        return Row(children: [
-          Container (
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 0,
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(_l10n.notPowered, style: const TextStyle(fontSize: 12)),
+      case ChargeState.empty:
+        return Row(
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 0,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(_l10n.uncharged, style: const TextStyle(fontSize: 12)),
           ],
         );
-      case LockState.charging:
-        return Row(children: [
-          Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Color(0xFF00a0e9),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 0,
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
+      case ChargeState.charging:
+        return Row(
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: Color(0xFF00a0e9),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 0,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
-                  const SizedBox(width: 8),
-                  Text(_l10n.charging, style: const TextStyle(fontSize: 12)),
-        ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(_l10n.charging, style: const TextStyle(fontSize: 12)),
+          ],
         );
-      case LockState.charged:
-        return Row(children: [
-          Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Color(0xFF55bf4f),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 0,
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
+      case ChargeState.charged:
+        return Row(
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: Color(0xFF55bf4f),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 0,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
-                  const SizedBox(width: 8),
-                  Text(_l10n.fullyCharged, style: const TextStyle(fontSize: 12)),
-        ],
-      );
-      default:
-        return const SizedBox(width: 8,);
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(_l10n.fullyCharged, style: const TextStyle(fontSize: 12)),
+          ],
+        );
     }
   }
 }

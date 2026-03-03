@@ -1,13 +1,17 @@
 import 'package:device/config/app_colors.dart';
 import 'package:device/routes/app_routes.dart';
+import 'package:device/services/notification_service.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:convert';
 import 'package:device/models/device_models.dart';
 import 'package:device/services/device_service.dart';
+import 'package:device/services/firebase_service.dart';
 import 'package:device/widgets/device_card.dart';
 import 'package:device/services/storage_service.dart';
 import 'package:device/models/login_models.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:device/events/event_bus.dart';
 import '../l10n/app_localizations.dart';
 
 class DevicePage extends StatefulWidget {
@@ -25,11 +29,16 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   List<DeviceData> _filteredDevices = [];
   bool _isLoading = true;
   bool _isLoadingMore = false;
+  bool _isRefreshing = false;
   bool _hasMoreData = true;
   int _currentPage = 0;
   final int _pageSize = 10;
   int? _totalDevices;
   String? _errorMessage;
+  int _notificationCount = 0;
+
+  late final FirebaseService _firebaseService;
+  late final NotificationService _notificationService;
 
   AppLocalizations get _l10n {
     try {
@@ -43,26 +52,75 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+
     _loadDevices();
     _loadUserInfo();
+
+    _initializeNotification();
+
+    //_firebaseService.subscribeToTopic('app-alert-publish');
+
     _scrollController.addListener(_scrollListener);
     _searchController.addListener(_performSearch);
   }
 
+  Future<void> _initializeNotification() async {
+    try {
+      _notificationService = NotificationService();
+      _firebaseService = FirebaseService();
+    
+      // Listen to notification events via EventBus (supports multiple pages)
+      EventBus.instance.addListener(
+        EventKeys.notificationCountChanged,
+        _onNotificationCountChanged,
+      );
+
+      // Initialize badge count
+      setState(() {
+        _notificationCount =
+            _firebaseService.unreadCount + _notificationService.unreadCount;
+      });
+    } catch (e) {
+      // Silent fail - notifications are optional
+      print('Initialize notification error: $e');
+    }
+  }
+
+  // Callback for notification count changes
+  void _onNotificationCountChanged(int count) {
+    if (mounted) {
+      setState(() {
+        _notificationCount = count;
+      });
+    }
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.removeListener(_scrollListener);
     _searchController.removeListener(_performSearch);
     _scrollController.dispose();
     _searchController.dispose();
+
+    // Clean up EventBus listener
+    EventBus.instance.removeListener(
+      EventKeys.notificationCountChanged,
+      _onNotificationCountChanged,
+    );
+
+    //_firebaseService.subscribeToTopic('app-alert-publish');
+
     super.dispose();
   }
 
   void _scrollListener() {
-
     // 当滚动到距离底部100像素时开始预加载
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100) {
-      if (!_isLoadingMore && _hasMoreData) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100) {
+      if (!_isLoadingMore && _hasMoreData && !_isLoading && !_isRefreshing) {
         _loadMoreDevices();
       }
     }
@@ -74,8 +132,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       _filteredDevices = _devices;
     } else {
       _filteredDevices = _devices.where((device) {
-        return device.id.contains(query) ||
-               device.name.contains(query);
+        return device.id.contains(query) || device.name.contains(query);
       }).toList();
     }
   }
@@ -104,6 +161,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     try {
       if (isRefresh) {
         setState(() {
+          _isRefreshing = true;
           _currentPage = 0;
           _hasMoreData = true;
           _errorMessage = null;
@@ -115,7 +173,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         });
       }
 
-      final data = await DeviceService.getDevices(index: _currentPage, size: _pageSize);
+      final data = await DeviceService.getDevices(index: 0, size: _pageSize);
 
       if (data['devices'] != null) {
         final List<DeviceData> devices = (data['devices'] as List)
@@ -124,12 +182,8 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
         if (mounted) {
           setState(() {
-            if (isRefresh) {
-              _devices = devices;
-              _currentPage = 0;
-            } else {
-              _devices = devices;
-            }
+            _devices = devices;
+            _currentPage = 0;
 
             // 更新过滤后的设备列表
             _onSearchChanged();
@@ -140,6 +194,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             }
 
             _isLoading = false;
+            _isRefreshing = false;
             _errorMessage = null;
 
             // 使用总数判断是否还有更多数据
@@ -156,6 +211,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             _devices = [];
             _filteredDevices = [];
             _isLoading = false;
+            _isRefreshing = false;
             _errorMessage = null;
             _hasMoreData = false;
           });
@@ -165,6 +221,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
       if (mounted) {
         setState(() {
           _isLoading = false;
+          _isRefreshing = false;
           _errorMessage = _l10n.loadingDevicesFailed;
         });
       }
@@ -180,7 +237,10 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
 
     try {
       final nextPage = _currentPage + 1;
-      final data = await DeviceService.getDevices(index: nextPage, size: _pageSize);
+      final data = await DeviceService.getDevices(
+        index: nextPage,
+        size: _pageSize,
+      );
 
       if (data['devices'] != null) {
         final List<DeviceData> newDevices = (data['devices'] as List)
@@ -237,7 +297,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     await AppRoutes.goToDeviceSearch(context, _devices);
   }
 
-  void _onScanDevice() async {
+  void _onAddDevice() async {
     // Navigate to Add Device page
     final result = await AppRoutes.goToDeviceBind(context);
 
@@ -245,6 +305,17 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
     if (result == true) {
       _loadDevices(isRefresh: true);
     }
+  }
+
+  void _onNotificationPressed() async {
+    // Navigate to notifications page
+    await AppRoutes.goToNotifications(context);
+
+    // Update badge count after returning from notifications page
+    setState(() {
+      _notificationCount =
+          _firebaseService.unreadCount + _notificationService.unreadCount;
+    });
   }
 
   @override
@@ -273,15 +344,20 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
             ),
           ),
           IconButton(
-            onPressed: () {},
-            icon: FaIcon(
-              FontAwesomeIcons.bell,
-              color: Colors.black,
-              size: 20,
+            onPressed: _onNotificationPressed,
+            icon: Badge(
+              isLabelVisible: _notificationCount > 0,
+              backgroundColor: Colors.red,
+              smallSize: 8,
+              child: FaIcon(
+                FontAwesomeIcons.bell,
+                color: Colors.black,
+                size: 20,
+              ),
             ),
           ),
           IconButton(
-            onPressed: _onScanDevice,
+            onPressed: _onAddDevice,
             icon: const FaIcon(
               FontAwesomeIcons.circlePlus,
               color: AppColors.primaryColor,
@@ -300,7 +376,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                     child: _errorMessage != null
                         ? SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
-                            child: Container(
+                            child: SizedBox(
                               height: MediaQuery.of(context).size.height * 0.6,
                               child: Center(
                                 child: Column(
@@ -332,7 +408,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                         : _filteredDevices.isEmpty
                         ? SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
-                            child: Container(
+                            child: SizedBox(
                               height: MediaQuery.of(context).size.height * 0.6,
                               child: Center(
                                 child: Column(
@@ -363,18 +439,21 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                               SliverPadding(
                                 padding: const EdgeInsets.all(16),
                                 sliver: SliverGrid(
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 12,
-                                    mainAxisSpacing: 12,
-                                    childAspectRatio: 0.85,
-                                  ),
-                                  delegate: SliverChildBuilderDelegate(
-                                    (context, index) {
-                                      return DeviceCard(device: _filteredDevices[index]);
-                                    },
-                                    childCount: _filteredDevices.length,
-                                  ),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 12,
+                                        mainAxisSpacing: 12,
+                                        childAspectRatio: 0.85,
+                                      ),
+                                  delegate: SliverChildBuilderDelegate((
+                                    context,
+                                    index,
+                                  ) {
+                                    return DeviceCard(
+                                      device: _filteredDevices[index],
+                                    );
+                                  }, childCount: _filteredDevices.length),
                                 ),
                               ),
                               if (_isLoadingMore)
@@ -402,12 +481,15 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                     ),
                                   ),
                                 ),
-                              if (!_hasMoreData && _filteredDevices.isNotEmpty && !_isLoading)
+                              if (!_hasMoreData &&
+                                  _filteredDevices.isNotEmpty &&
+                                  !_isLoading)
                                 SliverToBoxAdapter(
                                   child: Container(
                                     padding: const EdgeInsets.all(10.0),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Icons.check_circle_outline,
@@ -416,7 +498,10 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          _l10n.allDevicesLoaded(_totalDevices ?? _filteredDevices.length),
+                                          _l10n.allDevicesLoaded(
+                                            _totalDevices ??
+                                                _filteredDevices.length,
+                                          ),
                                           style: TextStyle(
                                             color: Colors.grey[600],
                                             fontSize: 12,
@@ -426,7 +511,6 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
                                     ),
                                   ),
                                 ),
-
                             ],
                           ),
                   ),

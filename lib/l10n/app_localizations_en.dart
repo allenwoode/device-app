@@ -150,7 +150,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceUnlock => 'Device Unlock';
 
   @override
-  String get notPowered => 'Not Powered';
+  String get uncharged => 'Not Charged';
 
   @override
   String get charging => 'Charging';
@@ -528,10 +528,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usageQuestion => 'Usage Question';
 
   @override
-  String get deposit => 'Deposit';
+  String get deposit => 'Place';
 
   @override
-  String get withdraw => 'Withdraw';
+  String get withdraw => 'Fetch';
 
   @override
   String get other => 'Other';
@@ -572,11 +572,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get scanningAzDevices => 'ScanningBLEdevices...';
+  String get scanningAzDevices => 'Scanning BLE devices...';
 
   @override
   String foundAzDevices(int count) {
-    return 'Found ${count}BLEdevices';
+    return 'Found $count BLE devices';
   }
 
   @override
@@ -606,7 +606,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanning => 'Scanning...';
 
   @override
-  String get scanAzDevices => 'ScanBLEDevices';
+  String get scanAzDevices => 'Scan BLE evices';
 
   @override
   String get disconnect => 'Disconnect';
@@ -684,7 +684,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Device response timeout, please check WiFi password';
 
   @override
-  String get foundAzDevicesLabel => 'FoundBLEDevices:';
+  String get foundAzDevicesLabel => 'Found BLE Devices:';
 
   @override
   String get wifiConfig => 'WiFi Configuration';
@@ -774,6 +774,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get oldPasswordIncorrect => 'Current password is incorrect';
 
   @override
+  String get passwordResetSuccess => 'Password reset successfully';
+
+  @override
+  String get passwordResetFailed => 'Password reset failed';
+
+  @override
+  String get operateCabinetDoor => 'Operate Door';
+
+  @override
+  String get deviceCharging => 'Charging';
+
+  @override
+  String get operatePanel => 'Operate Panel';
+
+  @override
+  String get deviceOnline => 'Online';
+
+  @override
+  String get deviceOffline => 'Offline';
+
+  @override
+  String get lockTimeout => 'Open timeout';
+
+  @override
+  String get remoteOperationSuccess => 'Remote Invoke Success';
+
+  @override
+  String get remoteOperationFailed => 'Remote Invoke Failed';
+
+  @override
+  String get remoteOpenDoor => 'Remote Open Door';
+
+  @override
+  String get remoteOpenAlarm => 'Remote Open Alarm';
+
+  @override
   String get appVersion => 'Version';
 
   @override
@@ -790,4 +826,100 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get officialWebsite => 'Official Website';
+
+  @override
+  String get noMoreData => 'No more data';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get markAllAsRead => 'Mark all as read';
+
+  @override
+  String get clearAll => 'Clear all';
+
+  @override
+  String get noNotificationsYet => 'No notifications yet';
+
+  @override
+  String get youllSeeNotificationsHere => 'You\'ll see notifications here';
+
+  @override
+  String get clearAllNotifications => 'Clear All Notifications';
+
+  @override
+  String get clearAllNotificationsConfirm =>
+      'Are you sure you want to clear all notifications?';
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
+  String minutesAgo(int minutes) {
+    return '${minutes}m ago';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return '${hours}h ago';
+  }
+
+  @override
+  String daysAgo(int days) {
+    return '${days}d ago';
+  }
+
+  @override
+  String get general => 'General';
+
+  @override
+  String get enableNotifications => 'Enable Notifications';
+
+  @override
+  String get receiveDeviceAlertsAndUpdates =>
+      'Receive device alerts and updates';
+
+  @override
+  String get deviceAlerts => 'Device Alerts';
+
+  @override
+  String get getNotifiedAboutDeviceIssues => 'Get notified about device issues';
+
+  @override
+  String get backgroundService => 'Background Service';
+
+  @override
+  String get backgroundMonitoring => 'Background Monitoring';
+
+  @override
+  String serviceRunningMonitoringDevices(int count) {
+    return 'Service running • Monitoring $count devices';
+  }
+
+  @override
+  String get enableToReceiveAlertsWhenAppClosed =>
+      'Enable to receive alerts when app is closed';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get sound => 'Sound';
+
+  @override
+  String get playSoundForNotifications => 'Play sound for notifications';
+
+  @override
+  String get vibration => 'Vibration';
+
+  @override
+  String get vibrateOnNotification => 'Vibrate on notification';
+
+  @override
+  String get notificationPermissionRequired =>
+      'Notification permission is required. Please enable it in system settings.';
+
+  @override
+  String get channelName => 'Alert Notifications';
 }

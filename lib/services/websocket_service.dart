@@ -28,11 +28,13 @@ class WebSocketService {
   static Future<bool> connect() async {
     try {
       if (_isConnected && _channel != null) {
+        //print('WebSocket: Already connected');
         return true;
       }
 
       final token = await StorageService.getToken();
       if (token == null) {
+        //print('WebSocket: No token available');
         return false;
       }
 
@@ -68,7 +70,7 @@ class WebSocketService {
     await _subscription?.cancel();
     _subscription = null;
 
-    await _channel?.sink.close(status.goingAway);
+    await _channel?.sink.close(status.normalClosure);
     _channel = null;
 
     _isConnected = false;
@@ -87,10 +89,14 @@ class WebSocketService {
     // Create or get existing stream controller for this topic
     if (!_topicControllers.containsKey(topic)) {
       _topicControllers[topic] = StreamController<Map<String, dynamic>>.broadcast();
+      //print('WebSocket: Created controller for topic: $topic');
     }
+
+    print('WebSocket: Current registered topics: ${_topicControllers.keys.toList()}');
 
     // Send subscription message if connected
     if (_isConnected && _channel != null) {
+      //print('WebSocket: Sending subscription for topic: $topic');
       _sendSubscriptionMessage(
         'sub',
         id,
@@ -98,9 +104,11 @@ class WebSocketService {
         parameter: parameter,
       );
     } else {
+      //print('WebSocket: Not connected, will connect and subscribe to topic: $topic');
       // Try to connect and then subscribe
       connect().then((success) {
         if (success) {
+          //print('WebSocket: Connected successfully, sending subscription for topic: $topic');
           _sendSubscriptionMessage(
             'sub',
             id,
@@ -116,6 +124,8 @@ class WebSocketService {
 
   /// Unsubscribe from a device state topic
   static void unsubscribe(String id, String topic) {
+    //print('WebSocket: Unsubscribing from topic: $topic, id: $id');
+
     if (_isConnected && _channel != null) {
       _sendSubscriptionMessage(
         'unsub',
@@ -128,6 +138,7 @@ class WebSocketService {
     if (_topicControllers.containsKey(topic)) {
       _topicControllers[topic]!.close();
       _topicControllers.remove(topic);
+      //print('WebSocket: Removed controller for topic: $topic');
     }
   }
 
@@ -141,8 +152,10 @@ class WebSocketService {
     };
 
     try {
-      _channel?.sink.add(jsonEncode(message));
-      //print('WebSocket: Sent message for topic: $topic with id: $id');
+      final jsonMessage = jsonEncode(message);
+      //print('WebSocket: Sending $type message: $jsonMessage');
+      _channel?.sink.add(jsonMessage);
+      //print('WebSocket: Successfully sent message for topic: $topic with id: $id');
     } catch (e) {
       print('WebSocket: Failed to send message: $e');
     }
@@ -151,30 +164,35 @@ class WebSocketService {
   /// Handle incoming WebSocket messages
   static void _onMessage(dynamic data) {
     try {
+      //print('WebSocket: Raw message received: $data');
       final message = jsonDecode(data as String) as Map<String, dynamic>;
       final type = message['type'] as String?;
       final topic = message['topic'] as String?;
 
       if (type == 'result' && topic != null) {
         // This is a subscription result message with actual data
+        //print('WebSocket: Processing result message for topic: $topic');
         if (_topicControllers.containsKey(topic)) {
-          print('Forwarding message to topic controller: $topic');
+          //print('WebSocket: Forwarding result to topic controller: $topic');
           _topicControllers[topic]!.add(message);
-        } else {
-          print('No controller found for topic: $topic');
-          print('Available controllers: ${_topicControllers.keys.toList()}');
         }
       } else if (type == 'message' && topic != null) {
         // Handle regular message type
+        //print('WebSocket: Processing message for topic: $topic');
         if (_topicControllers.containsKey(topic)) {
+          //print('WebSocket: Forwarding message to topic controller: $topic');
           _topicControllers[topic]!.add(message);
         }
       } else if (type == 'pong') {
         // Handle heartbeat response
-        print('WebSocket: Received pong');
+        //print('WebSocket: Received pong');
+      } else if (type == 'sub' || type == 'unsub') {
+        // Handle subscription confirmation
+        //print('WebSocket: Subscription confirmation - type: $type, topic: $topic');
       }
     } catch (e) {
       print('WebSocket: Failed to parse message: $e');
+      print('WebSocket: Raw data: $data');
     }
   }
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "327656909185",
+    "project_id": "device-cca8d",
+    "storage_bucket": "device-cca8d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327656909185:android:1455bb7a1b2a2ed4a96080",
+        "android_client_info": {
+          "package_name": "com.jamanet.app.device"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXn6Cxr2RFJSWiv6DqkU55MpG89ZLwQ1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -549,21 +549,13 @@ class _UnbindDevicePageState extends State<UnbindDevicePage> {
                               padding: const EdgeInsets.all(16),
                               child: Row(
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     width: 40,
                                     height: 40,
-                                    // decoration: BoxDecoration(
-                                    //   color: Colors.red[50],
-                                    //   borderRadius: BorderRadius.circular(8),
-                                    // ),
-                                    child: SizedBox(
-                                      //width: 48,
-                                      //height: 48,
-                                      child: Image.asset(
-                                        'lib/assets/images/ELLTE-MAX-${device.spec}.png',
+                                      child: Image.network(
+                                        device.photoUrl,
                                         fit: BoxFit.contain,
                                       ),
-                                    ),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(

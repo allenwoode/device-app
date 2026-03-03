@@ -1,9 +1,23 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+
+    <!-- Notification permissions -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    
+    <!-- Background service permissions -->
+    <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/> -->
 
     <!-- Bluetooth permissions -->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -20,7 +34,7 @@
     <application
         android:label="device"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/app_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -49,6 +63,22 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- Flutter Background Service -->
+        <!-- <service
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:enabled="true"
+            tools:replace="android:exported" /> -->
+
+        <!-- Flutter Foreground Task Service -->
+        <!-- <service
+            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:stopWithTask="true"
+            tools:replace="android:exported" /> -->
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

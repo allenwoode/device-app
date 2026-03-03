@@ -1,0 +1,31 @@
+{
+    "message": "success",
+    "result": [
+        {
+            "deviceId": "11110002",
+            "deviceName": "1002 Classrom",
+            "action": "severe",
+            "amount": 5
+        },
+        {
+            "deviceId": "11110004",
+            "deviceName": "1004 Classroom",
+            "action": "notice",
+            "amount": 1
+        },
+        {
+            "deviceId": "11110002",
+            "deviceName": "1002 Classrom",
+            "action": "notice",
+            "amount": 2
+        },
+        {
+            "deviceId": "11110004",
+            "deviceName": "1004 Classroom",
+            "action": "severe",
+            "amount": 2
+        }
+    ],
+    "status": 200,
+    "timestamp": 1763014025562
+}

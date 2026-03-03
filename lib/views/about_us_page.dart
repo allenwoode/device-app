@@ -1,6 +1,4 @@
-import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:device/config/app_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -112,8 +110,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
                   const SizedBox(height: 60),
                   _buildAppIcon(),
                   const SizedBox(height: 20),
-                  _buildAppName(),
-                  const SizedBox(height: 10),
+                  // _buildAppName(),
+                  // const SizedBox(height: 10),
                   _buildVersionInfo(),
                   const SizedBox(height: 40),
                   _buildMenuSection(),
@@ -125,35 +123,35 @@ class _AboutUsPageState extends State<AboutUsPage> {
   }
 
   Widget _buildAppIcon() {
-    return Container(
-      width: 100,
-      height: 100,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.primaryColor.withOpacity(0.1),
-        border: Border.all(
-          color: AppColors.primaryColor.withOpacity(0.3),
-          width: 2,
-        ),
-      ),
-      child: Icon(
-        Icons.device_hub,
-        size: 50,
-        color: AppColors.primaryColor,
+    return SizedBox(
+      //width: 320,
+      //height: 60,
+      // decoration: BoxDecoration(
+      //   color: AppColors.primaryColor.withOpacity(0.1),
+      //   border: Border.all(
+      //     color: AppColors.primaryColor.withOpacity(0.3),
+      //     width: 1,
+      //   ),
+      // ),
+      child: Image.asset(
+        'lib/assets/images/jamanet.png',
+        width: 320,
+        height: 60,
+        fit: BoxFit.contain,
       ),
     );
   }
 
-  Widget _buildAppName() {
-    return Text(
-      _l10n.appTitle,
-      style: const TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        color: Colors.black87,
-      ),
-    );
-  }
+  // Widget _buildAppName() {
+  //   return Text(
+  //     _l10n.appTitle,
+  //     style: const TextStyle(
+  //       fontSize: 24,
+  //       fontWeight: FontWeight.w600,
+  //       color: Colors.black87,
+  //     ),
+  //   );
+  // }
 
   Widget _buildVersionInfo() {
     return Container(

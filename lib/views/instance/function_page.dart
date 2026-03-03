@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:device/services/device_service.dart';
 import 'package:device/api/api_config.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../l10n/app_localizations.dart';
 
 enum LockState { locked, unlocked }
@@ -72,7 +73,7 @@ class _FunctionPageState extends State<FunctionPage> {
 
   void _parseDeviceStateData(Map<String, dynamic> stateData) {
     // Initialize with default empty states
-    String lockStateString = '0000000000000000';
+    String lockStateString = '00000000000000000000000000000000';
 
     // Parse state data
     if (stateData['result'] != null && stateData['result'] is List) {
@@ -91,7 +92,7 @@ class _FunctionPageState extends State<FunctionPage> {
     }
 
     // Generate lock slots from state data
-    lockSlots = List.generate(16, (index) {
+    lockSlots = List.generate(widget.num ?? 16, (index) {
       final slotId = 'C${index + 1}';
 
       // Parse lock state (0 = locked, 1 = unlocked)
@@ -127,10 +128,10 @@ class _FunctionPageState extends State<FunctionPage> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: (widget.num ?? 16) < 12 ? 3 : 4,
+          crossAxisCount: 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: (widget.num ?? 16) < 12 ? 0.7 : 0.5,
+          childAspectRatio: 0.65,
         ),
         itemCount: widget.num ?? lockSlots.length,
         itemBuilder: (context, index) {
@@ -147,8 +148,8 @@ class _FunctionPageState extends State<FunctionPage> {
       children: [
         // Circular background with lock icon
         Container(
-          width: 64,
-          height: 64,
+          width: 52,
+          height: 52,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: slot.lockState == LockState.unlocked ? Colors.white : Colors.grey[300],
@@ -165,12 +166,11 @@ class _FunctionPageState extends State<FunctionPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                slot.lockState == LockState.unlocked
-                    ? Icons.lock_open
-                    : Icons.lock,
-                size: 24,
-                color: Colors.grey[600],
+              FaIcon(slot.lockState == LockState.unlocked
+                        ? FontAwesomeIcons.lockOpen
+                        : FontAwesomeIcons.lock,
+                    size: 20, 
+                    color: Colors.grey[600],
               ),
               const SizedBox(height: 4),
               // Slot ID
@@ -185,7 +185,7 @@ class _FunctionPageState extends State<FunctionPage> {
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         // Charging status indicator
         _buildLockSelector(slot.lockState, slot.id),
       ],
@@ -209,9 +209,9 @@ class _FunctionPageState extends State<FunctionPage> {
   }
 
   void _showLockControlDialog(bool isUnlocking, String slotId) {
-    final TextEditingController passwordController = TextEditingController();
-    bool isPasswordVisible = false;
-    String? passwordError;
+    //final TextEditingController passwordController = TextEditingController();
+    //bool isPasswordVisible = false;
+    //String? passwordError;
 
     showDialog(
       context: context,

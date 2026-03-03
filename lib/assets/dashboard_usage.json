@@ -1,32 +1,40 @@
+GET /report/usage/top
+
+# response
 {
     "message": "success",
     "result": [
         {
-            "label": "1001",
-            "value": 82,
-            "text": ""
+            "deviceId": "11110001",
+            "deviceName": "1001 Classroom",
+            "date": "2025-11-11",
+            "amount": 7
         },
         {
-            "label": "1002",
-            "value": 70,
-            "text": ""
+            "deviceId": "11110004",
+            "deviceName": "1004 Classroom",
+            "date": "2025-11-11",
+            "amount": 4
         },
         {
-            "label": "1003",
-            "value": 65,
-            "text": ""
+            "deviceId": "11110005",
+            "deviceName": "1005 Classroom",
+            "date": "2025-11-11",
+            "amount": 4
         },
         {
-            "label": "1004",
-            "value": 60,
-            "text": ""
+            "deviceId": "1984083025080438784",
+            "deviceName": "1003 Classroom",
+            "date": "2025-11-11",
+            "amount": 3
         },
         {
-            "label": "1005",
-            "value": 40,
-            "text": ""
+            "deviceId": "11110002",
+            "deviceName": "1002 Classrom",
+            "date": "2025-11-11",
+            "amount": 2
         }
     ],
     "status": 200,
-    "timestamp": 1757993072336
+    "timestamp": 1762825723035
 }

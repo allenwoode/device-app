@@ -8,6 +8,7 @@ import '../routes/app_routes.dart';
 import '../widgets/confirm_dialog.dart';
 import 'route_component.dart';
 import 'password_update_page.dart';
+import 'notification_settings_page.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -208,13 +209,10 @@ class _SettingPageState extends State<SettingPage> {
             title: _l10n.notificationSettings,
             subtitle: _l10n.notificationSettingsSubtitle,
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    _l10n.notificationFeatureTodo,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  backgroundColor: Colors.orange,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationSettingsPage(),
                 ),
               );
             },

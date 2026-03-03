@@ -59,7 +59,7 @@
   "deviceOfflineCannotRemoteSet": "Device offline, cannot perform remote settings",
   "deviceLock": "Device Lock",
   "deviceUnlock": "Device Unlock",
-  "notPowered": "Not Powered",
+  "uncharged": "Not Charged",
   "charging": "Charging",
   "fullyCharged": "Fully Charged",
   "organizationUnitEmpty": "Organization unit is empty",
@@ -261,8 +261,8 @@
   "featureSuggestion": "Feature Suggestion",
   "bugReport": "Bug Report",
   "usageQuestion": "Usage Question",
-  "deposit": "Deposit",
-  "withdraw": "Withdraw",
+  "deposit": "Place",
+  "withdraw": "Fetch",
   "other": "Other",
   "scanDeviceQRCode": "Scan Device QR Code",
   "permissionInsufficient": "Permission Insufficient",
@@ -284,8 +284,8 @@
       }
     }
   },
-  "scanningAzDevices": "ScanningBLEdevices...",
-  "foundAzDevices": "Found {count}BLEdevices",
+  "scanningAzDevices": "Scanning BLE devices...",
+  "foundAzDevices": "Found {count} BLE devices",
   "@foundAzDevices": {
     "placeholders": {
       "count": {
@@ -308,7 +308,7 @@
   "configSentFailed": "Configuration failed",
   "connecting": "Connecting...",
   "scanning": "Scanning...",
-  "scanAzDevices": "ScanBLEDevices",
+  "scanAzDevices": "Scan BLE evices",
   "disconnect": "Disconnect",
   "sendConfig": "Send Config",
   "startScanning": "Starting scan for BLE devices",
@@ -346,7 +346,7 @@
   "unknownDataFormat": "Unknown data format",
   "waitingForDeviceResponse": "Waiting for device response...",
   "deviceResponseTimeout": "Device response timeout, please check WiFi password",
-  "foundAzDevicesLabel": "FoundBLEDevices:",
+  "foundAzDevicesLabel": "Found BLE Devices:",
   "wifiConfig": "WiFi Configuration",
   "wifiSsid": "WiFi SSID",
   "wifiPassword": "WiFi Password",
@@ -375,10 +375,78 @@
   "passwordUpdateSuccess": "Password updated successfully",
   "passwordUpdateFailed": "Password update failed, please check your current password",
   "oldPasswordIncorrect": "Current password is incorrect",
+  "passwordResetSuccess": "Password reset successfully",
+  "passwordResetFailed": "Password reset failed",
+  "operateCabinetDoor": "Operate Door",
+  "deviceCharging": "Charging",
+  "operatePanel": "Operate Panel",
+  "deviceOnline": "Online",
+  "deviceOffline": "Offline",
+  "lockTimeout": "Open timeout",
+  "remoteOperationSuccess": "Remote Invoke Success",
+  "remoteOperationFailed": "Remote Invoke Failed",
+  "remoteOpenDoor": "Remote Open Door",
+  "remoteOpenAlarm": "Remote Open Alarm",
   "appVersion": "Version",
   "searchDevice": "Search Device",
   "searchDeviceHint": "Enter device ID or name",
   "search": "Search",
   "registrationNumber": "Registration No",
-  "officialWebsite": "Official Website"
+  "officialWebsite": "Official Website",
+  "noMoreData": "No more data",
+  "notifications": "Notifications",
+  "markAllAsRead": "Mark all as read",
+  "clearAll": "Clear all",
+  "noNotificationsYet": "No notifications yet",
+  "youllSeeNotificationsHere": "You'll see notifications here",
+  "clearAllNotifications": "Clear All Notifications",
+  "clearAllNotificationsConfirm": "Are you sure you want to clear all notifications?",
+  "justNow": "Just now",
+  "minutesAgo": "{minutes}m ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours}h ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{days}d ago",
+  "@daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "general": "General",
+  "enableNotifications": "Enable Notifications",
+  "receiveDeviceAlertsAndUpdates": "Receive device alerts and updates",
+  "deviceAlerts": "Device Alerts",
+  "getNotifiedAboutDeviceIssues": "Get notified about device issues",
+  "backgroundService": "Background Service",
+  "backgroundMonitoring": "Background Monitoring",
+  "serviceRunningMonitoringDevices": "Service running • Monitoring {count} devices",
+  "@serviceRunningMonitoringDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "enableToReceiveAlertsWhenAppClosed": "Enable to receive alerts when app is closed",
+  "preferences": "Preferences",
+  "sound": "Sound",
+  "playSoundForNotifications": "Play sound for notifications",
+  "vibration": "Vibration",
+  "vibrateOnNotification": "Vibrate on notification",
+  "notificationPermissionRequired": "Notification permission is required. Please enable it in system settings.",
+  "channelName": "Alert Notifications"
 }

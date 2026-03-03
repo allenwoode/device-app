@@ -61,6 +61,7 @@ class _RouteComponentState extends State<RouteComponent> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: AppRoutes.navigatorKey,
       supportedLocales: const [Locale('en'), Locale('zh')],
       locale: _locale,
       localizationsDelegates: const [

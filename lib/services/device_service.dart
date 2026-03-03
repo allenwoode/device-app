@@ -8,31 +8,33 @@ import 'auth_service.dart';
 
 class DeviceService {
   // Device endpoints
-  static const String devicesEndpoint = '/device/instance/query';
-  static const String dashboardDevicesEndpoint = '/device/instance/dashboard/count';
-  static const String deviceInvokeEndpoint = '/device/invoked';
+  static const String devicesEndpoint = '/app/instance/query';
+  static const String dashboardDevicesEndpoint = '/app/instance/count';
+  static const String deviceInvokeEndpoint = '/app/instance/invoked';
 
   static Future<Map<String, dynamic>> getDevices({
     int index = 0,
     int size = 10,
   }) async {
     try {
-      // First try to fetch from API
-      // Prepare request body for POST request
       final requestBody = {
         'pageIndex': index,
         'pageSize': size,
-        // Add any other required parameters here
-        'sorts': [
-          {"name": "createTime", "order": "asc"},
-        ],
         "terms": [],
+        'sorts': [
+          {"name": "createTime", "order": "desc"},
+        ]
       };
 
       final response = await ApiInterceptor.post(
         '${ApiConfig.baseUrl}$devicesEndpoint',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Devices API Response Status: ${response.statusCode}');
+        print('Devices API Response Body: ${response.data}');
+      }
 
       if (response.statusCode == 200) {
         final responseData = response.data;
@@ -72,7 +74,7 @@ class DeviceService {
     }
   }
 
-  static Future<Map<String, dynamic>> getDashboardDevices() async {
+  static Future<DashboardDevices> getDashboardDevices() async {
     try {
       // Prepare request body for POST request
       final requestBody = {'terms': []};
@@ -82,13 +84,17 @@ class DeviceService {
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
+      if (ApiConfig.enableLogging) {
+        print('Dashboard Devices API Response Status: ${response.statusCode}');
+        print('Dashboard Devices API Response Body: ${response.data}');
+      }
 
       if (response.statusCode == 200) {
         final responseData = response.data;
         if (responseData is Map<String, dynamic>) {
           if (responseData.containsKey('result') &&
               responseData['result'] is Map<String, dynamic>) {
-            return responseData['result'];
+                return DashboardDevices.fromJson(responseData['result']);
           }
         }
 
@@ -124,8 +130,13 @@ class DeviceService {
     try {
       // Try API first
       final response = await ApiInterceptor.get(
-        '${ApiConfig.baseUrl}/device-instance/$deviceId/info',
+        '${ApiConfig.baseUrl}/app/instance/$deviceId/info',
       ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Detail API Response Status: ${response.statusCode}');
+        print('Device Detail API Response Body: ${response.data}');
+      }
 
       if (response.statusCode == 200) {
         return DeviceData.fromJson(response.data['result']);
@@ -135,7 +146,7 @@ class DeviceService {
     } catch (e) {
       if (ApiConfig.enableLogging) {
         print(
-          'Device detail API request failed: $e, falling back to local data',
+          'Device Detail API request failed: $e, falling back to local data',
         );
       }
 
@@ -214,13 +225,48 @@ class DeviceService {
     }
   }
 
-  static Future<Map<String, dynamic>> _loadLocalDashboardDevices() async {
-    return {'total': 0, 'onlineCount': 0, 'offlineCount': 0};
+  static Future<DashboardDevices> _loadLocalDashboardDevices() async {
+    return DashboardDevices(total: 0, onlineCount: 0, offlineCount: 0);
   }
 
-  static Future<List<DashboardUsage>> getDashboardUsage() async {
+  static Future<List<Dashboard>> getDashboardUsage() async {
     try {
-      // For now, load from local JSON file (can be extended to API call)
+      // Try API first - GET request to /report/usage/top
+      final response = await ApiInterceptor.get(
+        '${ApiConfig.baseUrl}/report/usage/top',
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Dashboard Usage API Response Status: ${response.statusCode}');
+        print('Dashboard Usage API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic> && responseData['result'] is List) {
+          final List<dynamic> resultList = responseData['result'];
+          return resultList.map((item) => Dashboard.fromJson(item)).toList();
+        }
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
+
+      return [];
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Dashboard usage API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDashboardUsage();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<List<Dashboard>> _loadLocalDashboardUsage() async {
+    try {
       final String response = await rootBundle.loadString(
         'lib/assets/dashboard_usage.json',
       );
@@ -228,22 +274,61 @@ class DeviceService {
 
       if (data['result'] is List) {
         final List<dynamic> resultList = data['result'];
-        return resultList.map((item) => DashboardUsage.fromJson(item)).toList();
+        return resultList.map((item) => Dashboard.fromJson(item)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      throw Exception('Failed to load dashboard usage data: $e');
+    }
+  }
+
+  static Future<List<Dashboard>> getDashboardUsageDevice() async {
+    try {
+      // Prepare request body for POST request
+      final requestBody = {
+        'pageIndex': 0,
+        'pageSize': 12,
+        'terms': [],
+        'sorts': [],
+      };
+
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/report/usage/_query',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Dashboard Usage Device API Response Status: ${response.statusCode}');
+        print('Dashboard Usage Device API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          final List<dynamic> data = responseData['result']['data'];
+          return data.map((item) => Dashboard.fromJson(item)).toList();
+        }
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
       }
 
       return [];
     } catch (e) {
       if (ApiConfig.enableLogging) {
-        print('Failed to load dashboard usage data: $e');
+        print('Dashboard usage device API request failed: $e, falling back to local data');
       }
-      // Return fallback data
-      return [];
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDashboardUsageDevice();
+      } else {
+        rethrow;
+      }
     }
   }
 
-  static Future<List<DashboardUsageDevice>> getDashboardUsageDevice() async {
+  static Future<List<Dashboard>> _loadLocalDashboardUsageDevice() async {
     try {
-      // For now, load from local JSON file (can be extended to API call)
       final String response = await rootBundle.loadString(
         'lib/assets/dashboard_device_usage.json',
       );
@@ -251,45 +336,110 @@ class DeviceService {
 
       if (data['result'] is List) {
         final List<dynamic> resultList = data['result'];
-        return resultList.map((item) => DashboardUsageDevice.fromJson(item)).toList();
+        return resultList.map((item) => Dashboard.fromJson(item)).toList();
       }
 
       return [];
     } catch (e) {
-      if (ApiConfig.enableLogging) {
-        print('Failed to load dashboard usage device data: $e');
-      }
-      // Return fallback data
-      return [];
+      throw Exception('Failed to load dashboard usage device data: $e');
     }
   }
 
-  static Future<List<DashboardUsageDevice>> getDashboardAlertDevice() async {
+  static Future<List<Dashboard>> getDashboardAlertCount() async {
     try {
-      // For now, load from local JSON file (can be extended to API call)
-      final String response = await rootBundle.loadString(
-        'lib/assets/dashboard_device_alert.json',
-      );
-      final Map<String, dynamic> data = json.decode(response);
+      // Prepare request body for POST request
+      final requestBody = {
+        'terms': [],
+        'sorts': [
+          {'name':'amount', 'order':'desc'}
+        ],
+      };
 
-      if (data['result'] is List) {
-        final List<dynamic> resultList = data['result'];
-        return resultList.map((item) => DashboardUsageDevice.fromJson(item)).toList();
+      // Try API first
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/report/alarm/count',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Alert Count API Response Status: ${response.statusCode}');
+        print('Device Alert Count API Response Body: ${response.data}');
       }
 
-      return [];
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic> &&
+            responseData['result'] is List) {
+          final List<dynamic> resultList = responseData['result'];
+          return resultList.map((item) => Dashboard.fromJson(item)).toList();
+        }
+        return [];
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
     } catch (e) {
       if (ApiConfig.enableLogging) {
-        print('Failed to load dashboard alert device data: $e');
+        print(
+            'Device alert count API request failed: $e, falling back to local data');
       }
-      // Return fallback data
-      return [];
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceAlertCount();
+      } else {
+        rethrow;
+      }
     }
   }
 
-  static Future<List<DashboardUsageDevice>> getDashboardDeviceLog() async {
+  static Future<List<Dashboard>> getDashboardDeviceLog() async {
     try {
-      // For now, load from local JSON file (can be extended to API call)
+      // Prepare request body for POST request
+      final requestBody = {
+        'terms': [],
+        'sorts': [
+          {'name':'amount', 'order':'desc'}
+        ],
+      };
+
+      // Try API first
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/report/operate/count',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Dashboard Log Count API Response Status: ${response.statusCode}');
+        print('Dashboard Log Count API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic> &&
+            responseData['result'] is List) {
+          final List<dynamic> resultList = responseData['result'];
+
+          // Transform DeviceLogCount list to DashboardUsageDevice list
+          return resultList.map((item) => Dashboard.fromJson(item)).toList();
+        }
+        return [];
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Dashboard device log API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDashboardDeviceLog();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<List<Dashboard>> _loadLocalDashboardDeviceLog() async {
+    try {
       final String response = await rootBundle.loadString(
         'lib/assets/dashboard_device_log.json',
       );
@@ -297,62 +447,14 @@ class DeviceService {
 
       if (data['result'] is List) {
         final List<dynamic> resultList = data['result'];
-        return resultList.map((item) => DashboardUsageDevice.fromJson(item)).toList();
+        return resultList
+            .map((item) => Dashboard.fromJson(item))
+            .toList();
       }
 
       return [];
     } catch (e) {
-      if (ApiConfig.enableLogging) {
-        print('Failed to load dashboard device log data: $e');
-      }
-      // Return fallback data
-      return [];
-    }
-  }
-
-  static Future<DashboardAlerts> getDashboardAlerts() async {
-    try {
-      // For now, load from local JSON file (can be extended to API call)
-      final String response = await rootBundle.loadString(
-        'lib/assets/dashboard_alerts.json',
-      );
-      final Map<String, dynamic> data = json.decode(response);
-
-      if (data['result'] is Map<String, dynamic>) {
-        return DashboardAlerts.fromJson(data['result']);
-      }
-
-      // Return fallback data
-      return DashboardAlerts(total: 16, alarmCount: 15, severeCount: 1);
-    } catch (e) {
-      if (ApiConfig.enableLogging) {
-        print('Failed to load dashboard alerts data: $e');
-      }
-      // Return fallback data
-      return DashboardAlerts(total: 16, alarmCount: 15, severeCount: 1);
-    }
-  }
-
-  static Future<DashboardMessage> getDashboardMessage() async {
-    try {
-      // For now, load from local JSON file (can be extended to API call)
-      final String response = await rootBundle.loadString(
-        'lib/assets/dashboard_message.json',
-      );
-      final Map<String, dynamic> data = json.decode(response);
-
-      if (data['result'] is Map<String, dynamic>) {
-        return DashboardMessage.fromJson(data['result']);
-      }
-
-      // Return fallback data
-      return DashboardMessage(total: 30, reportCount: 25, functionCount: 5);
-    } catch (e) {
-      if (ApiConfig.enableLogging) {
-        print('Failed to load dashboard message data: $e');
-      }
-      // Return fallback data
-      return DashboardMessage(total: 30, reportCount: 25, functionCount: 5);
+      throw Exception('Failed to load dashboard device log data: $e');
     }
   }
 
@@ -396,20 +498,35 @@ class DeviceService {
     }
   }
 
-  static Future<List<DeviceUsage>> getDeviceUsage({
+  static Future<DeviceUsageResponse> getDeviceUsage({
     required String deviceId,
+    int pageIndex = 0,
+    int pageSize = 12,
   }) async {
     try {
-      // Get today's date in YYYY-MM-DD format
-      final today = DateTime.now();
-      final todayStr = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+      // Prepare request body for POST request
+      final requestBody = {
+        'pageIndex': pageIndex,
+        'pageSize': pageSize,
+        'terms': [
+          {
+            'column': 'deviceId',
+            'term': 'eq',
+            'value': deviceId,
+          }
+        ],
+        'sorts': [
+          {
+            'name': 'timestamp',
+            'order': 'desc',
+          }
+        ],
+      };
 
       // Try API first
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/device-instance/$deviceId/event/LOCK_OPEN_TYPE?format=true',
-        data: {
-          'terms': [{"type":"and","value":todayStr,"termType":"gte","column":"timestamp"}]
-        },
+        '${ApiConfig.baseUrl}/report/usage/$deviceId/history',
+        data: requestBody,
       ).timeout(ApiConfig.timeout);
 
       if (ApiConfig.enableLogging) {
@@ -418,8 +535,23 @@ class DeviceService {
       }
 
       if (response.statusCode == 200) {
-        List<dynamic> dataList = response.data['result']['data'] ?? [];
-        return dataList.map((item) => DeviceUsage.fromJson(item)).toList();
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          return DeviceUsageResponse.fromJson(responseData);
+        }
+
+        // Return empty response if data structure is invalid
+        return DeviceUsageResponse(
+          message: 'success',
+          result: DeviceUsageResult(
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            total: 0,
+            data: [],
+          ),
+          status: 200,
+          timestamp: DateTime.now().millisecondsSinceEpoch,
+        );
       } else {
         throw HttpException('HTTP ${response.statusCode}: ${response.data}');
       }
@@ -429,73 +561,80 @@ class DeviceService {
       }
 
       if (ApiConfig.useLocalFallback) {
-        return await _loadLocalDeviceUsage();
+        return await _loadLocalDeviceUsageResponse(pageIndex, pageSize);
       } else {
         rethrow;
       }
     }
-
-    // if (ApiConfig.useLocalFallback) {
-    //     return await _loadLocalDeviceUsage();
-    // }
-    // return [];
   }
 
-  static Future<List<DeviceUsage>> _loadLocalDeviceUsage() async {
+  static Future<DeviceUsageResponse> _loadLocalDeviceUsageResponse(
+    int pageIndex,
+    int pageSize,
+  ) async {
     try {
       final String response = await rootBundle.loadString(
         'lib/assets/device_usage.json',
       );
       final json = jsonDecode(response);
-      List<dynamic> dataList = json['result']['data'] ?? [];
-      return dataList.map((item) => DeviceUsage.fromJson(item)).toList();
+      return DeviceUsageResponse.fromJson(json);
     } catch (e) {
       throw Exception('Failed to load device usage data: $e');
     }
   }
 
-  static Future<List<DeviceAlert>> getDeviceAlerts({
+  static Future<List<DeviceUsageCount>> getDeviceUsageCount({
     required String deviceId,
-    int pageIndex = 0,
-    int pageSize = 12,
   }) async {
     try {
-      // Try API first (commented for now, using local fallback)
-      // final response = await ApiInterceptor.post(
-      //   '${ApiConfig.baseUrl}/device-instance/$deviceId/alerts',
-      //   data: {
-      //     'pageIndex': pageIndex,
-      //     'pageSize': pageSize,
-      //   },
-      // ).timeout(ApiConfig.timeout);
+      // Try API first
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/report/usage/$deviceId/count',
+        data: {},
+      ).timeout(ApiConfig.timeout);
 
-      // if (ApiConfig.enableLogging) {
-      //   print('Device Alert API Response Status: ${response.statusCode}');
-      //   print('Device Alert API Response Body: ${response.data}');
-      // }
-
-      // if (response.statusCode == 200) {
-      //   DeviceAlertResponse alertResponse = DeviceAlertResponse.fromJson(response.data);
-      //   return alertResponse.result.data;
-      // } else {
-      //   throw HttpException('HTTP ${response.statusCode}: ${response.data}');
-      // }
-
-      // For now, always use local fallback
-      if (ApiConfig.useLocalFallback) {
-        return await _loadLocalDeviceAlerts();
+      if (ApiConfig.enableLogging) {
+        print('Device Usage Count API Response Status: ${response.statusCode}');
+        print('Device Usage Count API Response Body: ${response.data}');
       }
-      return [];
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic> &&
+            responseData['result'] is List) {
+          final List<dynamic> resultList = responseData['result'];
+          return resultList.map((item) => DeviceUsageCount.fromJson(item)).toList();
+        }
+        return [];
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
     } catch (e) {
       if (ApiConfig.enableLogging) {
-        print('Device alert API request failed: $e, falling back to local data');
+        print('Device usage count API request failed: $e, falling back to local data');
       }
 
       if (ApiConfig.useLocalFallback) {
-        return await _loadLocalDeviceAlerts();
+        return await _loadLocalDeviceUsageCount();
       } else {
         rethrow;
       }
+    }
+  }
+
+  static Future<List<DeviceUsageCount>> _loadLocalDeviceUsageCount() async {
+    try {
+      final String response = await rootBundle.loadString(
+        'lib/assets/device_usage_count.json',
+      );
+      final json = jsonDecode(response);
+      if (json['result'] is List) {
+        final List<dynamic> resultList = json['result'];
+        return resultList.map((item) => DeviceUsageCount.fromJson(item)).toList();
+      }
+      return [];
+    } catch (e) {
+      throw Exception('Failed to load device usage count data: $e');
     }
   }
 
@@ -512,38 +651,45 @@ class DeviceService {
     }
   }
 
-  static Future<List<DeviceLog>> getDeviceLogs({
+  static Future<List<DeviceOperateLog>> getDeviceLogs({
     required String deviceId,
     int pageIndex = 0,
     int pageSize = 12,
   }) async {
     try {
       // Try API first (commented for now, using local fallback)
-      // final response = await ApiInterceptor.post(
-      //   '${ApiConfig.baseUrl}/device-instance/$deviceId/logs',
-      //   data: {
-      //     'pageIndex': pageIndex,
-      //     'pageSize': pageSize,
-      //   },
-      // ).timeout(ApiConfig.timeout);
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/report/operate/_query',
+        data: {
+          'pageIndex': pageIndex,
+          'pageSize': pageSize,
+          'terms': [
+            {
+              "column":"deviceId", 
+              "term":"eq", 
+              "value": deviceId
+            },
+          ],
+          'sorts': [
+            {
+              "name": "timestamp",
+              "order": "desc"
+            }
+          ]
+        },
+      ).timeout(ApiConfig.timeout);
 
-      // if (ApiConfig.enableLogging) {
-      //   print('Device Log API Response Status: ${response.statusCode}');
-      //   print('Device Log API Response Body: ${response.data}');
-      // }
-
-      // if (response.statusCode == 200) {
-      //   List<dynamic> dataList = response.data['result']['data'] ?? [];
-      //   return dataList.map((item) => DeviceLog.fromJson(item)).toList();
-      // } else {
-      //   throw HttpException('HTTP ${response.statusCode}: ${response.data}');
-      // }
-
-      // For now, always use local fallback
-      if (ApiConfig.useLocalFallback) {
-        return await _loadLocalDeviceLogs();
+      if (ApiConfig.enableLogging) {
+        print('Device Log API Response Status: ${response.statusCode}');
+        print('Device Log API Response Body: ${response.data}');
       }
-      return [];
+
+      if (response.statusCode == 200) {
+        List<dynamic> dataList = response.data['result']['data'] ?? [];
+        return dataList.map((item) => DeviceOperateLog.fromJson(item)).toList();
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
     } catch (e) {
       if (ApiConfig.enableLogging) {
         print('Device log API request failed: $e, falling back to local data');
@@ -557,16 +703,222 @@ class DeviceService {
     }
   }
 
-  static Future<List<DeviceLog>> _loadLocalDeviceLogs() async {
+  static Future<List<DeviceOperateLog>> _loadLocalDeviceLogs() async {
     try {
       final String response = await rootBundle.loadString(
         'lib/assets/device_log.json',
       );
       final json = jsonDecode(response);
       List<dynamic> dataList = json['result']['data'] ?? [];
-      return dataList.map((item) => DeviceLog.fromJson(item)).toList();
+      return dataList.map((item) => DeviceOperateLog.fromJson(item)).toList();
     } catch (e) {
       throw Exception('Failed to load device log data: $e');
+    }
+  }
+
+  static Future<List<Dashboard>> getDeviceLogCount({
+    required String deviceId,
+  }) async {
+    try {
+      // Prepare request body for POST request
+      final requestBody = {
+        'terms': [
+          {
+            'column': 'deviceId',
+            'term': 'eq',
+            'value': deviceId,
+          }
+        ],
+        'sorts': [],
+      };
+
+      // Try API first
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/report/operate/count',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Log Count API Response Status: ${response.statusCode}');
+        print('Device Log Count API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic> &&
+            responseData['result'] is List) {
+          final List<dynamic> resultList = responseData['result'];
+          return resultList
+              .map((item) => Dashboard.fromJson(item))
+              .toList();
+        }
+        return [];
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print(
+            'Device log count API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceLogCount();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<List<Dashboard>> _loadLocalDeviceLogCount() async {
+    try {
+      final String response = await rootBundle.loadString(
+        'lib/assets/device_log_count.json',
+      );
+      final json = jsonDecode(response);
+      if (json['result'] is List) {
+        final List<dynamic> resultList = json['result'];
+        return resultList
+            .map((item) => Dashboard.fromJson(item))
+            .toList();
+      }
+      return [];
+    } catch (e) {
+      throw Exception('Failed to load device log count data: $e');
+    }
+  }
+
+static Future<List<DeviceAlert>> getDeviceAlerts({
+    required String deviceId,
+    int pageIndex = 0,
+    int pageSize = 12,
+  }) async {
+    try {
+      // Prepare request body for POST request
+      final requestBody = {
+        'pageIndex': pageIndex,
+        'pageSize': pageSize,
+        'terms': [
+          {
+            "column": "deviceId",
+            "term": "eq",
+            "value": deviceId
+          }
+        ],
+        'sorts': [
+          {
+            "name": "timestamp",
+            "order": "desc"
+          }
+        ],
+      };
+
+      // Try API first
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/report/alarm/_query',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Alert API Response Status: ${response.statusCode}');
+        print('Device Alert API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          final List<dynamic> resultList = responseData['result']['data'];
+          return resultList
+              .map((item) => DeviceAlert.fromJson(item))
+              .toList();
+        }
+        return [];
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print(
+            'Device alert count API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceAlerts();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<List<Dashboard>> getDeviceAlertCount({
+    required String deviceId,
+  }) async {
+    try {
+      // Prepare request body for POST request
+      final requestBody = {
+        'terms': [
+          {
+            'column': 'deviceId',
+            'term': 'eq',
+            'value': deviceId,
+          }
+        ],
+        'sorts': [],
+      };
+
+      // Try API first
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}/report/alarm/count',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      if (ApiConfig.enableLogging) {
+        print('Device Alert Count API Response Status: ${response.statusCode}');
+        print('Device Alert Count API Response Body: ${response.data}');
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic> &&
+            responseData['result'] is List) {
+          final List<dynamic> resultList = responseData['result'];
+          return resultList
+              .map((item) => Dashboard.fromJson(item))
+              .toList();
+        }
+        return [];
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.data}');
+      }
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print(
+            'Device alert count API request failed: $e, falling back to local data');
+      }
+
+      if (ApiConfig.useLocalFallback) {
+        return await _loadLocalDeviceAlertCount();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  static Future<List<Dashboard>> _loadLocalDeviceAlertCount() async {
+    try {
+      final String response = await rootBundle.loadString(
+        'lib/assets/device_alert_count.json',
+      );
+      final json = jsonDecode(response);
+      if (json['result'] is List) {
+        final List<dynamic> resultList = json['result'];
+        return resultList
+            .map((item) => Dashboard.fromJson(item))
+            .toList();
+      }
+      return [];
+    } catch (e) {
+      throw Exception('Failed to load device alert count data: $e');
     }
   }
 
@@ -577,19 +929,19 @@ class DeviceService {
       // Get current user to retrieve orgId
       final currentUser = await AuthService.getCurrentUser();
       if (currentUser == null) {
-        throw Exception('无法获取用户信息');
+        throw Exception('Failed to get user information');
       }
 
       final orgId = currentUser.orgId;
       if (orgId.isEmpty) {
-        throw Exception('无法获取用户组织信息');
+        throw Exception('Failed to get user organization information');
       }
 
       // Prepare request body - array of device IDs
       final requestBody = [deviceId];
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/assets/bind/$orgId/device',
+        '${ApiConfig.baseUrl}/app/asset/$orgId/bind',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
@@ -629,7 +981,7 @@ class DeviceService {
       final requestBody = [deviceId];
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/assets/unbind/$orgId/device',
+        '${ApiConfig.baseUrl}/app/asset/$orgId/unbind',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
@@ -670,7 +1022,7 @@ class DeviceService {
       };
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/feedback/_create',
+        '${ApiConfig.baseUrl}/app/feedback/submit',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
