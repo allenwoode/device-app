@@ -103,30 +103,56 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   }
 
   Future<void> _getCurrentSsid() async {
-    //print('=================get current ssid ===============');
-    // Try to get current WiFi SSID
+    print('=================get current ssid ===============');
     String? currentSSID;
 
     try {
-      // Request location permission if needed
-      if (await Permission.location.isDenied) {
-        await Permission.location.request();
+      // Wait briefly so the CBCentralManager Bluetooth permission dialog
+      // (triggered by BluetoothManager init) settles before we show the
+      // location permission dialog — avoids dialog collision on iOS.
+      if (Platform.isIOS) {
+        await Future.delayed(const Duration(milliseconds: 800));
       }
 
-      // TODO
-      // IOS platform location permission granted
-      if (await Permission.location.isGranted) {
+      // Use the correct permission per platform:
+      //  - Android: Permission.location (coarse/fine)
+      //  - iOS: Permission.locationWhenInUse ("Always" requires two-step grant
+      //    and is NOT needed for getWifiName)
+      final permission = Platform.isIOS
+          ? Permission.locationWhenInUse
+          : Permission.location;
+
+      final status = await permission.status;
+      print('Location permission status: $status');
+
+      if (status.isDenied) {
+        print('Requesting location permission...');
+        final result = await permission.request();
+        print('Permission request result: $result');
+        if (!result.isGranted && !result.isLimited) {
+          print('Location permission not granted');
+          return;
+        }
+      } else if (status.isPermanentlyDenied || status.isRestricted) {
+        print('Location permission permanently denied or restricted');
+        return;
+      }
+
+      if (await permission.isGranted || await permission.isLimited) {
+        print('Location permission granted, fetching current SSID...');
         final networkInfo = NetworkInfo();
         currentSSID = await networkInfo.getWifiName();
+        print('Raw getWifiName result: $currentSSID');
 
-        // Remove quotes if present (iOS adds quotes around SSID)
+        // Remove quotes if present (iOS wraps SSID in double quotes)
         if (currentSSID != null) {
           currentSSID = currentSSID.replaceAll('"', '');
         }
       }
+
+      print('==== get current wifi ssid: $currentSSID');
     } catch (e) {
-      // Ignore errors, just won't pre-fill SSID
-      //print('===== current ssid no found!');
+      print('===== current ssid error: $e');
       return;
     }
 
@@ -134,7 +160,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     if (currentSSID != null && currentSSID.isNotEmpty) {
       ssidController.text = currentSSID;
       final String? password = await StorageService.getWifiConfig(currentSSID);
-      if (password!.isNotEmpty) {
+      if (password != null && password.isNotEmpty) {
         passwordController.text = password;
       }
     }
