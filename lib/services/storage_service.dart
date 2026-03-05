@@ -99,4 +99,13 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_wifiSsidKey + ssid);
   }
+
+  static Future<List<String>> getSavedWifiList() async {
+    final prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys();
+    return keys
+        .where((k) => k.startsWith(_wifiSsidKey))
+        .map((k) => k.substring(_wifiSsidKey.length))
+        .toList();
+  }
 }

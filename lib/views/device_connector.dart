@@ -53,9 +53,9 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
 
   final StreamController<String> _statusController =
       StreamController<String>.broadcast();
-  //Stream<String> get statusStream => _statusController.stream;
   StreamSubscription? stateSubscription;
   bool bleOff = false;
+  List<String> savedWifiList = [];
 
   AppLocalizations get _l10n {
     try {
@@ -69,7 +69,15 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   void initState() {
     super.initState();
     _checkBluetoothState();
+    _loadSavedWifiList();
     _getCurrentSsid();
+  }
+
+  Future<void> _loadSavedWifiList() async {
+    final list = await StorageService.getSavedWifiList();
+    if (mounted) {
+      setState(() => savedWifiList = list);
+    }
   }
 
   @override
@@ -103,56 +111,22 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
   }
 
   Future<void> _getCurrentSsid() async {
-    print('=================get current ssid ===============');
     String? currentSSID;
 
     try {
-      // Wait briefly so the CBCentralManager Bluetooth permission dialog
-      // (triggered by BluetoothManager init) settles before we show the
-      // location permission dialog — avoids dialog collision on iOS.
-      if (Platform.isIOS) {
-        await Future.delayed(const Duration(milliseconds: 800));
-      }
-
-      // Use the correct permission per platform:
-      //  - Android: Permission.location (coarse/fine)
-      //  - iOS: Permission.locationWhenInUse ("Always" requires two-step grant
-      //    and is NOT needed for getWifiName)
-      final permission = Platform.isIOS
-          ? Permission.locationWhenInUse
-          : Permission.location;
-
-      final status = await permission.status;
-      print('Location permission status: $status');
-
-      if (status.isDenied) {
-        print('Requesting location permission...');
-        final result = await permission.request();
-        print('Permission request result: $result');
-        if (!result.isGranted && !result.isLimited) {
-          print('Location permission not granted');
-          return;
-        }
-      } else if (status.isPermanentlyDenied || status.isRestricted) {
-        print('Location permission permanently denied or restricted');
-        return;
-      }
-
-      if (await permission.isGranted || await permission.isLimited) {
-        print('Location permission granted, fetching current SSID...');
+      if (await Permission.location.isGranted) {
         final networkInfo = NetworkInfo();
         currentSSID = await networkInfo.getWifiName();
-        print('Raw getWifiName result: $currentSSID');
-
-        // Remove quotes if present (iOS wraps SSID in double quotes)
-        if (currentSSID != null) {
-          currentSSID = currentSSID.replaceAll('"', '');
-        }
       }
 
-      print('==== get current wifi ssid: $currentSSID');
+      // Remove quotes if present (iOS wraps SSID in double quotes)
+      if (currentSSID != null) {
+        currentSSID = currentSSID.replaceAll('"', '');
+      }
+
+      //print('==== get current wifi ssid: $currentSSID');
     } catch (e) {
-      print('===== current ssid error: $e');
+      //print('===== current ssid error: $e');
       return;
     }
 
@@ -343,6 +317,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
       });
       _addLog(_l10n.configSentSuccess);
       StorageService.saveWifiConfig(ssid, password);
+      _loadSavedWifiList();
       success = true;
     } catch (e) {
       print('send wifi config error: $e');
@@ -704,8 +679,32 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
               focusNode: ssidFocusNode,
               decoration: InputDecoration(
                 labelText: _l10n.wifiSsid,
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 prefixIcon: Icon(Icons.wifi),
+                suffixIcon: savedWifiList.isNotEmpty
+                    ? PopupMenuButton<String>(
+                        icon: Icon(Icons.arrow_drop_down),
+                        onSelected: (ssid) async {
+                          ssidController.text = ssid;
+                          final password =
+                              await StorageService.getWifiConfig(ssid);
+                          if (password != null && password.isNotEmpty) {
+                            passwordController.text = password;
+                          }
+                          if (ssidError != null) {
+                            setState(() => ssidError = null);
+                          }
+                        },
+                        itemBuilder: (context) => savedWifiList
+                            .map((ssid) => PopupMenuItem(
+                                  value: ssid,
+                                  child: Text(ssid),
+                                ))
+                            .toList(),
+                      )
+                    : null,
                 errorText: ssidError,
                 errorBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.red, width: 2),
@@ -716,12 +715,9 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              enabled: false,
               onChanged: (value) {
                 if (ssidError != null) {
-                  setState(() {
-                    ssidError = null;
-                  });
+                  setState(() => ssidError = null);
                 }
               },
             ),

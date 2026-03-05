@@ -24,6 +24,8 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
@@ -32,16 +34,14 @@
 	<string>This app needs Bluetooth access to connect and communicate with nearby devices.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to camera to scan QR codes for device binding.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs location access to read WiFi network information.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to get the Wi-Fi name.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
 		<string>bluetooth-peripheral</string>
+		<string>bluetooth-central</string>
+		<string>nearby-interaction</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -60,8 +60,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>UIUserNotificationSettings</key>
 	<dict>
 		<key>UIUserNotificationTypeAlert</key>
