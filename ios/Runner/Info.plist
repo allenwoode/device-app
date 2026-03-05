@@ -35,7 +35,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to camera to scan QR codes for device binding.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app request location permission to get WiFi info.</string>
+	<string>This app needs location access to read WiFi network information and get device location.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs location access to read WiFi network information and get device location.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
