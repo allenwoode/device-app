@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:device/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,7 +44,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     var status = await Permission.camera.status;
     if (!status.isGranted) {
       status = await Permission.camera.request();
-      if (!status.isGranted) {
+      if (Platform.isAndroid && !status.isGranted) {
         if (mounted) {
           SimpleAlertDialog.show(
             context: context,
@@ -127,22 +129,28 @@ class _QRScannerPageState extends State<QRScannerPage> {
           // Show error dialog
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(_l10n.bindFailed, style: const TextStyle(fontSize: 12)),
+              content: Text(
+                _l10n.bindFailed,
+                style: const TextStyle(fontSize: 12),
+              ),
               backgroundColor: Colors.orange,
             ),
           );
         }
       }
     } catch (e) {
-       if (mounted) {
-         ScaffoldMessenger.of(context).hideCurrentSnackBar();
-         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(_l10n.bindOperationFailed, style: const TextStyle(fontSize: 12)),
-              backgroundColor: Colors.red,
+      if (mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _l10n.bindOperationFailed,
+              style: const TextStyle(fontSize: 12),
             ),
-          );
-       }
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -203,9 +211,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
                 ),
                 // Custom overlay
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                  ),
+                  decoration: BoxDecoration(color: Colors.transparent),
                   child: CustomPaint(
                     painter: ScannerOverlay(
                       borderColor: AppColors.primaryColor,
@@ -224,12 +230,17 @@ class _QRScannerPageState extends State<QRScannerPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
                           SizedBox(height: 16),
                           Text(
                             _l10n.processing,
-                            style: const TextStyle(color: Colors.white, fontSize: 16),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                           ),
                         ],
                       ),
@@ -256,10 +267,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
                   const SizedBox(height: 8),
                   Text(
                     _l10n.scanHint,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                 ],
               ),
@@ -301,16 +309,40 @@ class ScannerOverlay extends CustomPainter {
     canvas.drawLine(Offset(left, top), Offset(left, top + borderLength), paint);
 
     // Top-right corner
-    canvas.drawLine(Offset(right - borderLength, top), Offset(right, top), paint);
-    canvas.drawLine(Offset(right, top), Offset(right, top + borderLength), paint);
+    canvas.drawLine(
+      Offset(right - borderLength, top),
+      Offset(right, top),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(right, top),
+      Offset(right, top + borderLength),
+      paint,
+    );
 
     // Bottom-left corner
-    canvas.drawLine(Offset(left, bottom - borderLength), Offset(left, bottom), paint);
-    canvas.drawLine(Offset(left, bottom), Offset(left + borderLength, bottom), paint);
+    canvas.drawLine(
+      Offset(left, bottom - borderLength),
+      Offset(left, bottom),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(left, bottom),
+      Offset(left + borderLength, bottom),
+      paint,
+    );
 
     // Bottom-right corner
-    canvas.drawLine(Offset(right - borderLength, bottom), Offset(right, bottom), paint);
-    canvas.drawLine(Offset(right, bottom - borderLength), Offset(right, bottom), paint);
+    canvas.drawLine(
+      Offset(right - borderLength, bottom),
+      Offset(right, bottom),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(right, bottom - borderLength),
+      Offset(right, bottom),
+      paint,
+    );
   }
 
   @override
