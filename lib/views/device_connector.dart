@@ -114,6 +114,11 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     String? currentSSID;
 
     try {
+      // Request location permission if needed
+      if (Platform.isAndroid && await Permission.location.isDenied) {
+        await Permission.location.request();
+      }
+
       if (await Permission.location.isGranted) {
         final networkInfo = NetworkInfo();
         currentSSID = await networkInfo.getWifiName();
@@ -124,7 +129,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
         currentSSID = currentSSID.replaceAll('"', '');
       }
 
-      //print('==== get current wifi ssid: $currentSSID');
+      print('==== get current wifi ssid: $currentSSID');
     } catch (e) {
       //print('===== current ssid error: $e');
       return;
