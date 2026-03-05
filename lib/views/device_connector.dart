@@ -95,7 +95,8 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     stateSubscription = FlutterBluePlus.adapterState.listen((
       BluetoothAdapterState state,
     ) {
-      if (state != BluetoothAdapterState.on) {
+      if (Platform.isAndroid) {
+        if (state != BluetoothAdapterState.on) {
         setState(() {
           statusMessage = _l10n.pleaseEnableBluetooth;
           bleOff = true;
@@ -107,6 +108,7 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
           bleOff = false;
         });
       }
+    }
     });
   }
 
@@ -114,22 +116,29 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     String? currentSSID;
 
     try {
-      // Request location permission if needed
-      if (Platform.isAndroid && await Permission.location.isDenied) {
-        await Permission.location.request();
+      // iOS only has NSLocationWhenInUseUsageDescription in Info.plist,
+      // so we must use locationWhenInUse. Permission.location maps to
+      // "Always" on iOS which requires a different plist key and a
+      // two-step grant flow — using it causes iOS to silently ignore
+      // the request and the settings page won't show a location toggle.
+      final permission = Platform.isIOS
+          ? Permission.locationWhenInUse
+          : Permission.location;
+
+      if (await permission.isDenied) {
+        await permission.request();
       }
 
-      if (await Permission.location.isGranted) {
+      if (await permission.isGranted || await permission.isLimited) {
         final networkInfo = NetworkInfo();
         currentSSID = await networkInfo.getWifiName();
       }
 
-      // Remove quotes if present (iOS wraps SSID in double quotes)
       if (currentSSID != null) {
         currentSSID = currentSSID.replaceAll('"', '');
       }
 
-      print('==== get current wifi ssid: $currentSSID');
+      //print('==== get current wifi ssid: $currentSSID');
     } catch (e) {
       //print('===== current ssid error: $e');
       return;
@@ -186,15 +195,6 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
         return;
       }
     }
-
-    // if (Platform.isIOS) {
-    //   await ConfirmDialog.show(
-    //     context: context,
-    //     title: '蓝牙未开启',
-    //     message: '开启蓝牙后扫描附近设备',
-    //   );
-    //   return;
-    // }
 
     setState(() {
       isScanning = true;
