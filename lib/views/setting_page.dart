@@ -20,10 +20,7 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   String _selectedLanguageKey = 'zh';
 
-  final Map<String, String> _languages = {
-    'zh': '简体中文',
-    'en': 'English',
-  };
+  final Map<String, String> _languages = {'zh': '简体中文', 'en': 'English'};
 
   AppLocalizations get _l10n {
     try {
@@ -84,10 +81,7 @@ class _SettingPageState extends State<SettingPage> {
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 _l10n.cancel,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
             ),
           ],
@@ -109,9 +103,7 @@ class _SettingPageState extends State<SettingPage> {
     } catch (e) {
       // Fallback to default locale on error
       if (mounted) {
-        setState(() {
-          
-        });
+        setState(() {});
       }
     }
   }
@@ -177,10 +169,7 @@ class _SettingPageState extends State<SettingPage> {
           Expanded(
             child: SingleChildScrollView(
               child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  _buildSettingsSection(),
-                ],
+                children: [const SizedBox(height: 20), _buildSettingsSection()],
               ),
             ),
           ),
@@ -231,15 +220,15 @@ class _SettingPageState extends State<SettingPage> {
               );
             },
           ),
-          _buildDivider(),
-          _buildSettingItem(
-            icon: Icons.storage,
-            title: _l10n.storageManagement,
-            subtitle: _l10n.storageManagementSubtitle,
-            onTap: () {
-              _showClearCacheDialog();
-            },
-          ),
+          // _buildDivider(),
+          // _buildSettingItem(
+          //   icon: Icons.storage,
+          //   title: _l10n.storageManagement,
+          //   subtitle: _l10n.storageManagementSubtitle,
+          //   onTap: () {
+          //     _showClearCacheDialog();
+          //   },
+          // ),
         ],
       ),
     );
@@ -264,11 +253,7 @@ class _SettingPageState extends State<SettingPage> {
                 shape: BoxShape.circle,
                 color: AppColors.primaryColor.withOpacity(0.1),
               ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: AppColors.primaryColor,
-              ),
+              child: Icon(icon, size: 20, color: AppColors.primaryColor),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -286,19 +271,12 @@ class _SettingPageState extends State<SettingPage> {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
                 ],
               ),
             ),
-            Icon(
-              Icons.chevron_right,
-              color: Colors.grey[400],
-              size: 20,
-            ),
+            Icon(Icons.chevron_right, color: Colors.grey[400], size: 20),
           ],
         ),
       ),
@@ -362,10 +340,7 @@ class _SettingPageState extends State<SettingPage> {
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 _l10n.cancel,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
             ),
             ElevatedButton(
@@ -381,10 +356,7 @@ class _SettingPageState extends State<SettingPage> {
               ),
               child: Text(
                 _l10n.confirm,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ],
@@ -397,10 +369,7 @@ class _SettingPageState extends State<SettingPage> {
     // Simulate cache clearing
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          _l10n.cacheCleared,
-          style: const TextStyle(fontSize: 12),
-        ),
+        content: Text(_l10n.cacheCleared, style: const TextStyle(fontSize: 12)),
         backgroundColor: Colors.green,
       ),
     );

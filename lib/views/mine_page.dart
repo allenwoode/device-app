@@ -54,80 +54,79 @@ class _MinePageState extends State<MinePage> {
     }
   }
 
-
-  void _handleVersionUpdate() {
-    _showStyledAlertDialog(_l10n.versionUpdate, _l10n.versionUpdateTodo);
-  }
+  // void _handleVersionUpdate() {
+  //   _showStyledAlertDialog(_l10n.versionUpdate, _l10n.versionUpdateTodo);
+  // }
 
   void _handleAboutUs() {
     AppRoutes.goToAboutUs(context);
   }
 
-  void _showStyledAlertDialog(String title, String message) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          contentPadding: const EdgeInsets.all(24),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Title
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
+  // void _showStyledAlertDialog(String title, String message) {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         backgroundColor: Colors.white,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(16),
+  //         ),
+  //         contentPadding: const EdgeInsets.all(24),
+  //         content: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             // Title
+  //             Text(
+  //               title,
+  //               style: const TextStyle(
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.w600,
+  //                 color: Colors.black87,
+  //               ),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             const SizedBox(height: 16),
 
-              // Message
-              Text(
-                message,
-                style: const TextStyle(fontSize: 14, color: Colors.black54),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
+  //             // Message
+  //             Text(
+  //               message,
+  //               style: const TextStyle(fontSize: 14, color: Colors.black54),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             const SizedBox(height: 24),
 
-              // Confirm button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    _l10n.confirm,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  //             // Confirm button
+  //             SizedBox(
+  //               width: double.infinity,
+  //               child: ElevatedButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 style: ElevatedButton.styleFrom(
+  //                   backgroundColor: Colors.orange,
+  //                   padding: const EdgeInsets.symmetric(vertical: 12),
+  //                   shape: RoundedRectangleBorder(
+  //                     borderRadius: BorderRadius.circular(8),
+  //                   ),
+  //                   elevation: 0,
+  //                 ),
+  //                 child: Text(
+  //                   _l10n.confirm,
+  //                   style: const TextStyle(
+  //                     fontSize: 16,
+  //                     color: Colors.white,
+  //                     fontWeight: FontWeight.w500,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -270,15 +269,15 @@ class _MinePageState extends State<MinePage> {
             },
           ),
           _buildDivider(),
-          _buildMenuItem(
-            icon: Icons.system_update_outlined,
-            //iconColor: Colors.green,
-            //backgroundColor: Colors.green.withOpacity(0.1),
-            title: _l10n.versionUpdate,
-            showArrow: true,
-            onTap: _handleVersionUpdate,
-          ),
-          _buildDivider(),
+          // _buildMenuItem(
+          //   icon: Icons.system_update_outlined,
+          //   //iconColor: Colors.green,
+          //   //backgroundColor: Colors.green.withOpacity(0.1),
+          //   title: _l10n.versionUpdate,
+          //   showArrow: true,
+          //   onTap: _handleVersionUpdate,
+          // ),
+          // _buildDivider(),
           _buildMenuItem(
             icon: Icons.info_outline,
             //iconColor: Colors.purple,
@@ -324,11 +323,7 @@ class _MinePageState extends State<MinePage> {
                 shape: BoxShape.circle,
                 //color: backgroundColor ?? Colors.grey[300],
               ),
-              child: Icon(
-                icon,
-                size: 18,
-                color: Colors.black54,
-              ),
+              child: Icon(icon, size: 18, color: Colors.black54),
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -352,5 +347,4 @@ class _MinePageState extends State<MinePage> {
       color: Colors.grey[200],
     );
   }
-
 }
