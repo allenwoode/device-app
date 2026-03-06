@@ -507,8 +507,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                     const SizedBox(height: 8),
                     (_category == 'luxury'
                         ? _buildLuxuryBody()
-                        : _buildLockerBody()
-                    ),
+                        : _buildLockerBody()),
                   ],
                 ),
               ),
@@ -632,7 +631,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildLuxuryLock(lockSlots[0]),    
+          _buildLuxuryLock(lockSlots[0]),
           const SizedBox(height: 8),
           _buildLuxuryGrid(),
           const SizedBox(height: 8),
@@ -653,7 +652,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           crossAxisCount: 6,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 0.6,
+          childAspectRatio: 0.65,
         ),
         itemCount: _indicator ?? lockSlots.length,
         itemBuilder: (context, index) {
@@ -670,8 +669,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
       children: [
         // Circular background with lock icon
         Container(
-          width: 32,
-          height: 32,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.grey[300],
@@ -720,7 +719,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           height: 64,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _state == 0 ? Colors.grey[300] : slot.isUsed ? Colors.white : Colors.grey[300],
+            color: _state == 0
+                ? Colors.grey[300]
+                : slot.isUsed
+                ? Colors.white
+                : Colors.grey[300],
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.1),
@@ -734,11 +737,15 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              FaIcon( _state == 0 ? FontAwesomeIcons.lock : 
-                      slot.lockState == LockState.unlocked
-                        ? FontAwesomeIcons.lockOpen
-                        : FontAwesomeIcons.lock,
-                    size: 20, color: Colors.grey[600]),
+              FaIcon(
+                _state == 0
+                    ? FontAwesomeIcons.lock
+                    : slot.lockState == LockState.unlocked
+                    ? FontAwesomeIcons.lockOpen
+                    : FontAwesomeIcons.lock,
+                size: 20,
+                color: Colors.grey[600],
+              ),
               //const SizedBox(height: 4),
             ],
           ),
@@ -771,7 +778,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           crossAxisCount: 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 0.7,
+          childAspectRatio: 0.8,
         ),
         itemCount: _indicator ?? lockSlots.length,
         itemBuilder: (context, index) {
@@ -791,8 +798,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           color: Colors.transparent,
           child: InkWell(
             onTap: () {
-              _state == 0 ? null : 
-              _showLockSlotDialog(slot);
+              _state == 0 ? null : _showLockSlotDialog(slot);
             },
             borderRadius: BorderRadius.circular(32),
             splashColor: Colors.blue.withOpacity(0.3),
@@ -803,7 +809,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _state == 0 ? Colors.grey[300] : slot.isUsed ? Colors.white : Colors.grey[300],
+                color: _state == 0
+                    ? Colors.grey[300]
+                    : slot.isUsed
+                    ? Colors.white
+                    : Colors.grey[300],
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.1),
@@ -818,10 +828,11 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FaIcon(
-                      _state == 0 ? FontAwesomeIcons.lock : 
-                        slot.lockState == LockState.unlocked
-                          ? FontAwesomeIcons.lockOpen
-                          : FontAwesomeIcons.lock,
+                    _state == 0
+                        ? FontAwesomeIcons.lock
+                        : slot.lockState == LockState.unlocked
+                        ? FontAwesomeIcons.lockOpen
+                        : FontAwesomeIcons.lock,
                     size: 20,
                     color: Colors.grey[600],
                   ),
@@ -850,9 +861,16 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
   Widget _buildIndicator(ChargeState state) {
     if (_state == 0) {
       return SizedBox(
-        width: 12,
-        height: 12,
-        child: const Text('--', style: TextStyle(color: Colors.grey, fontSize: 14))
+        width: 16,
+        height: 14,
+        child: const Text(
+          '--',
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       );
     }
     switch (state) {
@@ -909,65 +927,6 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
         );
     }
   }
-
-  // Widget _buildLockerIndicator(ChargeState state) {
-  //   if (_state == 0) {
-  //     return Text('--', style: TextStyle(color: Colors.grey, fontSize: 14));
-  //   }
-  //   switch (state) {
-  //     case ChargeState.charging:
-  //       return Container(
-  //         width: 12,
-  //         height: 12,
-  //         decoration: BoxDecoration(
-  //           shape: BoxShape.circle,
-  //           color: Color(0xFF00a0e9),
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: Colors.grey.withOpacity(0.5),
-  //               spreadRadius: 0,
-  //               blurRadius: 4,
-  //               offset: const Offset(0, 2),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     case ChargeState.charged:
-  //       return Container(
-  //         width: 12,
-  //         height: 12,
-  //         decoration: BoxDecoration(
-  //           shape: BoxShape.circle,
-  //           color: Color(0xFF55bf4f),
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: Colors.grey.withOpacity(0.5),
-  //               spreadRadius: 0,
-  //               blurRadius: 4,
-  //               offset: const Offset(0, 2),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     case ChargeState.empty:
-  //       return Container(
-  //         width: 12,
-  //         height: 12,
-  //         decoration: BoxDecoration(
-  //           shape: BoxShape.circle,
-  //           color: Colors.white,
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: Colors.grey.withOpacity(0.5),
-  //               spreadRadius: 0,
-  //               blurRadius: 4,
-  //               offset: const Offset(0, 2),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //   }
-  // }
 
   Widget _buildLegend() {
     return Container(
