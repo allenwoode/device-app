@@ -38,7 +38,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
       });
     } catch (e) {
       setState(() {
-        _version = '1.1.0';
+        _version = '1.0.0';
         _isLoading = false;
       });
     }
@@ -177,13 +177,13 @@ class _AboutUsPageState extends State<AboutUsPage> {
       color: Colors.white,
       child: Column(
         children: [
-          _buildMenuItem(
-            title: _l10n.registrationNumber,
-            showArrow: false,
-            message: 'ABN20251022889765X',
-            onTap: () {}
-          ),
-          _buildDivider(),
+          // _buildMenuItem(
+          //   title: _l10n.registrationNumber,
+          //   showArrow: false,
+          //   message: 'ABN20251022889765X',
+          //   onTap: () {}
+          // ),
+          //_buildDivider(),
           _buildMenuItem(
             title: _l10n.officialWebsite,
             showArrow: true,
@@ -200,7 +200,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
     required String title,
     required bool showArrow,
     required VoidCallback onTap,
-    String?  message,
+    String? message,
     //Color? iconColor,
     //Color? backgroundColor,
   }) {
@@ -210,7 +210,6 @@ class _AboutUsPageState extends State<AboutUsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
         child: Row(
           children: [
-
             Expanded(
               child: Text(
                 title,
@@ -222,11 +221,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
             else
               Text(
                 message ?? '',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
-              ) 
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              ),
           ],
         ),
       ),
@@ -240,5 +236,4 @@ class _AboutUsPageState extends State<AboutUsPage> {
       color: Colors.grey[200],
     );
   }
-
 }
