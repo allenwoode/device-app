@@ -97,18 +97,18 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
     ) {
       if (Platform.isAndroid) {
         if (state != BluetoothAdapterState.on) {
-        setState(() {
-          statusMessage = _l10n.pleaseEnableBluetooth;
-          bleOff = true;
-        });
-        _addLog(_l10n.bluetoothNotEnabled);
-      } else {
-        setState(() {
-          statusMessage = _l10n.ready;
-          bleOff = false;
-        });
+          setState(() {
+            statusMessage = _l10n.pleaseEnableBluetooth;
+            bleOff = true;
+          });
+          _addLog(_l10n.bluetoothNotEnabled);
+        } else {
+          setState(() {
+            statusMessage = _l10n.ready;
+            bleOff = false;
+          });
+        }
       }
-    }
     });
   }
 
@@ -693,8 +693,9 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
                         icon: Icon(Icons.arrow_drop_down),
                         onSelected: (ssid) async {
                           ssidController.text = ssid;
-                          final password =
-                              await StorageService.getWifiConfig(ssid);
+                          final password = await StorageService.getWifiConfig(
+                            ssid,
+                          );
                           if (password != null && password.isNotEmpty) {
                             passwordController.text = password;
                           }
@@ -703,10 +704,10 @@ class _DeviceConnectorPageState extends State<DeviceConnectorPage> {
                           }
                         },
                         itemBuilder: (context) => savedWifiList
-                            .map((ssid) => PopupMenuItem(
-                                  value: ssid,
-                                  child: Text(ssid),
-                                ))
+                            .map(
+                              (ssid) =>
+                                  PopupMenuItem(value: ssid, child: Text(ssid)),
+                            )
                             .toList(),
                       )
                     : null,
