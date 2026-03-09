@@ -652,7 +652,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           crossAxisCount: 6,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 0.65,
+          childAspectRatio: 0.5,
         ),
         itemCount: _indicator ?? lockSlots.length,
         itemBuilder: (context, index) {
@@ -778,7 +778,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
           crossAxisCount: 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 0.8,
+          childAspectRatio: 0.65,
         ),
         itemCount: _indicator ?? lockSlots.length,
         itemBuilder: (context, index) {
