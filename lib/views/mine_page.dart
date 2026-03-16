@@ -199,7 +199,7 @@ class _MinePageState extends State<MinePage> {
                       child: Text(
                         _currentUser?.roleList.isNotEmpty == true
                             ? _currentUser?.roleList.first.name ?? ''
-                            : '',
+                            : _l10n.userRoleEmpty,
                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ),
@@ -214,7 +214,9 @@ class _MinePageState extends State<MinePage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        _currentUser?.orgName ?? '',
+                        _currentUser?.orgList.isNotEmpty == true
+                            ? _currentUser?.orgList.first.name ?? ''
+                            : _l10n.organizationUnitEmpty,
                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ),

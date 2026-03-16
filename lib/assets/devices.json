@@ -1,3 +1,5 @@
+POST /app/instance/query
+
 {
     "message": "success",
     "result": {

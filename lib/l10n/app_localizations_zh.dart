@@ -193,7 +193,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fullyCharged => '已充满';
 
   @override
-  String get organizationUnitEmpty => '所属组织单位暂无';
+  String get organizationUnitEmpty => '暂无所属组织单位';
 
   @override
   String get confirmExit => '确认退出';
@@ -220,7 +220,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutUsTodo => '关于我们功能待实现';
 
   @override
-  String get userRoleEmpty => '用户所属角色暂无';
+  String get userRoleEmpty => '暂无用户角色';
 
   @override
   String get user => '用户';

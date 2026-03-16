@@ -461,7 +461,7 @@ abstract class AppLocalizations {
   /// No description provided for @organizationUnitEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Organization unit is empty'**
+  /// **'Organization is empty'**
   String get organizationUnitEmpty;
 
   /// No description provided for @confirmExit.
@@ -515,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @userRoleEmpty.
   ///
   /// In en, this message translates to:
-  /// **'User role is empty'**
+  /// **'Role is empty'**
   String get userRoleEmpty;
 
   /// No description provided for @user.

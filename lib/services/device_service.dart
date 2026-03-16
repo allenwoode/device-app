@@ -932,16 +932,16 @@ static Future<List<DeviceAlert>> getDeviceAlerts({
         throw Exception('Failed to get user information');
       }
 
-      final orgId = currentUser.orgId;
-      if (orgId.isEmpty) {
-        throw Exception('Failed to get user organization information');
+      final userId = currentUser.id;
+      if (userId.isEmpty) {
+        throw Exception('Failed to get user information');
       }
 
       // Prepare request body - array of device IDs
       final requestBody = [deviceId];
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/app/asset/$orgId/bind',
+        '${ApiConfig.baseUrl}/app/asset/$userId/user/bind',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
@@ -969,19 +969,19 @@ static Future<List<DeviceAlert>> getDeviceAlerts({
       // Get current user to retrieve orgId
       final currentUser = await AuthService.getCurrentUser();
       if (currentUser == null) {
-        throw Exception('无法获取用户信息');
+        throw Exception('Failed to get user information');
       }
 
-      final orgId = currentUser.orgId;
-      if (orgId.isEmpty) {
-        throw Exception('无法获取用户组织信息');
+      final userId = currentUser.id;
+      if (userId.isEmpty) {
+        throw Exception('Failed to get user information');
       }
 
       // Prepare request body - array of device IDs
       final requestBody = [deviceId];
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/app/asset/$orgId/unbind',
+        '${ApiConfig.baseUrl}/app/asset/$userId/user/unbind',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 

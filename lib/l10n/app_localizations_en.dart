@@ -198,7 +198,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fullyCharged => 'Fully Charged';
 
   @override
-  String get organizationUnitEmpty => 'Organization unit is empty';
+  String get organizationUnitEmpty => 'Organization is empty';
 
   @override
   String get confirmExit => 'Confirm Exit';
@@ -225,7 +225,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutUsTodo => 'About us feature to be implemented';
 
   @override
-  String get userRoleEmpty => 'User role is empty';
+  String get userRoleEmpty => 'Role is empty';
 
   @override
   String get user => 'User';
