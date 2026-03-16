@@ -448,9 +448,7 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          _selectedLocale.languageCode == 'en'
-                              ? 'Not a registered account? '
-                              : '还没有注册账号？',
+                          _l10n.notRegisteredAccount,
                           style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
@@ -459,7 +457,7 @@ class _LoginPageState extends State<LoginPage> {
                         GestureDetector(
                           onTap: _handleRegisterTap,
                           child: Text(
-                            _selectedLocale.languageCode == 'en' ? 'Register' : '去注册',
+                            _l10n.goRegister,
                             style: const TextStyle(
                               color: AppColors.primaryColor,
                               fontSize: 14,

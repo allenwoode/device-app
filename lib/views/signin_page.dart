@@ -176,9 +176,6 @@ class _SignInPageState extends State<SignInPage> {
                     if (value == null || value.isEmpty) {
                       return _l10n.pleaseEnterPassword;
                     }
-                    if (value.length < 6) {
-                      return _l10n.passwordMustBeAtLeast6Chars;
-                    }
                     return null;
                   },
                 ),

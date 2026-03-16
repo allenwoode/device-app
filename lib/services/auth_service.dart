@@ -35,6 +35,7 @@ class AuthService {
           loginResponse.result.token,
           loginResponse.result.expires,
         );
+
         await StorageService.saveUserInfo(jsonEncode(loginResponse.result.user.toJson()));
         
         return loginResponse;
@@ -58,7 +59,7 @@ class AuthService {
       final signInRequest = SignInRequest(
         username: username,
         password: password,
-        rememberMe: rememberMe,
+        expires: -1,
       );
 
       final response = await ApiInterceptor.post(

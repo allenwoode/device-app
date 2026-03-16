@@ -352,19 +352,19 @@ class LoginRequest {
 class SignInRequest {
   final String username;
   final String password;
-  final bool rememberMe;
+  final int expires;
 
   SignInRequest({
     required this.username,
     required this.password,
-    required this.rememberMe,
+    required this.expires,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'username': username,
       'password': password,
-      'rememberMe': rememberMe,
+      'expires': expires,
     };
   }
 }
