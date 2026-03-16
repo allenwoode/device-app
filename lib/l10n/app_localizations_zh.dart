@@ -80,6 +80,42 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pleaseEnterPassword => '请输入密码';
 
   @override
+  String get register => '注册';
+
+  @override
+  String get createYourAccount => '创建你的账号';
+
+  @override
+  String get confirmPassword => '确认密码';
+
+  @override
+  String get passwordMustBeAtLeast6Chars => '密码长度至少6位';
+
+  @override
+  String get pleaseConfirmPassword => '请确认密码';
+
+  @override
+  String get passwordsDoNotMatch => '新密码与确认密码不一致';
+
+  @override
+  String get registerSuccess => '注册成功';
+
+  @override
+  String get registerFailed => '注册失败';
+
+  @override
+  String get backToLogin => '返回登录';
+
+  @override
+  String get unregisteredAccountInputHint => '未注册账号请输入账号信息（选填）';
+
+  @override
+  String get notRegisteredAccount => '还没有注册账号？';
+
+  @override
+  String get goRegister => '去注册';
+
+  @override
   String get passwordLogin => '账号密码登录';
 
   @override
@@ -723,9 +759,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newPassword => '新密码';
 
   @override
-  String get confirmPassword => '确认密码';
-
-  @override
   String get pleaseEnterOldPassword => '请输入当前密码';
 
   @override
@@ -733,9 +766,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pleaseEnterConfirmPassword => '请确认新密码';
-
-  @override
-  String get passwordsDoNotMatch => '新密码与确认密码不一致';
 
   @override
   String get passwordTooShort => '密码长度至少为6位';

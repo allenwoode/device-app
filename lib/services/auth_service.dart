@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 
 import '../models/login_models.dart';
 import '../api/api_config.dart';
@@ -7,6 +8,7 @@ import 'api_interceptor.dart';
 
 class AuthService {
   static const String _loginEndpoint = '/auth/login';
+  static const String _signinEndpoint = '/auth/signin';
   static const String _logoutEndpoint = '/auth/logout';
   static const String _updatePasswordEndpoint = '/user/passwd';
   static const String _resetPasswordEndpoint = '/auth/passwd/reset';
@@ -44,6 +46,71 @@ class AuthService {
     } catch (e) {
       print('Login error: $e');
       return null;
+    }
+  }
+
+  static Future<LoginResponse?> signIn(
+    String username,
+    String password, {
+    bool rememberMe = true,
+  }) async {
+    try {
+      final signInRequest = SignInRequest(
+        username: username,
+        password: password,
+        rememberMe: rememberMe,
+      );
+
+      final response = await ApiInterceptor.post(
+        '${ApiConfig.baseUrl}$_signinEndpoint',
+        data: signInRequest.toJson(),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = response.data;
+        final signInResponse = LoginResponse.fromJson(jsonData);
+
+        if (signInResponse.status == 200 && signInResponse.result.token.isNotEmpty) {
+          await StorageService.saveTokenWithExpiry(
+            signInResponse.result.token,
+            signInResponse.result.expires,
+          );
+          await StorageService.saveUserInfo(
+            jsonEncode(signInResponse.result.user.toJson()),
+          );
+          return signInResponse;
+        }
+
+        throw Exception(signInResponse.message.isNotEmpty
+            ? signInResponse.message
+            : 'Register failed');
+      } else {
+        final responseData = response.data;
+        if (responseData is Map<String, dynamic>) {
+          final message = responseData['message']?.toString() ?? 'Register failed';
+          throw Exception(message);
+        }
+        throw Exception('Register failed');
+      }
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      if (responseData is Map<String, dynamic>) {
+        final message = responseData['message']?.toString();
+        if (message != null && message.isNotEmpty) {
+          throw Exception(message);
+        }
+      }
+
+      if (e.response?.statusMessage != null && e.response!.statusMessage!.isNotEmpty) {
+        throw Exception(e.response!.statusMessage!);
+      }
+
+      throw Exception('Network error');
+    } catch (e) {
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Register failed');
     }
   }
 

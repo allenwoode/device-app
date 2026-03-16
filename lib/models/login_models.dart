@@ -174,8 +174,8 @@ class User {
       modifyTime: json['modifyTime'] ?? 0,
       gender: Gender.fromJson(json['gender'] ?? {}),
       register: Register.fromJson(json['register'] ?? {}),
-      orgId: orgList.first.id,
-      orgName: orgList.first.fullName,
+      orgId: orgList.isNotEmpty ? orgList.first.id : '',
+      orgName: orgList.isNotEmpty ? orgList.first.fullName : '',
     );
   }
 
@@ -345,6 +345,26 @@ class LoginRequest {
       'username': username,
       'password': password,
       'expires': expires,
+    };
+  }
+}
+
+class SignInRequest {
+  final String username;
+  final String password;
+  final bool rememberMe;
+
+  SignInRequest({
+    required this.username,
+    required this.password,
+    required this.rememberMe,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'username': username,
+      'password': password,
+      'rememberMe': rememberMe,
     };
   }
 }

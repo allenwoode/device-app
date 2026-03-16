@@ -15,6 +15,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import '../views/main_page.dart';
 import '../views/login_page.dart';
+import '../views/signin_page.dart';
 import '../views/instance/device_detail_page.dart';
 import '../views/instance/function_page.dart';
 import '../views/instance/device_usage_page.dart';
@@ -29,6 +30,7 @@ class AppRoutes {
   // Route paths
   static const String root = '/';
   static const String login = '/login';
+  static const String signin = '/signin';
   static const String main = '/main';
   static const String deviceDetail = '/device-detail';
   static const String function = '/function';
@@ -65,6 +67,12 @@ class AppRoutes {
   static final Handler _mainHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
       return const MainPage();
+    },
+  );
+
+  static final Handler _signinHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      return const SignInPage();
     },
   );
 
@@ -247,6 +255,12 @@ class AppRoutes {
     );
 
     router.define(
+      signin,
+      handler: _signinHandler,
+      transitionType: TransitionType.fadeIn,
+    );
+
+    router.define(
       '$deviceDetail/:deviceId/:productId',
       handler: _deviceDetailHandler,
       transitionType: TransitionType.cupertino,
@@ -423,6 +437,10 @@ class AppRoutes {
 
   static Future<dynamic> goToMain(BuildContext context, {bool clearStack = true}) {
     return navigateTo(context, main, clearStack: clearStack);
+  }
+
+  static Future<dynamic> goToSignIn(BuildContext context, {bool clearStack = false}) {
+    return navigateTo(context, signin, clearStack: clearStack);
   }
 
   static Future<dynamic> goToDeviceDetail(

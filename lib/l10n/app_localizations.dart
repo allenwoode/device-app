@@ -236,6 +236,78 @@ abstract class AppLocalizations {
   /// **'Please enter password'**
   String get pleaseEnterPassword;
 
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @createYourAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get createYourAccount;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @passwordMustBeAtLeast6Chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordMustBeAtLeast6Chars;
+
+  /// No description provided for @pleaseConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm password'**
+  String get pleaseConfirmPassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'New password and confirmation do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @registerSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Register success'**
+  String get registerSuccess;
+
+  /// No description provided for @registerFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Register failed'**
+  String get registerFailed;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to login'**
+  String get backToLogin;
+
+  /// No description provided for @unregisteredAccountInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If not registered, enter account info (optional)'**
+  String get unregisteredAccountInputHint;
+
+  /// No description provided for @notRegisteredAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a registered account?'**
+  String get notRegisteredAccount;
+
+  /// No description provided for @goRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get goRegister;
+
   /// No description provided for @passwordLogin.
   ///
   /// In en, this message translates to:
@@ -1442,12 +1514,6 @@ abstract class AppLocalizations {
   /// **'New Password'**
   String get newPassword;
 
-  /// No description provided for @confirmPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm Password'**
-  String get confirmPassword;
-
   /// No description provided for @pleaseEnterOldPassword.
   ///
   /// In en, this message translates to:
@@ -1465,12 +1531,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please confirm new password'**
   String get pleaseEnterConfirmPassword;
-
-  /// No description provided for @passwordsDoNotMatch.
-  ///
-  /// In en, this message translates to:
-  /// **'New password and confirmation do not match'**
-  String get passwordsDoNotMatch;
 
   /// No description provided for @passwordTooShort.
   ///

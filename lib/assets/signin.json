@@ -1,0 +1,50 @@
+POST /auth/signin
+
+{
+    "username": "test",
+    "password": "test",
+    "rememberMe": true
+}
+
+response:
+{
+    "message": "success",
+    "result": {
+        "expires": 1800000,
+        "permissions": [],
+        "roles": [
+            {
+                "id": "e2560d282767d1bec732c81382bb6c01",
+                "username": "adminee@gmail.com",
+                "name": "adminee",
+                "type": "user"
+            }
+        ],
+        "user": {
+            "id": "e2560d282767d1bec732c81382bb6c01",
+            "username": "adminee@gmail.com",
+            "type": {
+                "name": "其他",
+                "id": "other"
+            },
+            "status": 1,
+            "name": "adminee",
+            "createTime": 1773631154880,
+            "roleList": [],
+            "orgList": []
+        },
+        "currentAuthority": [],
+        "token": "da6e06b066e569cb93614068abdddb50"
+    },
+    "status": 200,
+    "timestamp": 1773631155751
+}
+
+error response:
+{
+    "message": "密码必须包含大小英文、数字",
+    "result": [],
+    "status": 400,
+    "code": "illegal_argument",
+    "timestamp": 1773640411503
+}

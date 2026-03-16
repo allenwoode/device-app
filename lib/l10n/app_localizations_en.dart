@@ -81,6 +81,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseEnterPassword => 'Please enter password';
 
   @override
+  String get register => 'Register';
+
+  @override
+  String get createYourAccount => 'Create your account';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get passwordMustBeAtLeast6Chars =>
+      'Password must be at least 6 characters';
+
+  @override
+  String get pleaseConfirmPassword => 'Please confirm password';
+
+  @override
+  String get passwordsDoNotMatch =>
+      'New password and confirmation do not match';
+
+  @override
+  String get registerSuccess => 'Register success';
+
+  @override
+  String get registerFailed => 'Register failed';
+
+  @override
+  String get backToLogin => 'Back to login';
+
+  @override
+  String get unregisteredAccountInputHint =>
+      'If not registered, enter account info (optional)';
+
+  @override
+  String get notRegisteredAccount => 'Not a registered account?';
+
+  @override
+  String get goRegister => 'Register';
+
+  @override
   String get passwordLogin => 'Password Login';
 
   @override
@@ -742,9 +781,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newPassword => 'New Password';
 
   @override
-  String get confirmPassword => 'Confirm Password';
-
-  @override
   String get pleaseEnterOldPassword => 'Please enter current password';
 
   @override
@@ -752,10 +788,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pleaseEnterConfirmPassword => 'Please confirm new password';
-
-  @override
-  String get passwordsDoNotMatch =>
-      'New password and confirmation do not match';
 
   @override
   String get passwordTooShort => 'Password must be at least 6 characters';
