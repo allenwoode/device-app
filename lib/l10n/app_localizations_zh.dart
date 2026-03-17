@@ -77,6 +77,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pleaseEnterUsername => '请输入用户名';
 
   @override
+  String get pleaseEnterEmail => '请输入邮箱';
+
+  @override
+  String get pleaseEnterValidEmail => '请输入有效的邮箱';
+
+  @override
   String get pleaseEnterPassword => '请输入密码';
 
   @override

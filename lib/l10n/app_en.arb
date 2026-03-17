@@ -29,6 +29,8 @@
   "startingApp": "Starting app...",
   "loginExpired": "Login expired, please login again",
   "pleaseEnterUsername": "Please enter username",
+  "pleaseEnterEmail": "Please enter email",
+  "pleaseEnterValidEmail": "Please enter a valid email",
   "pleaseEnterPassword": "Please enter password",
   "register": "Register",
   "createYourAccount": "Create your account",

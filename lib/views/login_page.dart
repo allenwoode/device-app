@@ -454,6 +454,7 @@ class _LoginPageState extends State<LoginPage> {
                             fontSize: 14,
                           ),
                         ),
+                        const SizedBox(width: 4),
                         GestureDetector(
                           onTap: _handleRegisterTap,
                           child: Text(

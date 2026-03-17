@@ -230,6 +230,18 @@ abstract class AppLocalizations {
   /// **'Please enter username'**
   String get pleaseEnterUsername;
 
+  /// No description provided for @pleaseEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter email'**
+  String get pleaseEnterEmail;
+
+  /// No description provided for @pleaseEnterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get pleaseEnterValidEmail;
+
   /// No description provided for @pleaseEnterPassword.
   ///
   /// In en, this message translates to:

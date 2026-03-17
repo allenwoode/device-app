@@ -12,6 +12,8 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  static final RegExp _emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -116,8 +118,13 @@ class _SignInPageState extends State<SignInPage> {
                 const SizedBox(height: 40),
                 TextFormField(
                   controller: _usernameController,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.email],
+                  autocorrect: false,
+                  enableSuggestions: false,
                   decoration: InputDecoration(
-                    hintText: _l10n.pleaseEnterUsername,
+                    hintText: _l10n.pleaseEnterEmail,
                     hintStyle: TextStyle(
                       color: Colors.grey,
                       fontSize: 16,
@@ -134,8 +141,12 @@ class _SignInPageState extends State<SignInPage> {
                     contentPadding: EdgeInsets.symmetric(vertical: 16),
                   ),
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return _l10n.pleaseEnterUsername;
+                    final email = value?.trim() ?? '';
+                    if (email.isEmpty) {
+                      return _l10n.pleaseEnterEmail;
+                    }
+                    if (!_emailRegex.hasMatch(email)) {
+                      return _l10n.pleaseEnterValidEmail;
                     }
                     return null;
                   },
