@@ -932,16 +932,24 @@ static Future<List<DeviceAlert>> getDeviceAlerts({
         throw Exception('Failed to get user information');
       }
 
-      final userId = currentUser.id;
-      if (userId.isEmpty) {
-        throw Exception('Failed to get user information');
+      var dimensionType = 'user';
+      var dimensionId = currentUser.id;
+  
+      final orgId = currentUser.orgId;
+      if (orgId.isNotEmpty) {
+        dimensionType = 'org';
+        dimensionId = orgId;
+      }
+
+      if (dimensionId.isEmpty) {
+        throw Exception('Failed to get bind information');
       }
 
       // Prepare request body - array of device IDs
       final requestBody = [deviceId];
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/app/asset/$userId/user/bind',
+        '${ApiConfig.baseUrl}/app/asset/$dimensionId/$dimensionType/bind',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
@@ -972,16 +980,24 @@ static Future<List<DeviceAlert>> getDeviceAlerts({
         throw Exception('Failed to get user information');
       }
 
-      final userId = currentUser.id;
-      if (userId.isEmpty) {
-        throw Exception('Failed to get user information');
+      var dimensionType = 'user';
+      var dimensionId = currentUser.id;
+  
+      final orgId = currentUser.orgId;
+      if (orgId.isNotEmpty) {
+        dimensionType = 'org';
+        dimensionId = orgId;
+      }
+
+      if (dimensionId.isEmpty) {
+        throw Exception('Failed to get bind information');
       }
 
       // Prepare request body - array of device IDs
       final requestBody = [deviceId];
 
       final response = await ApiInterceptor.post(
-        '${ApiConfig.baseUrl}/app/asset/$userId/user/unbind',
+        '${ApiConfig.baseUrl}/app/asset/$dimensionId/$dimensionType/unbind',
         data: requestBody,
       ).timeout(ApiConfig.timeout);
 
