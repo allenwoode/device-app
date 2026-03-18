@@ -18,7 +18,9 @@ GET /user/detail
         "register": {
             "text": "后台注册",
             "value": "backstage"
-        }
+        },
+        "roleList": [],
+        "orgList": []
     },
     "status": 200,
     "timestamp": 1773804070174

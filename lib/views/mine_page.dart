@@ -93,8 +93,12 @@ class _MinePageState extends State<MinePage> {
 
   Widget _buildProfileHeader() {
     return InkWell(
-      onTap: () {
-        AppRoutes.goToUserInfo(context);
+      onTap: () async {
+        await AppRoutes.goToUserInfo(context);
+        if (!mounted) {
+          return;
+        }
+        await _loadUserInfo();
       },
       child: Container(
         color: Colors.white,

@@ -968,10 +968,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameLabel => 'Name';
 
   @override
+  String get nameHint => 'Enter your name';
+
+  @override
   String get emailLabel => 'Email';
 
   @override
+  String get emailHint => 'Enter your email';
+
+  @override
   String get phoneLabel => 'Phone';
+
+  @override
+  String get phoneHint => 'Enter your telephone';
 
   @override
   String get genderLabel => 'Gender';
@@ -1003,4 +1012,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get saveActionReady =>
       'Save action is ready. Add update API to persist changes.';
+
+  @override
+  String get organization => 'Organization';
+
+  @override
+  String get role => 'Role';
 }

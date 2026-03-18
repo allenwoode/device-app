@@ -465,8 +465,11 @@
   "channelName": "Alert Notifications",
   "userInfo": "User Info",
   "nameLabel": "Name",
+  "nameHint": "Enter your name",
   "emailLabel": "Email",
+  "emailHint": "Enter your email",
   "phoneLabel": "Phone",
+  "phoneHint": "Enter your telephone",
   "genderLabel": "Gender",
   "male": "Male",
   "female": "Female",
@@ -476,5 +479,7 @@
   "userDetailLoadFailed": "Failed to load user detail",
   "invalidUserDetailResponse": "Invalid user detail response",
   "avatarPickFailed": "Failed to pick avatar image",
-  "saveActionReady": "Save action is ready. Add update API to persist changes."
+  "saveActionReady": "Save action is ready. Add update API to persist changes.",
+  "organization": "Organization",
+  "role": "Role"
 }

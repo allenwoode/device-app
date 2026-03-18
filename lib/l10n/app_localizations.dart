@@ -1862,17 +1862,35 @@ abstract class AppLocalizations {
   /// **'Name'**
   String get nameLabel;
 
+  /// No description provided for @nameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name'**
+  String get nameHint;
+
   /// No description provided for @emailLabel.
   ///
   /// In en, this message translates to:
   /// **'Email'**
   String get emailLabel;
 
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get emailHint;
+
   /// No description provided for @phoneLabel.
   ///
   /// In en, this message translates to:
   /// **'Phone'**
   String get phoneLabel;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your telephone'**
+  String get phoneHint;
 
   /// No description provided for @genderLabel.
   ///
@@ -1933,6 +1951,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save action is ready. Add update API to persist changes.'**
   String get saveActionReady;
+
+  /// No description provided for @organization.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization'**
+  String get organization;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
 }
 
 class _AppLocalizationsDelegate

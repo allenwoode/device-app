@@ -1,8 +1,11 @@
 import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:device/api/api_config.dart';
 import 'package:device/l10n/app_localizations.dart';
 import 'package:device/services/api_interceptor.dart';
+import 'package:device/services/auth_service.dart';
+import 'package:device/services/storage_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,7 +24,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   bool _isSaving = false;
   bool _isUploadingAvatar = false;
   String? _errorMessage;
-  String? _selectedGender;
+  // String? _selectedGender;
   Uint8List? _selectedAvatarBytes;
   String _originalName = '';
   String _originalEmail = '';
@@ -55,23 +58,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   Future<void> _loadUserDetail() async {
     try {
-      final response = await ApiInterceptor.get(
-        '${ApiConfig.baseUrl}/user/detail',
-      ).timeout(ApiConfig.timeout);
-
-      final data = response.data;
-      if (response.statusCode != 200 || data is! Map<String, dynamic>) {
-        throw Exception(_l10n.userDetailLoadFailed);
-      }
-
-      if (data['status'] != 200) {
-        throw Exception(data['message']?.toString() ?? _l10n.userDetailLoadFailed);
-      }
-
-      final result = data['result'];
-      if (result is! Map<String, dynamic>) {
-        throw Exception(_l10n.invalidUserDetailResponse);
-      }
+      final result = await AuthService.getUserDetail();
 
       if (!mounted) {
         return;
@@ -80,10 +67,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
       final name = (result['name'] ?? '').toString();
       final email = (result['email'] ?? '').toString();
       final phone = (result['telephone'] ?? '').toString();
-        final genderValue =
-          ((result['gender'] as Map<String, dynamic>?)?['value'] ?? '')
-            .toString()
-            .toLowerCase();
+      // final genderValue =
+      //     ((result['gender'] as Map<String, dynamic>?)?['value'] ?? '')
+      //       .toString()
+      //       .toLowerCase();
 
       _nameController.text = name;
       _emailController.text = email;
@@ -96,19 +83,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
         _originalName = name;
         _originalEmail = email;
         _originalPhone = phone;
-        _selectedGender =
-            genderValue == 'male' || genderValue == 'female' ? genderValue : null;
-      });
-    } on DioException catch (e) {
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _isLoading = false;
-        _errorMessage = e.response?.data is Map<String, dynamic>
-            ? (e.response?.data['message']?.toString() ?? 'Network error')
-            : (e.message ?? 'Network error');
+        // _selectedGender =
+        //     genderValue == 'male' || genderValue == 'female' ? genderValue : null;
       });
     } catch (e) {
       if (!mounted) {
@@ -140,27 +116,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
     });
 
     try {
-      final requestBody = {
-        'id': userId,
-        'name': _nameController.text.trim(),
-        'email': _emailController.text.trim(),
-        'avatar': (_user?['avatar'] ?? '').toString(),
-        'telephone': _phoneController.text.trim(),
-      };
-
-      final response = await ApiInterceptor.put(
-        '${ApiConfig.baseUrl}/user/detail/update',
-        data: requestBody,
-      ).timeout(ApiConfig.timeout);
-
-      final data = response.data;
-      if (response.statusCode != 200 || data is! Map<String, dynamic>) {
-        throw Exception(_l10n.failed);
-      }
-
-      if (data['status'] != 200) {
-        throw Exception(data['message']?.toString() ?? _l10n.failed);
-      }
+      await AuthService.updateUserDetail(
+        id: userId,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        avatar: (_user?['avatar'] ?? '').toString(),
+        telephone: _phoneController.text.trim(),
+      );
 
       if (!mounted) {
         return;
@@ -180,24 +142,34 @@ class _UserInfoPageState extends State<UserInfoPage> {
         };
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_l10n.success)),
-      );
-    } on DioException catch (e) {
-      if (!mounted) {
-        return;
+      final localUserInfoString = await StorageService.getUserInfo();
+      Map<String, dynamic> mergedUserInfo = {};
+
+      if (localUserInfoString != null && localUserInfoString.isNotEmpty) {
+        try {
+          final decoded = jsonDecode(localUserInfoString);
+          if (decoded is Map<String, dynamic>) {
+            mergedUserInfo = decoded;
+          }
+        } catch (_) {}
       }
 
-      setState(() {
-        _isSaving = false;
-      });
+      mergedUserInfo = {
+        ...mergedUserInfo,
+        ...?_user,
+        'id': userId,
+        'name': _originalName,
+        'email': _originalEmail,
+        'avatar': (_user?['avatar'] ?? '').toString(),
+        'telephone': _originalPhone,
+        'phone': _originalPhone,
+      };
 
-      final message = e.response?.data is Map<String, dynamic>
-          ? (e.response?.data['message']?.toString() ?? _l10n.networkError)
-          : (e.message ?? _l10n.networkError);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      await StorageService.saveUserInfo(jsonEncode(mergedUserInfo));
+
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text(_l10n.success)),
+      // );
     } catch (e) {
       if (!mounted) {
         return;
@@ -208,9 +180,18 @@ class _UserInfoPageState extends State<UserInfoPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        SnackBar(
+          content: Text(
+            e.toString().replaceFirst('Exception: ', '').isNotEmpty
+                ? e.toString().replaceFirst('Exception: ', '')
+                : _l10n.networkError,
+          ),
+        ),
       );
     }
+
+    // navigate back to mine page and refresh user info
+    Navigator.of(context).pop();
   }
 
   Future<void> _pickAvatarFromGallery() async {
@@ -302,41 +283,42 @@ class _UserInfoPageState extends State<UserInfoPage> {
     }
   }
 
-  // Widget _buildInfoTile(String label, String value) {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-  //     decoration: BoxDecoration(
-  //       border: Border(
-  //         bottom: BorderSide(color: Colors.grey[200]!),
-  //       ),
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         SizedBox(
-  //           width: 120,
-  //           child: Text(
-  //             label,
-  //             style: TextStyle(
-  //               fontSize: 14,
-  //               color: Colors.grey[700],
-  //               fontWeight: FontWeight.w500,
-  //             ),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: Text(
-  //             value,
-  //             style: const TextStyle(fontSize: 14, color: Colors.black87),
-  //             textAlign: TextAlign.right,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget _buildInfoTile(String label, String value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.grey[200]!),
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[700],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 14, color: Colors.black87),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildEditableField({
     required String label,
+    required String hint,
     required TextEditingController controller,
     required String originalValue,
     TextInputType? keyboardType,
@@ -370,7 +352,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               decoration: InputDecoration(
                 isDense: true,
                 border: InputBorder.none,
-                hintText: label,
+                hintText: hint,
                 hintStyle: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[500],
@@ -618,18 +600,21 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           children: [
                             _buildEditableField(
                               label: _l10n.nameLabel,
+                              hint: _l10n.nameHint,
                               controller: _nameController,
                               originalValue: _originalName,
                             ),
                             //_buildInfoTile(_l10n.username, (_user?['username'] ?? '').toString()),
                             _buildEditableField(
                               label: _l10n.emailLabel,
+                              hint: _l10n.emailHint,
                               controller: _emailController,
                               originalValue: _originalEmail,
                               keyboardType: TextInputType.emailAddress,
                             ),
                             _buildEditableField(
                               label: _l10n.phoneLabel,
+                              hint: _l10n.phoneHint,
                               controller: _phoneController,
                               originalValue: _originalPhone,
                               keyboardType: TextInputType.phone,
@@ -638,6 +623,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             //_buildInfoTile('Status', (_user?['status'] ?? '').toString()),
                             //_buildInfoTile(_l10n.registrationTime, _formatCreateTime(_user?['createTime'])),
                             //_buildInfoTile('ID', (_user?['id'] ?? '').toString()),
+                            _buildInfoTile('${_l10n.role}', (_user?['roleList'] != null && (_user!['roleList'] as List).isNotEmpty) ? (_user!['roleList'][0]['name'] ?? '') : _l10n.userRoleEmpty),
+                            _buildInfoTile(_l10n.organization, (_user?['orgList'] != null && (_user!['orgList'] as List).isNotEmpty) ? (_user!['orgList'][0]['name'] ?? '') : _l10n.organizationUnitEmpty),
                           ],
                         ),
                       ),

@@ -941,10 +941,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nameLabel => '姓名';
 
   @override
+  String get nameHint => '请输入姓名';
+
+  @override
   String get emailLabel => '邮箱';
 
   @override
+  String get emailHint => '请输入邮箱';
+
+  @override
   String get phoneLabel => '联系电话';
+
+  @override
+  String get phoneHint => '请输入联系电话';
 
   @override
   String get genderLabel => '性别';
@@ -975,4 +984,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get saveActionReady => '保存功能已准备好，接入更新接口后即可持久化修改。';
+
+  @override
+  String get organization => '组织单位';
+
+  @override
+  String get role => '用户角色';
 }

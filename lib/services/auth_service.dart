@@ -10,6 +10,8 @@ class AuthService {
   static const String _loginEndpoint = '/auth/login';
   static const String _signinEndpoint = '/auth/signin';
   static const String _logoutEndpoint = '/auth/logout';
+  static const String _userDetailEndpoint = '/user/detail';
+  static const String _updateUserDetailEndpoint = '/user/detail/update';
   static const String _updatePasswordEndpoint = '/user/passwd';
   static const String _resetPasswordEndpoint = '/auth/passwd/reset';
 
@@ -172,6 +174,82 @@ class AuthService {
 
   static bool isTokenValid(String? token) {
     return token != null && token.isNotEmpty;
+  }
+
+  static Future<Map<String, dynamic>> getUserDetail() async {
+    try {
+      final response = await ApiInterceptor.get(
+        '${ApiConfig.baseUrl}$_userDetailEndpoint',
+      ).timeout(ApiConfig.timeout);
+
+      final data = response.data;
+      if (response.statusCode != 200 || data is! Map<String, dynamic>) {
+        throw Exception('Failed to load user detail');
+      }
+
+      if (data['status'] != 200) {
+        throw Exception(data['message']?.toString() ?? 'Failed to load user detail');
+      }
+
+      final result = data['result'];
+      if (result is! Map<String, dynamic>) {
+        throw Exception('Invalid user detail response');
+      }
+
+      return result;
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      if (responseData is Map<String, dynamic>) {
+        final message = responseData['message']?.toString();
+        if (message != null && message.isNotEmpty) {
+          throw Exception(message);
+        }
+      }
+
+      throw Exception(e.message ?? 'Network error');
+    }
+  }
+
+  static Future<void> updateUserDetail({
+    required String id,
+    required String name,
+    required String email,
+    required String avatar,
+    required String telephone,
+  }) async {
+    try {
+      final requestBody = {
+        'id': id,
+        'name': name,
+        'email': email,
+        'avatar': avatar,
+        'telephone': telephone,
+      };
+
+      final response = await ApiInterceptor.put(
+        '${ApiConfig.baseUrl}$_updateUserDetailEndpoint',
+        data: requestBody,
+      ).timeout(ApiConfig.timeout);
+
+      final data = response.data;
+      if (response.statusCode != 200 || data is! Map<String, dynamic>) {
+        throw Exception('Failed');
+      }
+
+      if (data['status'] != 200) {
+        throw Exception(data['message']?.toString() ?? 'Failed');
+      }
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      if (responseData is Map<String, dynamic>) {
+        final message = responseData['message']?.toString();
+        if (message != null && message.isNotEmpty) {
+          throw Exception(message);
+        }
+      }
+
+      throw Exception(e.message ?? 'Network error');
+    }
   }
 
   static Future<bool> updatePassword({
