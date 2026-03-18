@@ -1,0 +1,35 @@
+GET /user/detail
+
+{
+    "message": "success",
+    "result": {
+        "id": "f43d4bee90d339059af75e60ccf33848",
+        "username": "team@gmail.com",
+        "status": 1,
+        "name": "team",
+        "email": "team@gmail.com",
+        "avatar": "http://192.168.2.137:8848/file/Xpz-9WAKLkIc3TffxPKFHApLNlPWOhym.jpg?accessKey=165358e606df152730232e75a767b561",
+        "createTime": 1773727190282,
+        "phone": "18888888888",
+        "gender": {
+            "text": "未知",
+            "value": "unknown"
+        },
+        "register": {
+            "text": "后台注册",
+            "value": "backstage"
+        }
+    },
+    "status": 200,
+    "timestamp": 1773804070174
+}
+
+PUT /user/detail/update
+
+{
+    "id": "f43d4bee90d339059af75e60ccf33848",
+    "name": "team",
+    "email": "team@gmail.com",
+    "avatar": "http://192.168.2.137:8848/file/Xpz-9WAKLkIc3TffxPKFHApLNlPWOhym.jpg?accessKey=165358e606df152730232e75a767b561",
+    "telephone": "18888888888"
+}

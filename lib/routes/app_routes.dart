@@ -11,6 +11,7 @@ import 'package:device/views/dashboard_log_page.dart';
 import 'package:device/views/about_us_page.dart';
 import 'package:device/views/device_search_page.dart';
 import 'package:device/views/notification_page.dart';
+import 'package:device/views/user_info.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import '../views/main_page.dart';
@@ -50,6 +51,7 @@ class AppRoutes {
   static const String aboutUs = '/about-us';
   static const String deviceSearch = '/device-search';
   static const String notifications = '/notifications';
+  static const String userInfo = '/user-info';
 
   // Route handlers
   static final Handler _rootHandler = Handler(
@@ -233,6 +235,11 @@ class AppRoutes {
       return const NotificationPage();
   });
 
+  static final Handler _userInfoHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      return const UserInfoPage();
+  });
+
   // Configure routes
   static void configureRoutes() {
 
@@ -359,6 +366,12 @@ class AppRoutes {
     router.define(
       notifications,
       handler: _notificationsHandler,
+      transitionType: TransitionType.cupertino,
+    );
+
+    router.define(
+      userInfo,
+      handler: _userInfoHandler,
       transitionType: TransitionType.cupertino,
     );
 
@@ -546,5 +559,9 @@ class AppRoutes {
 
   static Future<dynamic> goToNotifications(BuildContext context) {
     return navigateTo(context, notifications);
+  }
+
+  static Future<dynamic> goToUserInfo(BuildContext context) {
+    return navigateTo(context, userInfo);
   }
 }

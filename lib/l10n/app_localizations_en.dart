@@ -960,4 +960,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get channelName => 'Alert Notifications';
+
+  @override
+  String get userInfo => 'User Info';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get phoneLabel => 'Phone';
+
+  @override
+  String get genderLabel => 'Gender';
+
+  @override
+  String get male => 'Male';
+
+  @override
+  String get female => 'Female';
+
+  @override
+  String get registrationTime => 'Registration Time';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get tapToChangeAvatar => 'Tap to change avatar';
+
+  @override
+  String get userDetailLoadFailed => 'Failed to load user detail';
+
+  @override
+  String get invalidUserDetailResponse => 'Invalid user detail response';
+
+  @override
+  String get avatarPickFailed => 'Failed to pick avatar image';
+
+  @override
+  String get saveActionReady =>
+      'Save action is ready. Add update API to persist changes.';
 }

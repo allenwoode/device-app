@@ -116,6 +116,7 @@ class User {
   final UserType type;
   final int status;
   final String name;
+  final String avatar;
   final String telephone;
   final int createTime;
   final List<UserRole> roleList;
@@ -136,6 +137,7 @@ class User {
     required this.type,
     required this.status,
     required this.name,
+    required this.avatar,
     required this.telephone,
     required this.createTime,
     required this.roleList,
@@ -161,6 +163,7 @@ class User {
       type: UserType.fromJson(json['type'] ?? {}),
       status: json['status'] ?? 0,
       name: json['name'] ?? '',
+      avatar: json['avatar'] ?? '',
       telephone: json['telephone'] ?? '',
       createTime: json['createTime'] ?? 0,
       roleList: (json['roleList'] as List<dynamic>?)
@@ -186,6 +189,7 @@ class User {
       'type': type.toJson(),
       'status': status,
       'name': name,
+      'avatar': avatar,
       'telephone': telephone,
       'createTime': createTime,
       'roleList': roleList.map((r) => r.toJson()).toList(),

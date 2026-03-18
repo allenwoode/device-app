@@ -1849,6 +1849,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Alert Notifications'**
   String get channelName;
+
+  /// No description provided for @userInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'User Info'**
+  String get userInfo;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nameLabel;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phoneLabel;
+
+  /// No description provided for @genderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get genderLabel;
+
+  /// No description provided for @male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get male;
+
+  /// No description provided for @female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get female;
+
+  /// No description provided for @registrationTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Time'**
+  String get registrationTime;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @tapToChangeAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to change avatar'**
+  String get tapToChangeAvatar;
+
+  /// No description provided for @userDetailLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load user detail'**
+  String get userDetailLoadFailed;
+
+  /// No description provided for @invalidUserDetailResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid user detail response'**
+  String get invalidUserDetailResponse;
+
+  /// No description provided for @avatarPickFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to pick avatar image'**
+  String get avatarPickFailed;
+
+  /// No description provided for @saveActionReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Save action is ready. Add update API to persist changes.'**
+  String get saveActionReady;
 }
 
 class _AppLocalizationsDelegate

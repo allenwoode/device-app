@@ -1,0 +1,14 @@
+POST /file/upload
+
+form-data
+file: app_launcher.png
+
+response:
+{
+    "message": "success",
+    "result": {
+        "accessUrl": "http://192.168.2.137:8848/file/Vpz_oyRdx4uML_IvTDJu-LwPekKuuLYC.png?accessKey=2280ee673bb86e8c7abcc0fabb1297f1"
+    },
+    "status": 200,
+    "timestamp": 1773815407719
+}

@@ -462,5 +462,19 @@
   "vibration": "Vibration",
   "vibrateOnNotification": "Vibrate on notification",
   "notificationPermissionRequired": "Notification permission is required. Please enable it in system settings.",
-  "channelName": "Alert Notifications"
+  "channelName": "Alert Notifications",
+  "userInfo": "User Info",
+  "nameLabel": "Name",
+  "emailLabel": "Email",
+  "phoneLabel": "Phone",
+  "genderLabel": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "registrationTime": "Registration Time",
+  "save": "Save",
+  "tapToChangeAvatar": "Tap to change avatar",
+  "userDetailLoadFailed": "Failed to load user detail",
+  "invalidUserDetailResponse": "Invalid user detail response",
+  "avatarPickFailed": "Failed to pick avatar image",
+  "saveActionReady": "Save action is ready. Add update API to persist changes."
 }

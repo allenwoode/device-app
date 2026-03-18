@@ -933,4 +933,46 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get channelName => '告警通知';
+
+  @override
+  String get userInfo => '用户信息';
+
+  @override
+  String get nameLabel => '姓名';
+
+  @override
+  String get emailLabel => '邮箱';
+
+  @override
+  String get phoneLabel => '联系电话';
+
+  @override
+  String get genderLabel => '性别';
+
+  @override
+  String get male => '男';
+
+  @override
+  String get female => '女';
+
+  @override
+  String get registrationTime => '注册时间';
+
+  @override
+  String get save => '保存';
+
+  @override
+  String get tapToChangeAvatar => '点击更换头像';
+
+  @override
+  String get userDetailLoadFailed => '加载用户信息失败';
+
+  @override
+  String get invalidUserDetailResponse => '用户信息响应数据无效';
+
+  @override
+  String get avatarPickFailed => '选择头像失败';
+
+  @override
+  String get saveActionReady => '保存功能已准备好，接入更新接口后即可持久化修改。';
 }

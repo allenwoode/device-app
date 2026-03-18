@@ -62,71 +62,6 @@ class _MinePageState extends State<MinePage> {
     AppRoutes.goToAboutUs(context);
   }
 
-  // void _showStyledAlertDialog(String title, String message) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         backgroundColor: Colors.white,
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(16),
-  //         ),
-  //         contentPadding: const EdgeInsets.all(24),
-  //         content: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             // Title
-  //             Text(
-  //               title,
-  //               style: const TextStyle(
-  //                 fontSize: 18,
-  //                 fontWeight: FontWeight.w600,
-  //                 color: Colors.black87,
-  //               ),
-  //               textAlign: TextAlign.center,
-  //             ),
-  //             const SizedBox(height: 16),
-
-  //             // Message
-  //             Text(
-  //               message,
-  //               style: const TextStyle(fontSize: 14, color: Colors.black54),
-  //               textAlign: TextAlign.center,
-  //             ),
-  //             const SizedBox(height: 24),
-
-  //             // Confirm button
-  //             SizedBox(
-  //               width: double.infinity,
-  //               child: ElevatedButton(
-  //                 onPressed: () {
-  //                   Navigator.of(context).pop();
-  //                 },
-  //                 style: ElevatedButton.styleFrom(
-  //                   backgroundColor: Colors.orange,
-  //                   padding: const EdgeInsets.symmetric(vertical: 12),
-  //                   shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(8),
-  //                   ),
-  //                   elevation: 0,
-  //                 ),
-  //                 child: Text(
-  //                   _l10n.confirm,
-  //                   style: const TextStyle(
-  //                     fontSize: 16,
-  //                     color: Colors.white,
-  //                     fontWeight: FontWeight.w500,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -157,75 +92,99 @@ class _MinePageState extends State<MinePage> {
   }
 
   Widget _buildProfileHeader() {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          Container(
-            width: 60,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey[300],
+    return InkWell(
+      onTap: () {
+        AppRoutes.goToUserInfo(context);
+      },
+      child: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey[200],
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: _currentUser?.avatar.isNotEmpty == true
+                  ? Image.network(
+                      _currentUser!.avatar,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.person, size: 28, color: Colors.grey[500]);
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(
+                          child: SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        );
+                      },
+                    )
+                  : Icon(Icons.person, size: 28, color: Colors.grey[500]),
             ),
-            child: Icon(Icons.person, size: 30, color: Colors.grey[600]),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hi, ${_currentUser?.name ?? _l10n.user}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+            const SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hi, ${_currentUser?.name ?? _l10n.user}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          _currentUser?.roleList.isNotEmpty == true
+                              ? _currentUser?.roleList.first.name ?? ''
+                              : _l10n.userRoleEmpty,
+                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
+                      const SizedBox(width: 5),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          _currentUser?.orgList.isNotEmpty == true
+                              ? _currentUser?.orgList.first.name ?? ''
+                              : _l10n.organizationUnitEmpty,
+                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                        ),
                       ),
-                      child: Text(
-                        _currentUser?.roleList.isNotEmpty == true
-                            ? _currentUser?.roleList.first.name ?? ''
-                            : _l10n.userRoleEmpty,
-                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        _currentUser?.orgList.isNotEmpty == true
-                            ? _currentUser?.orgList.first.name ?? ''
-                            : _l10n.organizationUnitEmpty,
-                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

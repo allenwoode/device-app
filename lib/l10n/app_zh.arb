@@ -358,5 +358,19 @@
   "vibrateOnNotification": "通知时振动",
   "notificationPermissionRequired": "需要通知权限。请在系统设置中启用。",
   "backgroundServiceInfo": "后台服务允许您在应用关闭时也能接收设备警报。耗电量极低。",
-  "channelName": "告警通知"
+  "channelName": "告警通知",
+  "userInfo": "用户信息",
+  "nameLabel": "姓名",
+  "emailLabel": "邮箱",
+  "phoneLabel": "联系电话",
+  "genderLabel": "性别",
+  "male": "男",
+  "female": "女",
+  "registrationTime": "注册时间",
+  "save": "保存",
+  "tapToChangeAvatar": "点击更换头像",
+  "userDetailLoadFailed": "加载用户信息失败",
+  "invalidUserDetailResponse": "用户信息响应数据无效",
+  "avatarPickFailed": "选择头像失败",
+  "saveActionReady": "保存功能已准备好，接入更新接口后即可持久化修改。"
 }
