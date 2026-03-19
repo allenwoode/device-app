@@ -230,11 +230,95 @@ abstract class AppLocalizations {
   /// **'Please enter username'**
   String get pleaseEnterUsername;
 
+  /// No description provided for @pleaseEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter email'**
+  String get pleaseEnterEmail;
+
+  /// No description provided for @pleaseEnterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get pleaseEnterValidEmail;
+
   /// No description provided for @pleaseEnterPassword.
   ///
   /// In en, this message translates to:
   /// **'Please enter password'**
   String get pleaseEnterPassword;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @createYourAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get createYourAccount;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @passwordMustBeAtLeast6Chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordMustBeAtLeast6Chars;
+
+  /// No description provided for @pleaseConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm password'**
+  String get pleaseConfirmPassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'New password and confirmation do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @registerSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Register success'**
+  String get registerSuccess;
+
+  /// No description provided for @registerFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Register failed'**
+  String get registerFailed;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to login'**
+  String get backToLogin;
+
+  /// No description provided for @unregisteredAccountInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If not registered, enter account info (optional)'**
+  String get unregisteredAccountInputHint;
+
+  /// No description provided for @notRegisteredAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a registered account?'**
+  String get notRegisteredAccount;
+
+  /// No description provided for @goRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get goRegister;
 
   /// No description provided for @passwordLogin.
   ///
@@ -389,7 +473,7 @@ abstract class AppLocalizations {
   /// No description provided for @organizationUnitEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Organization unit is empty'**
+  /// **'Organization is empty'**
   String get organizationUnitEmpty;
 
   /// No description provided for @confirmExit.
@@ -443,7 +527,7 @@ abstract class AppLocalizations {
   /// No description provided for @userRoleEmpty.
   ///
   /// In en, this message translates to:
-  /// **'User role is empty'**
+  /// **'Role is empty'**
   String get userRoleEmpty;
 
   /// No description provided for @user.
@@ -1442,12 +1526,6 @@ abstract class AppLocalizations {
   /// **'New Password'**
   String get newPassword;
 
-  /// No description provided for @confirmPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm Password'**
-  String get confirmPassword;
-
   /// No description provided for @pleaseEnterOldPassword.
   ///
   /// In en, this message translates to:
@@ -1465,12 +1543,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please confirm new password'**
   String get pleaseEnterConfirmPassword;
-
-  /// No description provided for @passwordsDoNotMatch.
-  ///
-  /// In en, this message translates to:
-  /// **'New password and confirmation do not match'**
-  String get passwordsDoNotMatch;
 
   /// No description provided for @passwordTooShort.
   ///
@@ -1777,6 +1849,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Alert Notifications'**
   String get channelName;
+
+  /// No description provided for @userInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'User Info'**
+  String get userInfo;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nameLabel;
+
+  /// No description provided for @nameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name'**
+  String get nameHint;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get emailHint;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Telephone'**
+  String get phoneLabel;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your telephone'**
+  String get phoneHint;
+
+  /// No description provided for @genderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get genderLabel;
+
+  /// No description provided for @male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get male;
+
+  /// No description provided for @female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get female;
+
+  /// No description provided for @registrationTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Time'**
+  String get registrationTime;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @tapToChangeAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to change avatar'**
+  String get tapToChangeAvatar;
+
+  /// No description provided for @userDetailLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load user detail'**
+  String get userDetailLoadFailed;
+
+  /// No description provided for @invalidUserDetailResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid user detail response'**
+  String get invalidUserDetailResponse;
+
+  /// No description provided for @avatarPickFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to pick avatar image'**
+  String get avatarPickFailed;
+
+  /// No description provided for @saveActionReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Save action is ready. Add update API to persist changes.'**
+  String get saveActionReady;
+
+  /// No description provided for @organization.
+  ///
+  /// In en, this message translates to:
+  /// **'Organization'**
+  String get organization;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
 }
 
 class _AppLocalizationsDelegate

@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _unregisteredAccountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   bool _checkingLoginState = true;
@@ -43,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    _unregisteredAccountController.dispose();
     super.dispose();
   }
 
@@ -237,6 +239,10 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
     }
+  }
+
+  void _handleRegisterTap() {
+    AppRoutes.goToSignIn(context);
   }
 
   @override
@@ -436,6 +442,31 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                       ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          _l10n.notRegisteredAccount,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: _handleRegisterTap,
+                          child: Text(
+                            _l10n.goRegister,
+                            style: const TextStyle(
+                              color: AppColors.primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

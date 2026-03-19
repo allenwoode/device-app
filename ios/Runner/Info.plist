@@ -13,7 +13,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
+	<string>1.0</string>
 	<key>CFBundleName</key>
 	<string>jama-charger</string>
 	<key>CFBundlePackageType</key>
@@ -34,10 +34,12 @@
 	<string>This app needs Bluetooth access to connect and communicate with nearby devices.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to camera to scan QR codes for device binding.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs location access to read WiFi network information and get device location.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs location access to read WiFi network information and get device location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs location access to read WiFi network information and get device location.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to choose a profile avatar.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

@@ -78,7 +78,52 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseEnterUsername => 'Please enter username';
 
   @override
+  String get pleaseEnterEmail => 'Please enter email';
+
+  @override
+  String get pleaseEnterValidEmail => 'Please enter a valid email';
+
+  @override
   String get pleaseEnterPassword => 'Please enter password';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get createYourAccount => 'Create your account';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get passwordMustBeAtLeast6Chars =>
+      'Password must be at least 6 characters';
+
+  @override
+  String get pleaseConfirmPassword => 'Please confirm password';
+
+  @override
+  String get passwordsDoNotMatch =>
+      'New password and confirmation do not match';
+
+  @override
+  String get registerSuccess => 'Register success';
+
+  @override
+  String get registerFailed => 'Register failed';
+
+  @override
+  String get backToLogin => 'Back to login';
+
+  @override
+  String get unregisteredAccountInputHint =>
+      'If not registered, enter account info (optional)';
+
+  @override
+  String get notRegisteredAccount => 'Not a registered account?';
+
+  @override
+  String get goRegister => 'Register';
 
   @override
   String get passwordLogin => 'Password Login';
@@ -159,7 +204,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fullyCharged => 'Fully Charged';
 
   @override
-  String get organizationUnitEmpty => 'Organization unit is empty';
+  String get organizationUnitEmpty => 'Organization is empty';
 
   @override
   String get confirmExit => 'Confirm Exit';
@@ -186,7 +231,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutUsTodo => 'About us feature to be implemented';
 
   @override
-  String get userRoleEmpty => 'User role is empty';
+  String get userRoleEmpty => 'Role is empty';
 
   @override
   String get user => 'User';
@@ -742,9 +787,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newPassword => 'New Password';
 
   @override
-  String get confirmPassword => 'Confirm Password';
-
-  @override
   String get pleaseEnterOldPassword => 'Please enter current password';
 
   @override
@@ -752,10 +794,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pleaseEnterConfirmPassword => 'Please confirm new password';
-
-  @override
-  String get passwordsDoNotMatch =>
-      'New password and confirmation do not match';
 
   @override
   String get passwordTooShort => 'Password must be at least 6 characters';
@@ -922,4 +960,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get channelName => 'Alert Notifications';
+
+  @override
+  String get userInfo => 'User Info';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get nameHint => 'Enter your name';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get emailHint => 'Enter your email';
+
+  @override
+  String get phoneLabel => 'Telephone';
+
+  @override
+  String get phoneHint => 'Enter your telephone';
+
+  @override
+  String get genderLabel => 'Gender';
+
+  @override
+  String get male => 'Male';
+
+  @override
+  String get female => 'Female';
+
+  @override
+  String get registrationTime => 'Registration Time';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get tapToChangeAvatar => 'Tap to change avatar';
+
+  @override
+  String get userDetailLoadFailed => 'Failed to load user detail';
+
+  @override
+  String get invalidUserDetailResponse => 'Invalid user detail response';
+
+  @override
+  String get avatarPickFailed => 'Failed to pick avatar image';
+
+  @override
+  String get saveActionReady =>
+      'Save action is ready. Add update API to persist changes.';
+
+  @override
+  String get organization => 'Organization';
+
+  @override
+  String get role => 'Role';
 }

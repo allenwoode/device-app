@@ -77,7 +77,49 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pleaseEnterUsername => '请输入用户名';
 
   @override
+  String get pleaseEnterEmail => '请输入邮箱';
+
+  @override
+  String get pleaseEnterValidEmail => '请输入有效的邮箱';
+
+  @override
   String get pleaseEnterPassword => '请输入密码';
+
+  @override
+  String get register => '注册';
+
+  @override
+  String get createYourAccount => '创建你的账号';
+
+  @override
+  String get confirmPassword => '确认密码';
+
+  @override
+  String get passwordMustBeAtLeast6Chars => '密码长度至少6位';
+
+  @override
+  String get pleaseConfirmPassword => '请确认密码';
+
+  @override
+  String get passwordsDoNotMatch => '新密码与确认密码不一致';
+
+  @override
+  String get registerSuccess => '注册成功';
+
+  @override
+  String get registerFailed => '注册失败';
+
+  @override
+  String get backToLogin => '返回登录';
+
+  @override
+  String get unregisteredAccountInputHint => '未注册账号请输入账号信息（选填）';
+
+  @override
+  String get notRegisteredAccount => '还没有注册账号？';
+
+  @override
+  String get goRegister => '去注册';
 
   @override
   String get passwordLogin => '账号密码登录';
@@ -157,7 +199,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fullyCharged => '已充满';
 
   @override
-  String get organizationUnitEmpty => '所属组织单位暂无';
+  String get organizationUnitEmpty => '暂无所属组织单位';
 
   @override
   String get confirmExit => '确认退出';
@@ -184,7 +226,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutUsTodo => '关于我们功能待实现';
 
   @override
-  String get userRoleEmpty => '用户所属角色暂无';
+  String get userRoleEmpty => '暂无用户角色';
 
   @override
   String get user => '用户';
@@ -723,9 +765,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newPassword => '新密码';
 
   @override
-  String get confirmPassword => '确认密码';
-
-  @override
   String get pleaseEnterOldPassword => '请输入当前密码';
 
   @override
@@ -733,9 +772,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pleaseEnterConfirmPassword => '请确认新密码';
-
-  @override
-  String get passwordsDoNotMatch => '新密码与确认密码不一致';
 
   @override
   String get passwordTooShort => '密码长度至少为6位';
@@ -897,4 +933,61 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get channelName => '告警通知';
+
+  @override
+  String get userInfo => '用户信息';
+
+  @override
+  String get nameLabel => '姓名';
+
+  @override
+  String get nameHint => '请输入姓名';
+
+  @override
+  String get emailLabel => '邮箱';
+
+  @override
+  String get emailHint => '请输入邮箱';
+
+  @override
+  String get phoneLabel => '电话';
+
+  @override
+  String get phoneHint => '请输入联系电话';
+
+  @override
+  String get genderLabel => '性别';
+
+  @override
+  String get male => '男';
+
+  @override
+  String get female => '女';
+
+  @override
+  String get registrationTime => '注册时间';
+
+  @override
+  String get save => '保存';
+
+  @override
+  String get tapToChangeAvatar => '点击更换头像';
+
+  @override
+  String get userDetailLoadFailed => '加载用户信息失败';
+
+  @override
+  String get invalidUserDetailResponse => '用户信息响应数据无效';
+
+  @override
+  String get avatarPickFailed => '选择头像失败';
+
+  @override
+  String get saveActionReady => '保存功能已准备好，接入更新接口后即可持久化修改。';
+
+  @override
+  String get organization => '组织';
+
+  @override
+  String get role => '角色';
 }
