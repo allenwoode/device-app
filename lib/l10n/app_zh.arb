@@ -364,7 +364,7 @@
   "nameHint": "请输入姓名",
   "emailLabel": "邮箱",
   "emailHint": "请输入邮箱",
-  "phoneLabel": "联系电话",
+  "phoneLabel": "电话",
   "phoneHint": "请输入联系电话",
   "genderLabel": "性别",
   "male": "男",
@@ -376,6 +376,6 @@
   "invalidUserDetailResponse": "用户信息响应数据无效",
   "avatarPickFailed": "选择头像失败",
   "saveActionReady": "保存功能已准备好，接入更新接口后即可持久化修改。",
-  "organization": "组织单位",
-  "role": "用户角色"
+  "organization": "组织",
+  "role": "角色"
 }

@@ -1,0 +1,36 @@
+POST /organization/_all
+
+request body:
+{
+    "sorts": [
+        {
+            "name": "level",
+            "order": "asc"
+        }
+    ],
+    "terms": [
+        {
+            "column": "name",
+            "termType": "like",
+            "value": "%name%"
+        }
+    ]
+}
+
+response:
+{
+    "message": "success",
+    "result": [
+        {
+            "id": "133df999-9e01-4ede-a849-8a63c8c43af8",
+            "path": "ie2X",
+            "sortIndex": 1,
+            "level": 1,
+            "name": "杰马科技",
+            "creatorId": "21232f297a57a5a743894a0e4a801fc3",
+            "createTime": 1761878602785
+        }
+    ],
+    "status": 200,
+    "timestamp": 1773823230466
+}

@@ -98,102 +98,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
     }
   }
 
-  Future<void> _handleSave() async {
-    if (_isSaving) {
-      return;
-    }
-
-    final userId = (_user?['id'] ?? '').toString();
-    if (userId.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_l10n.userDetailLoadFailed)),
-      );
-      return;
-    }
-
-    setState(() {
-      _isSaving = true;
-    });
-
-    try {
-      await AuthService.updateUserDetail(
-        id: userId,
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        avatar: (_user?['avatar'] ?? '').toString(),
-        telephone: _phoneController.text.trim(),
-      );
-
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _isSaving = false;
-        _originalName = _nameController.text.trim();
-        _originalEmail = _emailController.text.trim();
-        _originalPhone = _phoneController.text.trim();
-        _user = {
-          ...?_user,
-          'name': _originalName,
-          'email': _originalEmail,
-          'phone': _originalPhone,
-          'telephone': _originalPhone,
-        };
-      });
-
-      final localUserInfoString = await StorageService.getUserInfo();
-      Map<String, dynamic> mergedUserInfo = {};
-
-      if (localUserInfoString != null && localUserInfoString.isNotEmpty) {
-        try {
-          final decoded = jsonDecode(localUserInfoString);
-          if (decoded is Map<String, dynamic>) {
-            mergedUserInfo = decoded;
-          }
-        } catch (_) {}
-      }
-
-      mergedUserInfo = {
-        ...mergedUserInfo,
-        ...?_user,
-        'id': userId,
-        'name': _originalName,
-        'email': _originalEmail,
-        'avatar': (_user?['avatar'] ?? '').toString(),
-        'telephone': _originalPhone,
-        'phone': _originalPhone,
-      };
-
-      await StorageService.saveUserInfo(jsonEncode(mergedUserInfo));
-
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text(_l10n.success)),
-      // );
-    } catch (e) {
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _isSaving = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString().replaceFirst('Exception: ', '').isNotEmpty
-                ? e.toString().replaceFirst('Exception: ', '')
-                : _l10n.networkError,
-          ),
-        ),
-      );
-    }
-
-    // navigate back to mine page and refresh user info
-    Navigator.of(context).pop();
-  }
-
   Future<void> _pickAvatarFromGallery() async {
     if (_isUploadingAvatar) {
       return;
@@ -314,6 +218,287 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildActionInfoTile({
+    required String label,
+    required String value,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Colors.grey[200]!),
+          ),
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 120,
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                value,
+                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                textAlign: TextAlign.right,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 2),
+            Icon(Icons.chevron_right, size: 18, color: Colors.black45),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getOrganizationName() {
+    final orgList = _user?['orgList'];
+    if (orgList is List && orgList.isNotEmpty && orgList.first is Map<String, dynamic>) {
+      return (orgList.first['name'] ?? '').toString();
+    }
+    return '';
+  }
+
+  String _getOrganizationId() {
+    final orgList = _user?['orgList'];
+    if (orgList is List && orgList.isNotEmpty && orgList.first is Map<String, dynamic>) {
+      return (orgList.first['id'] ?? '').toString();
+    }
+    return '';
+  }
+
+  // List<Map<String, dynamic>> _extractOrganizations(dynamic data) {
+  //   if (data is Map<String, dynamic>) {
+  //     final result = data['result'];
+  //     if (result is List) {
+  //       return result.whereType<Map<String, dynamic>>().toList();
+  //     }
+
+  //     if (result is Map<String, dynamic>) {
+  //       final listData = result['data'];
+  //       if (listData is List) {
+  //         return listData.whereType<Map<String, dynamic>>().toList();
+  //       }
+  //     }
+  //   }
+  //   return <Map<String, dynamic>>[];
+  // }
+
+  // Future<List<Map<String, dynamic>>> _searchOrganizations(String keyword) async {
+  //   try {
+  //     final trimmedKeyword = keyword.trim();
+  //     final requestBody = {
+  //       'sorts': [
+  //         {'name': 'level', 'order': 'asc'},
+  //       ],
+  //       'terms': trimmedKeyword.isEmpty
+  //           ? []
+  //           : [
+  //               {
+  //                 'column': 'name',
+  //                 'termType': 'like',
+  //                 'value': '%$trimmedKeyword%',
+  //               },
+  //             ],
+  //     };
+
+  //     final response = await ApiInterceptor.post(
+  //       '${ApiConfig.baseUrl}/organization/_all',
+  //       data: requestBody,
+  //     ).timeout(ApiConfig.timeout);
+
+  //     final responseData = response.data;
+  //     if (response.statusCode == 200 &&
+  //         responseData is Map<String, dynamic> &&
+  //         responseData['status'] == 200) {
+  //       final organizations = _extractOrganizations(response.data);
+  //       if (organizations.isNotEmpty) {
+  //         return organizations;
+  //       }
+  //     }
+  //   } catch (_) {}
+
+  //   final orgList = _user?['orgList'];
+  //   if (orgList is List) {
+  //     final local = orgList.whereType<Map<String, dynamic>>().toList();
+  //     if (keyword.trim().isEmpty) {
+  //       return local;
+  //     }
+  //     return local
+  //         .where(
+  //           (org) => (org['name'] ?? '')
+  //               .toString()
+  //               .toLowerCase()
+  //               .contains(keyword.trim().toLowerCase()),
+  //         )
+  //         .toList();
+  //   }
+
+  //   return <Map<String, dynamic>>[];
+  // }
+
+  // Future<void> _showOrganizationDialog() async {
+  //   final result = await showDialog<Map<String, String>>(
+  //     context: context,
+  //     builder: (_) => _OrganizationSearchDialog(
+  //       initialName: _getOrganizationName(),
+  //       title: _l10n.organization,
+  //       emptyText: _l10n.organizationUnitEmpty,
+  //       cancelText: _l10n.cancel,
+  //       confirmText: _l10n.confirm,
+  //       requiredErrorText: _l10n.organization,
+  //       searchOrganizations: _searchOrganizations,
+  //     ),
+  //   );
+
+  //   if (result == null || !mounted) {
+  //     return;
+  //   }
+
+  //   final selectedOrgName = (result['orgName'] ?? '').trim();
+  //   final selectedOrgId = (result['orgId'] ?? '').trim();
+  //   if (selectedOrgName.isEmpty || selectedOrgId.isEmpty) {
+  //     return;
+  //   }
+  //   final currentUser = _user ?? <String, dynamic>{};
+  //   final currentOrgList = currentUser['orgList'];
+  //   List<dynamic> updatedOrgList;
+
+  //   if (currentOrgList is List && currentOrgList.isNotEmpty) {
+  //     updatedOrgList = List<dynamic>.from(currentOrgList);
+  //     if (updatedOrgList.first is Map<String, dynamic>) {
+  //       updatedOrgList[0] = {
+  //         ...(updatedOrgList.first as Map<String, dynamic>),
+  //         'name': selectedOrgName,
+  //         'id': selectedOrgId.isNotEmpty
+  //             ? selectedOrgId
+  //             : ((updatedOrgList.first as Map<String, dynamic>)['id'] ?? '').toString(),
+  //       };
+  //     }
+  //   } else {
+  //     updatedOrgList = [
+  //       {'id': selectedOrgId, 'name': selectedOrgName},
+  //     ];
+  //   }
+
+  //   setState(() {
+  //     _user = {
+  //       ...currentUser,
+  //       'orgList': updatedOrgList,
+  //     };
+  //   });
+  // }
+
+  Future<void> _handleSave() async {
+    if (_isSaving) {
+      return;
+    }
+
+    final userId = (_user?['id'] ?? '').toString();
+    if (userId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_l10n.userDetailLoadFailed)),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      await AuthService.updateUserDetail(
+        id: userId,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        avatar: (_user?['avatar'] ?? '').toString(),
+        telephone: _phoneController.text.trim(),
+        orgId: _getOrganizationId(),
+        orgName: _getOrganizationName(),
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _isSaving = false;
+        _originalName = _nameController.text.trim();
+        _originalEmail = _emailController.text.trim();
+        _originalPhone = _phoneController.text.trim();
+        _user = {
+          ...?_user,
+          'name': _originalName,
+          'email': _originalEmail,
+          'phone': _originalPhone,
+          'telephone': _originalPhone,
+        };
+      });
+
+      final localUserInfoString = await StorageService.getUserInfo();
+      Map<String, dynamic> mergedUserInfo = {};
+
+      if (localUserInfoString != null && localUserInfoString.isNotEmpty) {
+        try {
+          final decoded = jsonDecode(localUserInfoString);
+          if (decoded is Map<String, dynamic>) {
+            mergedUserInfo = decoded;
+          }
+        } catch (_) {}
+      }
+
+      mergedUserInfo = {
+        ...mergedUserInfo,
+        ...?_user,
+        'id': userId,
+        'name': _originalName,
+        'email': _originalEmail,
+        'avatar': (_user?['avatar'] ?? '').toString(),
+        'telephone': _originalPhone,
+        'phone': _originalPhone,
+        'orgId': _getOrganizationId(),
+        'orgName': _getOrganizationName(),
+      };
+
+      await StorageService.saveUserInfo(jsonEncode(mergedUserInfo));
+
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text(_l10n.success)),
+      // );
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _isSaving = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString().replaceFirst('Exception: ', '').isNotEmpty
+                ? e.toString().replaceFirst('Exception: ', '')
+                : _l10n.networkError,
+          ),
+        ),
+      );
+    }
+
+    // navigate back to mine page and refresh user info
+    Navigator.of(context).pop();
   }
 
   Widget _buildEditableField({
@@ -623,8 +808,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             //_buildInfoTile('Status', (_user?['status'] ?? '').toString()),
                             //_buildInfoTile(_l10n.registrationTime, _formatCreateTime(_user?['createTime'])),
                             //_buildInfoTile('ID', (_user?['id'] ?? '').toString()),
-                            _buildInfoTile('${_l10n.role}', (_user?['roleList'] != null && (_user!['roleList'] as List).isNotEmpty) ? (_user!['roleList'][0]['name'] ?? '') : _l10n.userRoleEmpty),
-                            _buildInfoTile(_l10n.organization, (_user?['orgList'] != null && (_user!['orgList'] as List).isNotEmpty) ? (_user!['orgList'][0]['name'] ?? '') : _l10n.organizationUnitEmpty),
+                            //_buildInfoTile('${_l10n.role}', (_user?['roleList'] != null && (_user!['roleList'] as List).isNotEmpty) ? (_user!['roleList'][0]['name'] ?? '') : _l10n.userRoleEmpty),
+                            // _buildActionInfoTile(
+                            //   label: _l10n.organization,
+                            //   value: _getOrganizationName().isNotEmpty
+                            //       ? _getOrganizationName()
+                            //       : _l10n.organizationUnitEmpty,
+                            //   onTap: _showOrganizationDialog,
+                            // ),
                           ],
                         ),
                       ),
@@ -634,3 +825,179 @@ class _UserInfoPageState extends State<UserInfoPage> {
     );
   }
 }
+
+// class _OrganizationSearchDialog extends StatefulWidget {
+//   const _OrganizationSearchDialog({
+//     required this.initialName,
+//     required this.title,
+//     required this.emptyText,
+//     required this.cancelText,
+//     required this.confirmText,
+//     required this.requiredErrorText,
+//     required this.searchOrganizations,
+//   });
+
+//   final String initialName;
+//   final String title;
+//   final String emptyText;
+//   final String cancelText;
+//   final String confirmText;
+//   final String requiredErrorText;
+//   final Future<List<Map<String, dynamic>>> Function(String keyword)
+//   searchOrganizations;
+
+//   @override
+//   State<_OrganizationSearchDialog> createState() =>
+//       _OrganizationSearchDialogState();
+// }
+
+// class _OrganizationSearchDialogState extends State<_OrganizationSearchDialog> {
+//   late final TextEditingController _controller;
+//   List<Map<String, dynamic>> _results = [];
+//   bool _isSearching = false;
+//   String? _inputError;
+//   int _requestToken = 0;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = TextEditingController(text: widget.initialName);
+//   }
+
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
+
+//   Future<void> _runSearch(String keyword) async {
+//     final currentToken = ++_requestToken;
+//     if (!mounted) {
+//       return;
+//     }
+
+//     setState(() {
+//       _isSearching = true;
+//     });
+
+//     final results = await widget.searchOrganizations(keyword);
+//     if (!mounted || currentToken != _requestToken) {
+//       return;
+//     }
+
+//     setState(() {
+//       _results = results;
+//       _isSearching = false;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return AlertDialog(
+//       backgroundColor: Colors.white,
+//       title: Text(
+//         widget.title,
+//         style: const TextStyle(
+//           fontSize: 16,
+//           fontWeight: FontWeight.w600,
+//           color: Colors.black87,
+//         ),
+//       ),
+//       content: SizedBox(
+//         width: 320,
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             TextField(
+//               controller: _controller,
+//               autofocus: true,
+//               onChanged: (value) {
+//                 if (_inputError != null && value.trim().isNotEmpty) {
+//                   setState(() {
+//                     _inputError = null;
+//                   });
+//                 }
+//                 _runSearch(value);
+//               },
+//               decoration: InputDecoration(
+//                 hintText: widget.title,
+//                 border: const OutlineInputBorder(),
+//                 isDense: true,
+//                 errorText: _inputError,
+//                 suffixIcon: IconButton(
+//                   icon: const Icon(Icons.search),
+//                   onPressed: () {
+//                     if (_controller.text.trim().isEmpty) {
+//                       setState(() {
+//                         _inputError = widget.requiredErrorText;
+//                       });
+//                       return;
+//                     }
+//                     _runSearch(_controller.text);
+//                   },
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//             SizedBox(
+//               height: 220,
+//               child: _isSearching
+//                   ? const Center(child: CircularProgressIndicator())
+//                   : _results.isEmpty
+//                   ? Center(
+//                       child: Text(
+//                         widget.emptyText,
+//                         style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+//                       ),
+//                     )
+//                   : ListView.separated(
+//                       itemCount: _results.length,
+//                       separatorBuilder: (_, __) => Divider(
+//                         height: 1,
+//                         color: Colors.grey[200],
+//                       ),
+//                       itemBuilder: (context, index) {
+//                         final item = _results[index];
+//                         final name = (item['name'] ?? '').toString();
+//                         final id = (item['id'] ?? '').toString();
+//                         return ListTile(
+//                           dense: true,
+//                           title: Text(
+//                             name,
+//                             style: const TextStyle(fontSize: 14),
+//                           ),
+//                           onTap: () => Navigator.of(context).pop({
+//                             'orgId': id,
+//                             'orgName': name,
+//                           }),
+//                         );
+//                       },
+//                     ),
+//             ),
+//           ],
+//         ),
+//       ),
+//       actions: [
+//         TextButton(
+//           onPressed: () => Navigator.of(context).pop(),
+//           child: Text(widget.cancelText),
+//         ),
+//         TextButton(
+//           onPressed: () {
+//             if (_controller.text.trim().isEmpty) {
+//               setState(() {
+//                 _inputError = widget.requiredErrorText;
+//               });
+//               return;
+//             }
+//             Navigator.of(context).pop({
+//               'orgId': '',
+//               'orgName': _controller.text.trim(),
+//             });
+//           },
+//           child: Text(widget.confirmText),
+//         ),
+//       ],
+//     );
+//   }
+// }

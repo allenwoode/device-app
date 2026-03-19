@@ -977,7 +977,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailHint => 'Enter your email';
 
   @override
-  String get phoneLabel => 'Phone';
+  String get phoneLabel => 'Telephone';
 
   @override
   String get phoneHint => 'Enter your telephone';

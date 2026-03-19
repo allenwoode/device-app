@@ -328,7 +328,7 @@ class _DevicePageState extends State<DevicePage> with WidgetsBindingObserver {
         title: Text(
           _currentUser?.orgList.isNotEmpty == true
               ? _currentUser!.orgList.first.name
-              : _l10n.organizationUnitEmpty,
+              : '',
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,

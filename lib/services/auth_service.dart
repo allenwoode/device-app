@@ -11,7 +11,7 @@ class AuthService {
   static const String _signinEndpoint = '/auth/signin';
   static const String _logoutEndpoint = '/auth/logout';
   static const String _userDetailEndpoint = '/user/detail';
-  static const String _updateUserDetailEndpoint = '/user/detail/update';
+  static const String _updateUserDetailEndpoint = '/user/detail';
   static const String _updatePasswordEndpoint = '/user/passwd';
   static const String _resetPasswordEndpoint = '/auth/passwd/reset';
 
@@ -216,12 +216,16 @@ class AuthService {
     required String email,
     required String avatar,
     required String telephone,
+    String? orgId,
+    String? orgName,
   }) async {
     try {
       final requestBody = {
         'id': id,
         'name': name,
         'email': email,
+        'orgId': orgId,
+        'orgName': orgName,
         'avatar': avatar,
         'telephone': telephone,
       };

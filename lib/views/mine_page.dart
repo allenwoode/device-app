@@ -107,7 +107,7 @@ class _MinePageState extends State<MinePage> {
           children: [
             Container(
               width: 60,
-              height: 60,
+              height: 96,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.grey[200],

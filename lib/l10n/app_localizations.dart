@@ -1883,7 +1883,7 @@ abstract class AppLocalizations {
   /// No description provided for @phoneLabel.
   ///
   /// In en, this message translates to:
-  /// **'Phone'**
+  /// **'Telephone'**
   String get phoneLabel;
 
   /// No description provided for @phoneHint.

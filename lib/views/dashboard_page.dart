@@ -164,7 +164,7 @@ class _DashboardPageState extends State<DashboardPage> {
         title: Text(
           _currentUser?.orgList.isNotEmpty == true
               ? _currentUser!.orgList.first.name
-              : _l10n.organizationUnitEmpty,
+              : '',
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
