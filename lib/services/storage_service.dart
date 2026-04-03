@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
@@ -6,6 +8,7 @@ class StorageService {
   static const String _tokenExpiryKey = 'token_expiry';
   static const String _loginTimeKey = 'login_time';
   static const String _wifiSsidKey = 'wifi_ssid_';
+  static const String _menuButtonPermissionsKey = 'menu_button_permissions';
 
   static Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -107,5 +110,43 @@ class StorageService {
         .where((k) => k.startsWith(_wifiSsidKey))
         .map((k) => k.substring(_wifiSsidKey.length))
         .toList();
+  }
+
+  static Future<void> saveMenuButtonPermissions(
+    Map<String, String> permissions,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_menuButtonPermissionsKey, jsonEncode(permissions));
+  }
+
+  static Future<Map<String, String>> getMenuButtonPermissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_menuButtonPermissionsKey);
+    if (raw == null || raw.isEmpty) {
+      return {};
+    }
+
+    final decoded = jsonDecode(raw);
+    if (decoded is! Map<String, dynamic>) {
+      return {};
+    }
+
+    return decoded.map(
+      (key, value) => MapEntry(
+        key,
+        value?.toString() ?? '',
+      ),
+    );
+  }
+
+  static Future<bool> hasPermission(String key) async {
+    final permissions = await getMenuButtonPermissions();
+    final value = permissions[key];
+    return value != null && value.isNotEmpty;
+  }
+
+  static Future<void> removeMenuButtonPermissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_menuButtonPermissionsKey);
   }
 }

@@ -571,14 +571,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
             FontAwesomeIcons.gear,
             _l10n.remoteSettings,
             onPressed: () {
-              if (_state == 1) {
-                AppRoutes.goToDeviceFunction(
-                  context,
-                  widget.deviceId,
-                  widget.productId,
-                  _num,
-                );
-              } else {
+              if (_state != 1) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -588,7 +581,15 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                     backgroundColor: Colors.orange,
                   ),
                 );
+                return;
               }
+
+              AppRoutes.goToDeviceFunction(
+                context,
+                widget.deviceId,
+                widget.productId,
+                _num,
+              );
             },
           ),
         ],
