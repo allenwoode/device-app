@@ -52,8 +52,7 @@ class _FunctionPageState extends State<FunctionPage> {
   void initState() {
     super.initState();
     
-    _checkPermissions();
-    _loadDeviceData();
+    _refresh();
   }
 
   Future<void> _loadDeviceData() async {
@@ -77,7 +76,7 @@ class _FunctionPageState extends State<FunctionPage> {
     }
   }
 
-  Future<void> _checkPermissions() async {
+  Future<void> _refresh() async {
     final hasPermission = await AuthService.hasPermission(
       'product/Maintain:execute',
     );
@@ -87,9 +86,7 @@ class _FunctionPageState extends State<FunctionPage> {
     setState(() {
       _hasPermission = hasPermission;
     });
-    if (hasPermission) {
-      _loadDeviceData();
-    }
+    _loadDeviceData();
   }
 
   void _parseDeviceStateData(Map<String, dynamic> stateData) {
@@ -507,7 +504,7 @@ class _FunctionPageState extends State<FunctionPage> {
               ),
             )
           : RefreshIndicator(
-              onRefresh: _checkPermissions,
+              onRefresh: _refresh,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: _buildLockGrid(),
