@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:device/services/storage_service.dart';
+import 'package:device/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:device/services/device_service.dart';
@@ -51,8 +51,9 @@ class _FunctionPageState extends State<FunctionPage> {
   @override
   void initState() {
     super.initState();
-    _loadDeviceData();
+    
     _checkPermissions();
+    _loadDeviceData();
   }
 
   Future<void> _loadDeviceData() async {
@@ -76,8 +77,8 @@ class _FunctionPageState extends State<FunctionPage> {
     }
   }
 
-  void _checkPermissions() async {
-    final hasPermission = await StorageService.hasPermission(
+  Future<void> _checkPermissions() async {
+    final hasPermission = await AuthService.hasPermission(
       'product/Maintain:execute',
     );
     if (!mounted) {
@@ -86,6 +87,9 @@ class _FunctionPageState extends State<FunctionPage> {
     setState(() {
       _hasPermission = hasPermission;
     });
+    if (hasPermission) {
+      _loadDeviceData();
+    }
   }
 
   void _parseDeviceStateData(Map<String, dynamic> stateData) {
@@ -160,7 +164,8 @@ class _FunctionPageState extends State<FunctionPage> {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                   child: Container(
-                    color: Colors.black26,
+                    color: Colors.black12,
+                    padding: const EdgeInsets.all(16),
                     child: Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -493,6 +498,7 @@ class _FunctionPageState extends State<FunctionPage> {
                         _isLoading = true;
                         _errorMessage = null;
                       });
+                      //_checkPermissions();
                       _loadDeviceData();
                     },
                     child: Text(_l10n.retry),
@@ -501,7 +507,7 @@ class _FunctionPageState extends State<FunctionPage> {
               ),
             )
           : RefreshIndicator(
-              onRefresh: _loadDeviceData,
+              onRefresh: _checkPermissions,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: _buildLockGrid(),

@@ -180,6 +180,12 @@ class AuthService {
     return token != null && token.isNotEmpty;
   }
 
+  static Future<bool> hasPermission(String key) async {
+    final permissions = await getUserOwnMenuPermissions();
+    final value = permissions[key];
+    return value != null && value.isNotEmpty;
+  }
+
   static Future<Map<String, dynamic>> getUserDetail() async {
     try {
       final response = await ApiInterceptor.get(
@@ -332,7 +338,7 @@ class AuthService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getUserOwnMenuPermissions() async {
+  static Future<Map<String, String>> getUserOwnMenuPermissions() async {
     try {
       final response = await ApiInterceptor.get(
         '${ApiConfig.baseUrl}$_userOwnMenuTreeEndpoint',
@@ -357,10 +363,7 @@ class AuthService {
       final menuButtonPermissions = _parseMenuButtonPermissions(result);
       await StorageService.saveMenuButtonPermissions(menuButtonPermissions);
 
-      return result
-          .whereType<Map<String, dynamic>>()
-          .map((item) => Map<String, dynamic>.from(item))
-          .toList();
+      return menuButtonPermissions;
     } on DioException catch (e) {
       final responseData = e.response?.data;
       if (responseData is Map<String, dynamic>) {
