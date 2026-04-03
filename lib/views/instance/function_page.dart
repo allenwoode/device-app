@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:device/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:device/services/device_service.dart';
@@ -35,6 +38,7 @@ class _FunctionPageState extends State<FunctionPage> {
   bool _isLoading = true;
   String? _errorMessage;
   //String _deviceName = '';
+  bool _hasPermission = false;
 
   AppLocalizations get _l10n {
     try {
@@ -48,6 +52,7 @@ class _FunctionPageState extends State<FunctionPage> {
   void initState() {
     super.initState();
     _loadDeviceData();
+    _checkPermissions();
   }
 
   Future<void> _loadDeviceData() async {
@@ -69,6 +74,18 @@ class _FunctionPageState extends State<FunctionPage> {
         _errorMessage = _l10n.loadDeviceDataFailed;
       });
     }
+  }
+
+  void _checkPermissions() async {
+    final hasPermission = await StorageService.hasPermission(
+      'product/Maintain:execute',
+    );
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _hasPermission = hasPermission;
+    });
   }
 
   void _parseDeviceStateData(Map<String, dynamic> stateData) {
@@ -109,21 +126,9 @@ class _FunctionPageState extends State<FunctionPage> {
   }
 
   Widget _buildLockGrid() {
-    return Container(
+    final grid = Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.only(left: 16, top: 32, right: 16, bottom: 16),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   borderRadius: BorderRadius.circular(12),
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.grey.withOpacity(0.1),
-      //       spreadRadius: 0,
-      //       blurRadius: 4,
-      //       offset: const Offset(0, 2),
-      //     ),
-      //   ],
-      // ),
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -139,6 +144,50 @@ class _FunctionPageState extends State<FunctionPage> {
         },
       ),
     );
+
+    // Add a mask with message when user has no permission.
+    if (!_hasPermission) {
+      return Stack(
+        children: [
+          IgnorePointer(
+            child: grid,
+          ),
+          Positioned.fill(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                  child: Container(
+                    color: Colors.black26,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.lock_outline, size: 24, color: Colors.white),
+                          const SizedBox(height: 8),
+                          Text(
+                            _l10n.permissionInsufficient,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return grid;
   }
 
   Widget _buildLockSlot(LockSlot slot, int index) {
@@ -196,6 +245,12 @@ class _FunctionPageState extends State<FunctionPage> {
     return CupertinoSwitch(
       value: state == LockState.unlocked,
       onChanged: (bool value) {
+        // has permission check
+        // if (!_hasPermission) {
+        //   _showMessage(_l10n.permissionInsufficient);
+        //   return;
+        // }
+
         // Only show dialog when unlocking (value is true)
         if (value) {
           _showLockControlDialog(value, slotId);

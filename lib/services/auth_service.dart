@@ -14,6 +14,7 @@ class AuthService {
   static const String _updateUserDetailEndpoint = '/user/detail';
   static const String _updatePasswordEndpoint = '/user/passwd';
   static const String _resetPasswordEndpoint = '/auth/passwd/reset';
+  static const String _userOwnMenuTreeEndpoint = '/menu/user-own/tree';
 
   static Future<LoginResponse?> login(String username, String password) async {
     try {
@@ -39,6 +40,8 @@ class AuthService {
         );
 
         await StorageService.saveUserInfo(jsonEncode(loginResponse.result.user.toJson()));
+
+        await _loadUserOwnMenuPermissionsSafely();
         
         return loginResponse;
       } else {
@@ -81,6 +84,7 @@ class AuthService {
           await StorageService.saveUserInfo(
             jsonEncode(signInResponse.result.user.toJson()),
           );
+          await _loadUserOwnMenuPermissionsSafely();
           return signInResponse;
         }
 
@@ -325,6 +329,110 @@ class AuthService {
     } catch (e) {
       print('Password reset error: $e');
       return '';
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getUserOwnMenuPermissions() async {
+    try {
+      final response = await ApiInterceptor.get(
+        '${ApiConfig.baseUrl}$_userOwnMenuTreeEndpoint',
+      ).timeout(ApiConfig.timeout);
+
+      final data = response.data;
+      if (response.statusCode != 200 || data is! Map<String, dynamic>) {
+        throw Exception('Failed to load menu permissions');
+      }
+
+      if (data['status'] != 200) {
+        throw Exception(
+          data['message']?.toString() ?? 'Failed to load menu permissions',
+        );
+      }
+
+      final result = data['result'];
+      if (result is! List) {
+        throw Exception('Invalid menu permission response');
+      }
+
+      final menuButtonPermissions = _parseMenuButtonPermissions(result);
+      await StorageService.saveMenuButtonPermissions(menuButtonPermissions);
+
+      return result
+          .whereType<Map<String, dynamic>>()
+          .map((item) => Map<String, dynamic>.from(item))
+          .toList();
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      if (responseData is Map<String, dynamic>) {
+        final message = responseData['message']?.toString();
+        if (message != null && message.isNotEmpty) {
+          throw Exception(message);
+        }
+      }
+
+      throw Exception(e.message ?? 'Network error');
+    }
+  }
+
+  static Map<String, String> _parseMenuButtonPermissions(List<dynamic> menuTree) {
+    final permissions = <String, String>{};
+
+    void walkNode(dynamic node) {
+      if (node is! Map<String, dynamic>) {
+        return;
+      }
+
+      final code = node['code']?.toString().trim() ?? '';
+      if (code.isNotEmpty) {
+        final buttons = node['buttons'];
+        if (buttons is List) {
+          for (final button in buttons) {
+            if (button is! Map<String, dynamic>) {
+              continue;
+            }
+
+            final enabled = button['enabled'];
+            final granted = button['granted'];
+            if (enabled == false || granted == false) {
+              continue;
+            }
+
+            final id = button['id']?.toString().trim() ?? '';
+            if (id.isNotEmpty) {
+              final name =
+                  button['name']?.toString().trim().isNotEmpty == true
+                  ? button['name'].toString().trim()
+                  : (button['i18nName']?.toString().trim().isNotEmpty == true
+                      ? button['i18nName'].toString().trim()
+                      : id);
+              permissions['$code:$id'] = name;
+            }
+          }
+        }
+      }
+
+      final children = node['children'];
+      if (children is List) {
+        for (final child in children) {
+          walkNode(child);
+        }
+      }
+    }
+
+    for (final item in menuTree) {
+      walkNode(item);
+    }
+
+    return permissions;
+  }
+
+  static Future<void> _loadUserOwnMenuPermissionsSafely() async {
+    try {
+      await getUserOwnMenuPermissions();
+    } catch (e) {
+      if (ApiConfig.enableLogging) {
+        print('Load menu permissions error: $e');
+      }
     }
   }
 }

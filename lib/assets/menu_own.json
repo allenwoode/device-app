@@ -1,0 +1,325 @@
+GET /menu/user-own/tree
+
+{
+    "message": "success",
+    "result": [
+        {
+            "id": "015a8e587acd34e6ed78e144185b224a",
+            "path": "5FM8",
+            "sortIndex": 2,
+            "level": 1,
+            "owner": "iot",
+            "name": "产品管理",
+            "code": "product",
+            "icon": "icon-chanpin",
+            "url": "/product",
+            "describe": "产品管理",
+            "children": [
+                {
+                    "id": "82f73847db0b3799162cf1b4c6913838",
+                    "parentId": "015a8e587acd34e6ed78e144185b224a",
+                    "path": "5FM8-RW6B",
+                    "sortIndex": 1,
+                    "level": 2,
+                    "owner": "iot",
+                    "name": "设备总览",
+                    "code": "product/Overview",
+                    "icon": "icon-shebei",
+                    "url": "/product/Overview",
+                    "describe": "overview",
+                    "buttons": [
+                        {
+                            "id": "update",
+                            "name": "编辑",
+                            "description": "",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "编辑"
+                        },
+                        {
+                            "id": "view",
+                            "name": "查看",
+                            "description": "",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "查看"
+                        }
+                    ],
+                    "options": {},
+                    "createTime": 1770109984787,
+                    "granted": true,
+                    "i18nMessages": {
+                        "name": {
+                            "zh_CN": "设备总览",
+                            "en_US": "Device Overview",
+                            "en": "Device Overview"
+                        }
+                    },
+                    "i18nName": "设备总览"
+                },
+                {
+                    "id": "f9a851847785c5d9dc8783f07ee876b6",
+                    "parentId": "015a8e587acd34e6ed78e144185b224a",
+                    "path": "5FM8-oVsw",
+                    "sortIndex": 2,
+                    "level": 2,
+                    "owner": "iot",
+                    "name": "设备管理",
+                    "code": "product/Maintain",
+                    "icon": "icon-shebeiguanli",
+                    "url": "/product/Maintain",
+                    "describe": "maintain",
+                    "buttons": [
+                        {
+                            "id": "update",
+                            "name": "编辑",
+                            "description": "",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "编辑"
+                        },
+                        {
+                            "id": "execute",
+                            "name": "下发",
+                            "description": "",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "下发"
+                        }
+                    ],
+                    "options": {},
+                    "createTime": 1770110029016,
+                    "granted": true,
+                    "i18nMessages": {
+                        "name": {
+                            "zh_CN": "设备管理",
+                            "en_US": "Device Maintain",
+                            "en": "Device Maintain"
+                        }
+                    },
+                    "i18nName": "设备管理"
+                }
+            ],
+            "createTime": 1770089466227,
+            "granted": false,
+            "i18nMessages": {
+                "name": {
+                    "zh_CN": "产品管理",
+                    "en_US": "Product Management",
+                    "en": "Product Management"
+                }
+            },
+            "i18nName": "产品管理"
+        },
+        {
+            "id": "fd1670b860ae58cc58bcd01d027ccd35",
+            "path": "18HM",
+            "sortIndex": 4,
+            "level": 1,
+            "owner": "iot",
+            "name": "系统管理",
+            "code": "system",
+            "icon": "icon-xitongguanli1",
+            "url": "/system",
+            "buttons": [],
+            "options": {
+                "show": true,
+                "appName": "authentication-manager"
+            },
+            "children": [
+                {
+                    "id": "fe2e557bcf09a5503cbb5bebeb0b7f1c",
+                    "parentId": "fd1670b860ae58cc58bcd01d027ccd35",
+                    "path": "18HM-4YMT",
+                    "sortIndex": 2,
+                    "level": 2,
+                    "owner": "iot",
+                    "name": "用户管理",
+                    "code": "system/User",
+                    "icon": "icon-yonghuguanli",
+                    "url": "/system/user",
+                    "buttons": [
+                        {
+                            "id": "view",
+                            "name": "查看",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "查看"
+                        },
+                        {
+                            "id": "action",
+                            "name": "启/禁用",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "启/禁用"
+                        },
+                        {
+                            "id": "delete",
+                            "name": "删除",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "删除"
+                        },
+                        {
+                            "id": "update",
+                            "name": "编辑",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "编辑"
+                        },
+                        {
+                            "id": "add",
+                            "name": "新增",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "新增"
+                        }
+                    ],
+                    "options": {
+                        "show": true,
+                        "appName": "authentication-manager"
+                    },
+                    "createTime": 1761876367716,
+                    "granted": true,
+                    "i18nMessages": {
+                        "name": {
+                            "zh_CN": "用户管理",
+                            "en_US": "User Management",
+                            "en": "User Management"
+                        }
+                    },
+                    "i18nName": "用户管理"
+                },
+                {
+                    "id": "3962ec0835f3b4a68c1f63b955625046",
+                    "parentId": "fd1670b860ae58cc58bcd01d027ccd35",
+                    "path": "18HM-kldv",
+                    "sortIndex": 3,
+                    "level": 2,
+                    "owner": "iot",
+                    "name": "组织管理",
+                    "code": "system/Department",
+                    "icon": "icon-bumenguanli",
+                    "url": "/system/Department",
+                    "describe": "",
+                    "buttons": [
+                        {
+                            "id": "view",
+                            "name": "查看",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "查看"
+                        },
+                        {
+                            "id": "bind",
+                            "name": "资产解绑",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "资产解绑"
+                        },
+                        {
+                            "id": "bind-user",
+                            "name": "绑定用户",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "绑定用户"
+                        },
+                        {
+                            "id": "assert",
+                            "name": "资产分配",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "资产分配"
+                        },
+                        {
+                            "id": "delete",
+                            "name": "删除",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "删除"
+                        },
+                        {
+                            "id": "update",
+                            "name": "编辑",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "编辑"
+                        },
+                        {
+                            "id": "add",
+                            "name": "新增",
+                            "enabled": true,
+                            "granted": true,
+                            "i18nName": "新增"
+                        }
+                    ],
+                    "options": {
+                        "show": true,
+                        "appName": "authentication-manager"
+                    },
+                    "createTime": 1761876367716,
+                    "granted": true,
+                    "i18nMessages": {
+                        "name": {
+                            "zh_CN": "组织管理",
+                            "en_US": "Organization Management",
+                            "en": "Organization Management"
+                        }
+                    },
+                    "i18nName": "组织管理"
+                }
+            ],
+            "createTime": 1761876367705,
+            "granted": true,
+            "i18nMessages": {
+                "name": {
+                    "zh_CN": "系统管理",
+                    "en_US": "System Management",
+                    "en": "System Management"
+                }
+            },
+            "i18nName": "系统管理"
+        },
+        {
+            "id": "19a1f2c763e1231f1e1",
+            "path": "yof9",
+            "sortIndex": 9999,
+            "level": 1,
+            "owner": "iot",
+            "name": "个人中心",
+            "code": "account-center",
+            "url": "/account/center",
+            "buttons": [
+                {
+                    "id": "view",
+                    "name": "查看",
+                    "enabled": true,
+                    "granted": true,
+                    "i18nName": "查看"
+                },
+                {
+                    "id": "user-center-passwd-update",
+                    "name": "修改密码",
+                    "enabled": true,
+                    "granted": true,
+                    "i18nName": "修改密码"
+                }
+            ],
+            "options": {
+                "show": true
+            },
+            "createTime": 1761876367709,
+            "granted": true,
+            "i18nMessages": {
+                "name": {
+                    "zh_CN": "个人中心",
+                    "en_US": "User Center",
+                    "en": "User Center"
+                }
+            },
+            "i18nName": "个人中心"
+        }
+    ],
+    "status": 200,
+    "timestamp": 1775185754008
+}

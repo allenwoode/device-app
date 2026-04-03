@@ -1,7 +1,7 @@
 class ApiConfig {
-  //static const String baseUrl = 'http://192.168.2.137:8848';
+  static const String baseUrl = 'http://192.168.2.137:8848';
   //static const String baseUrl = 'https://feenod.xyz/api';
-  static const String baseUrl = 'https://gam-net.com/api';
+  //static const String baseUrl = 'https://gam-net.com/api';
   static const Duration timeout = Duration(seconds: 10);
 
   // Common headers with dynamic token
