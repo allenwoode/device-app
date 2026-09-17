@@ -651,7 +651,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanning => 'Scanning...';
 
   @override
-  String get scanAzDevices => 'Scan BLE evices';
+  String get scanAzDevices => 'Scan BLE devices';
 
   @override
   String get disconnect => 'Disconnect';

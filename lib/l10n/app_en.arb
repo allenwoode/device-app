@@ -322,7 +322,7 @@
   "configSentFailed": "Configuration failed",
   "connecting": "Connecting...",
   "scanning": "Scanning...",
-  "scanAzDevices": "Scan BLE evices",
+  "scanAzDevices": "Scan BLE devices",
   "disconnect": "Disconnect",
   "sendConfig": "Send Config",
   "startScanning": "Starting scan for BLE devices",

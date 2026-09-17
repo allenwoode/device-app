@@ -1271,7 +1271,7 @@ abstract class AppLocalizations {
   /// No description provided for @scanAzDevices.
   ///
   /// In en, this message translates to:
-  /// **'Scan BLE evices'**
+  /// **'Scan BLE devices'**
   String get scanAzDevices;
 
   /// No description provided for @disconnect.
