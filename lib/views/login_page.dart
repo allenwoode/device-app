@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _checkingLoginState = true;
   bool _obscurePassword = true;
-  Locale _selectedLocale = const Locale('zh');
+  Locale _selectedLocale = const Locale('en'); // Default to English
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _loadSavedLocale() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final savedLocaleCode = prefs.getString('locale') ?? 'zh';
+      final savedLocaleCode = prefs.getString('locale') ?? 'en';
       if (mounted) {
         setState(() {
           _selectedLocale = Locale(savedLocaleCode);
@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
       // Fallback to default locale on error
       if (mounted) {
         setState(() {
-          _selectedLocale = const Locale('zh');
+          _selectedLocale = const Locale('en');
         });
       }
     }
@@ -299,13 +299,13 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     items: const [
                       DropdownMenuItem(
-                        value: Locale('zh'),
-                        child: Text('中文'),
-                      ),
-                      DropdownMenuItem(
                         value: Locale('en'),
                         child: Text('English'),
                       ),
+                      DropdownMenuItem(
+                        value: Locale('zh'),
+                        child: Text('中文'),
+                      )
                     ],
                   ),
                 ),

@@ -292,7 +292,7 @@ class _SignInPageState extends State<SignInPage> {
       return localizations;
     }
 
-    final locale = Localizations.maybeLocaleOf(context) ?? const Locale('zh');
+    final locale = Localizations.maybeLocaleOf(context) ?? const Locale('en');
     return lookupAppLocalizations(locale);
   }
 }
