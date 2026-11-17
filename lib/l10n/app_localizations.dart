@@ -419,13 +419,13 @@ abstract class AppLocalizations {
   /// No description provided for @alerts.
   ///
   /// In en, this message translates to:
-  /// **'Alerts'**
+  /// **'Alert'**
   String get alerts;
 
   /// No description provided for @operationLog.
   ///
   /// In en, this message translates to:
-  /// **'Operation'**
+  /// **'Log'**
   String get operationLog;
 
   /// No description provided for @remoteSettings.
@@ -443,19 +443,19 @@ abstract class AppLocalizations {
   /// No description provided for @deviceLock.
   ///
   /// In en, this message translates to:
-  /// **'Device Lock'**
+  /// **'Locked'**
   String get deviceLock;
 
   /// No description provided for @deviceUnlock.
   ///
   /// In en, this message translates to:
-  /// **'Device Unlock'**
+  /// **'Unlocked'**
   String get deviceUnlock;
 
   /// No description provided for @uncharged.
   ///
   /// In en, this message translates to:
-  /// **'Not Charged'**
+  /// **'Free'**
   String get uncharged;
 
   /// No description provided for @charging.

@@ -176,10 +176,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usageRate => 'Usage';
 
   @override
-  String get alerts => 'Alerts';
+  String get alerts => 'Alert';
 
   @override
-  String get operationLog => 'Operation';
+  String get operationLog => 'Log';
 
   @override
   String get remoteSettings => 'Remote';
@@ -189,13 +189,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Device offline, cannot perform remote settings';
 
   @override
-  String get deviceLock => 'Device Lock';
+  String get deviceLock => 'Locked';
 
   @override
-  String get deviceUnlock => 'Device Unlock';
+  String get deviceUnlock => 'Unlocked';
 
   @override
-  String get uncharged => 'Not Charged';
+  String get uncharged => 'Free';
 
   @override
   String get charging => 'Charging';

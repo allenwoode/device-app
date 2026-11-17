@@ -175,19 +175,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get alerts => '告警';
 
   @override
-  String get operationLog => '操作日志';
+  String get operationLog => '日志';
 
   @override
-  String get remoteSettings => '远程设置';
+  String get remoteSettings => '远程控制';
 
   @override
-  String get deviceOfflineCannotRemoteSet => '设备离线，无法进行远程设置';
+  String get deviceOfflineCannotRemoteSet => '设备离线，无法进行远程控制';
 
   @override
-  String get deviceLock => '设备关锁';
+  String get deviceLock => '关锁';
 
   @override
-  String get deviceUnlock => '设备开锁';
+  String get deviceUnlock => '开锁';
 
   @override
   String get uncharged => '未充电';
